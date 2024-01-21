@@ -19,6 +19,7 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { API_POST } from "../../fakeApi";
 import PostContainer from "../../components/HomeItems/PostContainer/PostContainer";
 const style = {
   py: 0,
@@ -143,8 +144,19 @@ const Home = () => {
         </List>
       </aside>
       <main className="md:col-span-5 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px]">
-        <PostContainer />
-        <PostContainer />
+        {API_POST &&
+          API_POST.map((post, index) => {
+            return (
+              <PostContainer
+                key={index}
+                name={post.user.name}
+                user_avatar={post.user.image_avatar}
+                image={post.image}
+                content={post.content}
+                dateCreated={post.dateCreated}
+              />
+            );
+          })}
       </main>
       <aside className="bg-white md:col-span-2 hidden md:flex  sticky top-[58px]  h-[calc(100vh-58px)]">
         hi

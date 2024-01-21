@@ -1,6 +1,9 @@
+/* eslint-disable react/prop-types */
 import {
   Avatar,
   AvatarGroup,
+  Box,
+  Button,
   Card,
   CardActions,
   CardContent,
@@ -21,6 +24,8 @@ import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import { red } from "@mui/material/colors";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import Comment from "../../Comment/Comment";
+import Textarea from "@mui/joy/Textarea";
+import SendIcon from "@mui/icons-material/Send";
 const listComment = [
   {
     id: 1,
@@ -40,7 +45,7 @@ const listComment = [
 const PostContainer = (props) => {
   // eslint-disable-next-line react/prop-types
   const [expanded, setExpanded] = useState(false);
-  const { loading = true } = props;
+  const { loading = false } = props;
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -57,10 +62,7 @@ const PostContainer = (props) => {
               height={40}
             />
           ) : (
-            <Avatar
-              alt="Ted talk"
-              src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
-            />
+            <Avatar alt="Ted talk" src={props.user_avatar} />
           )
         }
         action={
@@ -70,20 +72,18 @@ const PostContainer = (props) => {
             </IconButton>
           )
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title={props.name}
+        subheader={`${props.dateCreated} giờ trước`}
       />
       <CardMedia
         component="img"
         className="h-[200px] md:h-[400px] object-cover"
-        image="https://i.pinimg.com/474x/40/7d/79/407d797f82571cb5cb1f13b9665afe0a.jpg"
+        image={props.image}
         alt="Paella dish"
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
+          {props.content}
         </Typography>
       </CardContent>
       <div className="px-4 flex justify-between items-center w-full">
@@ -155,6 +155,38 @@ const PostContainer = (props) => {
               />
             );
           })}
+        <CardContent>
+          <div className="flex gap-4 w-full">
+            <Avatar
+              alt="Remy Sharp"
+              src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
+            />
+            <div className="flex flex-col w-full gap-2">
+              <Textarea
+                placeholder="Viết bình luận…"
+                minRows={1}
+                className="outline-none text-justify"
+                variant="soft"
+                endDecorator={
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "var(--Textarea-paddingBlock)",
+                      pt: "var(--Textarea-paddingBlock)",
+                      borderTop: "1px solid",
+                      borderColor: "divider",
+                      flex: "auto",
+                    }}
+                  >
+                    <Button sx={{ ml: "auto" }}>
+                      <SendIcon />
+                    </Button>
+                  </Box>
+                }
+              />
+            </div>
+          </div>
+        </CardContent>
       </Collapse>
     </Card>
   );

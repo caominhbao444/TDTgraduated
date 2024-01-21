@@ -25,7 +25,7 @@ const Comment = (props) => {
     };
   }, []);
   return (
-    <CardContent className="bg-orange-300 flex">
+    <CardContent className="flex">
       <div className="flex gap-4 w-full">
         <Avatar
           alt="Remy Sharp"
