@@ -21,6 +21,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { API_POST } from "../../fakeApi";
 import PostContainer from "../../components/HomeItems/PostContainer/PostContainer";
+import FirstAside from "../../components/HomeItems/FirstAside/FirstAside";
+import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
 const style = {
   py: 0,
   width: "100%",
@@ -158,8 +160,9 @@ const Home = () => {
             );
           })}
       </main>
-      <aside className="bg-white md:col-span-2 hidden md:flex  sticky top-[58px]  h-[calc(100vh-58px)]">
-        hi
+      <aside className="bg-white md:col-span-2 hidden md:flex flex-col  sticky top-[58px]  h-[calc(100vh-58px)]">
+        <FirstAside />
+        <SecondAside />
       </aside>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle style={{ backgroundColor: "#1877f2" }}>

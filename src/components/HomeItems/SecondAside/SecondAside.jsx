@@ -1,0 +1,42 @@
+import { Avatar } from "@mui/material";
+import CircleIcon from "@mui/icons-material/Circle";
+const SecondAside = () => {
+  const Friend = () => {
+    return (
+      <div className="flex justify-between items-center p-2 cursor-pointer">
+        <div className="flex justify-start items-center gap-2">
+          <Avatar
+            alt="Remy Sharp"
+            src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
+            sx={{ width: 30, height: 30 }}
+          />
+          <span>Cao Minh Bao</span>
+        </div>
+        <div className="flex justify-center items-center">
+          <CircleIcon color="success" sx={{ fontSize: "12px" }} />
+        </div>
+      </div>
+    );
+  };
+  return (
+    <div className="h-[60%] w-full box-border">
+      <header className="uppercase font-[400] text-[15px] h-[10%] flex justify-start items-center box-border p-2">
+        Bạn bè
+      </header>
+      <div className="h-[80%] w-full overflow-y-auto  overflow-x-hidden ">
+        <Friend />
+        <Friend />
+        <Friend />
+        <Friend />
+        <Friend />
+        <Friend />
+        <Friend />
+      </div>
+      <div className="h-[10%] w-full text-white bg-mainColor flex justify-start items-center p-2 sticky bottom-0">
+        Chat
+      </div>
+    </div>
+  );
+};
+
+export default SecondAside;

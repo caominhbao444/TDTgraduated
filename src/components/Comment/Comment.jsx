@@ -1,22 +1,39 @@
 /* eslint-disable react/prop-types */
-import { Avatar, Box, Button, CardContent, Grid } from "@mui/material";
+import {
+  Autocomplete,
+  Avatar,
+  Box,
+  Button,
+  CardContent,
+  Grid,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import Textarea from "@mui/joy/Textarea";
 import SendIcon from "@mui/icons-material/Send";
 import ReplyComment from "../ReplyComment/ReplyComment";
+import Chip from "@mui/material/Chip";
+import ReactDOMServer from "react-dom/server";
 const listReply = [
   { id: 1, id_comment: 1, name: "Duy", content: "Chao Bao", dateCreate: 1 },
   { id: 2, id_comment: 2, name: "Duy", content: "Chao Duy", dateCreate: 1 },
+  {
+    id: 3,
+    id_comment: 1,
+    name: "Duy Bao",
+    content: "Chao Bao 2",
+    dateCreate: 1,
+  },
 ];
 const Comment = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isReplay, setIsReplay] = useState(false);
-  const [isReplay_2, setIsReplay_2] = useState(false);
+
   useEffect(() => {
     const keyDownHandler = (event) => {
       if (event.key === "Escape") {
         event.preventDefault();
         setIsEditing(false);
+        setIsReplay(false);
       }
     };
     document.addEventListener("keydown", keyDownHandler);
@@ -24,6 +41,9 @@ const Comment = (props) => {
       document.removeEventListener("keydown", keyDownHandler);
     };
   }, []);
+  const handleReplay = (isReplay) => {
+    setIsReplay(isReplay);
+  };
   return (
     <CardContent className="flex">
       <div className="flex gap-4 w-full">
@@ -87,7 +107,7 @@ const Comment = (props) => {
             </p>
             <div className="flex gap-3">
               <span
-                onClick={() => setIsReplay(true)}
+                onClick={() => setIsReplay(!isReplay)}
                 style={{
                   color: "gray",
                   fontSize: "14px",
@@ -117,6 +137,7 @@ const Comment = (props) => {
               </span>
             </div>
           </div>
+
           {listReply &&
             listReply.map((reply, index) => {
               if (reply.id_comment === props.id) {
@@ -126,10 +147,50 @@ const Comment = (props) => {
                     name={reply.name}
                     content={reply.content}
                     dateCreate={reply.dateCreate}
+                    isReplay={handleReplay}
                   />
                 );
               }
             })}
+          {isReplay && (
+            <div className="flex gap-4 w-full">
+              <Avatar
+                alt="Remy Sharp"
+                src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
+              />
+              <div className="flex flex-col w-full gap-2">
+                <h4 style={{ margin: 0, textAlign: "left", fontWeight: "500" }}>
+                  Cao Minh Bao
+                </h4>
+
+                <Textarea
+                  placeholder="Viết bình luận…"
+                  minRows={2}
+                  className="outline-none text-justify"
+                  variant="soft"
+                  endDecorator={
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: "var(--Textarea-paddingBlock)",
+                        pt: "var(--Textarea-paddingBlock)",
+                        borderTop: "1px solid",
+                        borderColor: "divider",
+                        flex: "auto",
+                      }}
+                    >
+                      <span className="text-[12px]">
+                        Nhấn ESC để hủy thao tác.
+                      </span>
+                      <Button sx={{ ml: "auto" }}>
+                        <SendIcon />
+                      </Button>
+                    </Box>
+                  }
+                ></Textarea>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </CardContent>

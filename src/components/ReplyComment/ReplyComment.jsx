@@ -20,6 +20,13 @@ const ReplyComment = (props) => {
       document.removeEventListener("keydown", keyDownHandler);
     };
   }, []);
+
+  const sendReplay = () => {
+    setIsReplay_2((prevIsReplay_2) => !prevIsReplay_2);
+    const newReplayStatus = !isReplay_2;
+    console.log("Sending replay status:", newReplayStatus);
+    props.isReplay(newReplayStatus);
+  };
   return (
     <div className="flex gap-4 w-full">
       <Avatar
@@ -77,7 +84,7 @@ const ReplyComment = (props) => {
           </p>
           <div className="flex gap-3">
             <span
-              onClick={() => setIsReplay_2(true)}
+              onClick={sendReplay}
               style={{
                 color: "gray",
                 fontSize: "14px",
