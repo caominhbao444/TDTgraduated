@@ -19,21 +19,16 @@ const SecondAside = () => {
     );
   };
   return (
-    <div className="h-[60%] w-full box-border">
-      <header className="uppercase font-[400] text-[15px] h-[10%] flex justify-start items-center box-border p-2">
-        Bạn bè
+    <div className="h-[100%] w-full box-border">
+      <header className="font-bold bg-mainColor text-white text-[15px] h-[10%] flex justify-start items-center box-border p-2">
+        Trực tuyến
       </header>
-      <div className="h-[80%] w-full overflow-y-auto  overflow-x-hidden ">
+      <div className="h-[90%] w-full overflow-y-auto  overflow-x-hidden scrollbar-thin scrollbar-thumb-transparent no-scrollbar">
         <Friend />
         <Friend />
         <Friend />
         <Friend />
         <Friend />
-        <Friend />
-        <Friend />
-      </div>
-      <div className="h-[10%] w-full text-white bg-mainColor flex justify-start items-center p-2 sticky bottom-0">
-        Chat
       </div>
     </div>
   );

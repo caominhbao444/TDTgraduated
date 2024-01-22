@@ -161,7 +161,6 @@ const Home = () => {
           })}
       </main>
       <aside className="bg-white md:col-span-2 hidden md:flex flex-col  sticky top-[58px]  h-[calc(100vh-58px)]">
-        <FirstAside />
         <SecondAside />
       </aside>
       <Dialog open={open} onClose={handleClose}>
