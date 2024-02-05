@@ -1,9 +1,13 @@
 import { Avatar } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
+import { Link } from "react-router-dom";
 const SecondAside = () => {
   const Friend = () => {
     return (
-      <div className="flex justify-between items-center p-2 cursor-pointer">
+      <Link
+        to="/message"
+        className="flex justify-between items-center p-2 cursor-pointer"
+      >
         <div className="flex justify-start items-center gap-2">
           <Avatar
             alt="Remy Sharp"
@@ -15,7 +19,7 @@ const SecondAside = () => {
         <div className="flex justify-center items-center">
           <CircleIcon color="success" sx={{ fontSize: "12px" }} />
         </div>
-      </div>
+      </Link>
     );
   };
   return (
