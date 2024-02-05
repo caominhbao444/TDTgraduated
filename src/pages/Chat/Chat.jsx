@@ -5,7 +5,7 @@ import ChatList from "../../components/ChatList/ChatList";
 const Chat = () => {
   const [selected, setSelected] = useState(false);
   return (
-    <div className="w-full h-screen bg-green-500 flex">
+    <div className="w-full h-screen flex">
       <ChatList
         className={`w-full ${
           selected ? "hidden" : "block"
