@@ -6,7 +6,7 @@ const ChatListHeader = () => {
     navigate("/home");
   };
   return (
-    <div className=" px-4 py-2 flex gap-2 justify-start items-center h-[58px]">
+    <div className="px-4 py-2 flex gap-2 justify-start items-center h-[58px]">
       <KeyboardReturnIcon
         fontSize="small"
         className="cursor-pointer"

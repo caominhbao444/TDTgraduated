@@ -8,7 +8,7 @@ const ChatList = (props) => {
     <div className={props.className}>
       <ChatListHeader />
       <ChatListSearch />
-      <ChatListConversation />
+      <ChatListConversation handleClicked={props.handleClicked} />
     </div>
   );
 };

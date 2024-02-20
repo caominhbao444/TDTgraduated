@@ -1,9 +1,11 @@
 import { Avatar } from "@mui/material";
-import React from "react";
 
-const ChatItem = () => {
+const ChatItem = (props) => {
   return (
-    <div className="w-full bg-white hover:bg-slate-200 cursor-pointer py-2 px-1 flex gap-2 justify-start items-center">
+    <div
+      className="w-full bg-white hover:bg-slate-200 cursor-pointer py-2 px-1 flex gap-2 justify-start items-center"
+      onClick={() => props.handleClicked(true)}
+    >
       <Avatar
         alt="Remy Sharp"
         src="https://mui.com/static/images/avatar/1.jpg"
