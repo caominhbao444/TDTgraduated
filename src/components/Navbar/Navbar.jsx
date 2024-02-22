@@ -32,9 +32,11 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [Urlimg, setUrlimg] = useState(
     "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
@@ -209,7 +211,11 @@ const Navbar = () => {
         </div>
         <div className="flex gap-2 md:gap-4 justify-center items-center">
           <Badge color="secondary" variant="dot">
-            <MailOutlinedIcon size="small" />
+            <MailOutlinedIcon
+              size="small"
+              className="cursor-pointer"
+              onClick={() => navigate("/message")}
+            />
           </Badge>
           <Badge color="secondary" variant="dot">
             <NotificationsNoneIcon size="small" />
