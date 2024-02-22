@@ -17,7 +17,7 @@ function App() {
             <Route path="/home" element={<Home />} />
           </Route>
           <Route element={<PrivateArea2 />}>
-            <Route path="/message" element={<Chat />} />
+            <Route path="/message/:id" element={<Chat />} />
           </Route>
         </Routes>
       </BrowserRouter>

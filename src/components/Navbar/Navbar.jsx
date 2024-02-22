@@ -214,7 +214,7 @@ const Navbar = () => {
             <MailOutlinedIcon
               size="small"
               className="cursor-pointer"
-              onClick={() => navigate("/message")}
+              onClick={() => navigate(`/message/${1}`)}
             />
           </Badge>
           <Badge color="secondary" variant="dot">

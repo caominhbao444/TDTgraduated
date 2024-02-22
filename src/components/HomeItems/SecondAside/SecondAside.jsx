@@ -5,7 +5,7 @@ const SecondAside = () => {
   const Friend = () => {
     return (
       <Link
-        to="/message"
+        to={`/message/${1}`}
         className="flex justify-between items-center p-2 cursor-pointer"
       >
         <div className="flex justify-start items-center gap-2">

@@ -22,6 +22,9 @@ const ChatBoxHeader = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleDelete = () => {
+    setOpen(false);
+  };
   return (
     <>
       <div className="px-4 py-2 flex gap-2 justify-between items-center h-[58px] bg-white border-l">
