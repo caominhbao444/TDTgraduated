@@ -24,7 +24,7 @@ const SecondAside = () => {
   };
   return (
     <div className="h-[100%] w-full box-border">
-      <header className="font-bold bg-mainColor text-white text-[15px] h-[10%] flex justify-start items-center box-border p-2">
+      <header className="font-bold bg-mainColor text-white text-[16px] flex justify-start items-center box-border p-2">
         Trực tuyến
       </header>
       <div className="h-[90%] w-full overflow-y-auto  overflow-x-hidden scrollbar-thin scrollbar-thumb-transparent no-scrollbar">

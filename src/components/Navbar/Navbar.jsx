@@ -32,7 +32,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -191,9 +191,12 @@ const Navbar = () => {
               {list("left")}
             </Drawer>
           </div>
-          <span className="font-bold text-[16px] md:mr-4 md:text-[20px] text-mainColor">
+          <Link
+            to="/home"
+            className="font-bold text-[16px] md:mr-4 md:text-[20px] text-mainColor"
+          >
             TDTUGrad
-          </span>
+          </Link>
           <div className="hidden md:block">
             <TextField
               id="search"

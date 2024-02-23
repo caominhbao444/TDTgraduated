@@ -12,9 +12,14 @@ import {
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 const ChatBoxHeader = (props) => {
   const [open, setOpen] = useState(false);
+  const [isParam, setIsParam] = useState(false);
+  const navigate = useNavigate();
+  // const { id } = useParams();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -24,7 +29,17 @@ const ChatBoxHeader = (props) => {
   };
   const handleDelete = () => {
     setOpen(false);
+    navigate("/message");
+    props.handleParam(false);
+    props.handleClicked(false);
   };
+  useEffect(() => {
+    if (props.id) {
+      setIsParam(true);
+    } else {
+      setIsParam(false);
+    }
+  }, [props.id]);
   return (
     <>
       <div className="px-4 py-2 flex gap-2 justify-between items-center h-[58px] bg-white border-l">
@@ -36,24 +51,33 @@ const ChatBoxHeader = (props) => {
               onClick={() => props.handleBack(false)}
             />
           </div>
-          <Avatar
-            alt="Remy Sharp"
-            src="https://mui.com/static/images/avatar/1.jpg"
-            sx={{ width: 30, height: 30 }}
-          />
-          {/* <Skeleton variant="circular" width={30} height={30} /> */}
-          <div className="flex flex-col gap justify-center">
-            <h3 className="text-[14px] font-bold">Cao Minh Bảo</h3>
-            <span className="text-[13px]">Online</span>
-          </div>
+          {isParam ? (
+            <>
+              <Avatar
+                alt="Remy Sharp"
+                src="https://mui.com/static/images/avatar/1.jpg"
+                sx={{ width: 30, height: 30 }}
+              />
+              <div className="flex flex-col gap justify-center">
+                <h3 className="text-[14px] font-bold">Cao Minh Bảo</h3>
+                <span className="text-[13px]">Online</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <Skeleton variant="circular" width={30} height={30} />
+            </>
+          )}
         </div>
-        <IconButton
-          aria-label="settings"
-          className="relative"
-          onClick={handleClickOpen}
-        >
-          <DeleteIcon />
-        </IconButton>
+        {isParam && (
+          <IconButton
+            aria-label="settings"
+            className="relative"
+            onClick={handleClickOpen}
+          >
+            <DeleteIcon />
+          </IconButton>
+        )}
       </div>
       <Dialog
         open={open}
@@ -71,7 +95,7 @@ const ChatBoxHeader = (props) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Hủy</Button>
-          <Button onClick={handleClose}>Xóa</Button>
+          <Button onClick={handleDelete}>Xóa</Button>
         </DialogActions>
       </Dialog>
     </>

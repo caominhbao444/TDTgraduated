@@ -23,6 +23,7 @@ import { API_POST } from "../../fakeApi";
 import PostContainer from "../../components/HomeItems/PostContainer/PostContainer";
 import FirstAside from "../../components/HomeItems/FirstAside/FirstAside";
 import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
+import { useNavigate } from "react-router-dom";
 const style = {
   py: 0,
   width: "100%",
@@ -37,7 +38,7 @@ const Home = () => {
   );
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleOpenPost = () => {
     setOpen(true);
   };
@@ -122,21 +123,24 @@ const Home = () => {
             <ListItemText primary="Trang chủ" />
           </ListItem>
           <Divider component="li" />
-          <ListItem>
+          <ListItem
+            className="hover:cursor-pointer"
+            onClick={() => navigate("/friends")}
+          >
             <ListItemIcon className="flex justify-center">
               <GroupOutlinedIcon />
             </ListItemIcon>
             <ListItemText primary="Bạn bè" />
           </ListItem>
           <Divider component="li" />
-          <ListItem>
+          <ListItem className="hover:cursor-pointer">
             <ListItemIcon className="flex justify-center">
               <CalendarMonthOutlinedIcon />
             </ListItemIcon>
             <ListItemText primary="Sự kiện" />
           </ListItem>
           <Divider component="li" />
-          <ListItem>
+          <ListItem className="hover:cursor-pointer">
             <ListItemIcon className="flex justify-center">
               <GroupsOutlinedIcon />
             </ListItemIcon>
