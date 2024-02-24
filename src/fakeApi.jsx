@@ -43,4 +43,28 @@ export const API_MESSAGES = [
     img_avatar:
       "https://images.unsplash.com/photo-1707327259268-2741b50ef5e5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwzMXx8fGVufDB8fHx8fA%3D%3D",
   },
+  {
+    id: 4,
+    name: "Dang Dang Duy",
+    img_avatar:
+      "https://images.unsplash.com/photo-1707249696459-9f7acb0df492?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyM3x8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    id: 5,
+    name: "Cao Minh Bao 2",
+    img_avatar:
+      "https://images.unsplash.com/photo-1707327259268-2741b50ef5e5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwzMXx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    id: 6,
+    name: "Dang Dang Duy",
+    img_avatar:
+      "https://images.unsplash.com/photo-1707249696459-9f7acb0df492?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyM3x8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    id: 7,
+    name: "Cao Minh Bao 2",
+    img_avatar:
+      "https://images.unsplash.com/photo-1707327259268-2741b50ef5e5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwzMXx8fGVufDB8fHx8fA%3D%3D",
+  },
 ];

@@ -81,7 +81,24 @@ const Navbar = () => {
         {["Đăng bài", "Trang chủ", "Bạn bè", "Sự kiện", "Cộng đồng"].map(
           (text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton onClick={index === 0 && handleOpenPost}>
+              <ListItemButton
+                // onClick={index === 0 && handleOpenPost}
+                onClick={() => {
+                  switch (index) {
+                    case 0:
+                      handleOpenPost();
+                      break;
+                    case 1:
+                      navigate("/home");
+                      break;
+                    case 2:
+                      navigate("/friends");
+                      break;
+                    default:
+                    // Xử lý trường hợp mặc định (nếu cần)
+                  }
+                }}
+              >
                 <ListItemIcon>
                   {index === 0 && <CreateOutlinedIcon />}
                   {index === 1 && <HomeOutlinedIcon />}
@@ -270,7 +287,12 @@ const Navbar = () => {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            <MenuItem onClick={handleClose}>
+            <MenuItem
+              onClick={() => {
+                setAnchorEl(null);
+                navigate("/detail");
+              }}
+            >
               <ListItemIcon>
                 <Person fontSize="small" />
               </ListItemIcon>

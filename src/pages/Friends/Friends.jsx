@@ -1,14 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
-import { Card } from "@mui/material";
-
+import { Card, Switch } from "@mui/material";
+import FriendCard from "../../components/FriendItem/FriendCard";
+import { API_MESSAGES } from "../../fakeApi";
 const Friends = () => {
+  const [checked, setChecked] = useState(false);
+  const handleChange = () => {
+    setChecked(!checked);
+  };
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7] ">
       <main className="md:col-span-7 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px] md:pl-8">
         <Card className="w-full h-full bg-white">
-          <div className="font-bold text-[16px] p-2 border-b">Bạn bè</div>
-          <div></div>
+          <div className="px-3 py-2 border-b flex justify-between items-center">
+            <h3 className="font-bold text-[18px]">Bạn bè</h3>
+            <div className="flex gap-1 items-center">
+              <Switch
+                checked={checked}
+                onChange={handleChange}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+              <span className="text-[14px] font-semibold">
+                Xếp theo thời gian
+              </span>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
+            {API_MESSAGES.map((friend) => {
+              return (
+                <FriendCard
+                  key={friend.id}
+                  avatar={friend.img_avatar}
+                  name={friend.name}
+                />
+              );
+            })}
+          </div>
         </Card>
       </main>
       <aside className="bg-white md:col-span-2 hidden md:flex flex-col  sticky top-[58px]  h-[calc(100vh-58px)]">

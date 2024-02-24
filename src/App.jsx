@@ -7,6 +7,7 @@ import Home from "./pages/Home/Home";
 import PrivateArea2 from "./components/PrivateArea/PrivateArea2";
 import Chat from "./pages/Chat/Chat";
 import Friends from "./pages/Friends/Friends";
+import Detail from "./pages/Detail/Detail";
 function App() {
   return (
     <>
@@ -16,6 +17,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route element={<PrivateArea />}>
             <Route path="/home" element={<Home />} />
+            <Route path="/detail" element={<Detail />} />
             <Route path="/friends" element={<Friends />} />
           </Route>
           <Route element={<PrivateArea2 />}>
