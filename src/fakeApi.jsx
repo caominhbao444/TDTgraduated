@@ -68,3 +68,21 @@ export const API_MESSAGES = [
       "https://images.unsplash.com/photo-1707327259268-2741b50ef5e5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwzMXx8fGVufDB8fHx8fA%3D%3D",
   },
 ];
+export const API_FACULTY = [
+  { id: 1, name: "Khoa công nghệ thông tin" },
+  { id: 2, name: "Khoa dược" },
+  { id: 3, name: "Khoa điện - điện tử" },
+  { id: 4, name: "Khoa kế toán" },
+  { id: 5, name: "Khoa khoa học thể thao" },
+  { id: 6, name: "Khoa khoa học ứng dụng" },
+  { id: 7, name: "Khoa khoa học xã hội và nhân văn" },
+  { id: 8, name: "Khoa kỹ thuật công trình" },
+  { id: 9, name: "Khoa lao động và công đoàn" },
+  { id: 10, name: "Khoa luật" },
+  { id: 11, name: "Khoa môi trường và bảo hộ lao động" },
+  { id: 12, name: "Khoa mỹ thuật công nghiệp" },
+  { id: 13, name: "Khoa ngoại ngữ" },
+  { id: 14, name: "Khoa quản trị kinh doanh" },
+  { id: 15, name: "Khoa tài chính - ngân hàng" },
+  { id: 16, name: "Khoa toán - thống kê" },
+];

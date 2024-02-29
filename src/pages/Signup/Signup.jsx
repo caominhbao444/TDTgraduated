@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
+import { API_FACULTY } from "../../fakeApi";
 import SignupImg from "../../assets/signup.png";
 import Button from "../../components/Button/Button";
 import { IconButton, InputAdornment, MenuItem, TextField } from "@mui/material";
@@ -10,6 +11,9 @@ import { Form, Formik, useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 const validationSchema = yup.object({
+  fullname: yup
+    .string("Vui lòng nhập trường ngày")
+    .required("Vui lòng nhập trường này"),
   username: yup
     .string("Vui lòng nhập tên đăng nhập.")
     .required("Vui lòng nhập trường này."),
@@ -32,6 +36,9 @@ const validationSchemaTwo = yup.object({
   country: yup
     .string("Vui lòng nhập trường.")
     .required("Vui lòng nhập trường này."),
+  faculty: yup
+    .string("Vui lòng nhập trường.")
+    .required("Vui lòng nhập trường này."),
   course: yup
     .string("Vui lòng nhập trường.")
     .required("Vui lòng nhập trường này."),
@@ -39,12 +46,14 @@ const validationSchemaTwo = yup.object({
 
 const Signup = () => {
   const [data, setData] = useState({
+    fullname: "",
     email: "",
     username: "",
     password: "",
     gender: "",
     country: "",
     course: "",
+    faculty: "",
   });
   const [currentStep, setCurrentStep] = useState(0);
   const [listCity, setListCity] = useState("");
@@ -104,6 +113,7 @@ const Signup = () => {
       data={data}
       listCity={listCity}
       listCourse={listCourse}
+      listFaculty={API_FACULTY}
     />,
   ];
   return (
@@ -163,6 +173,22 @@ const StepOne = (props) => {
           Hãy nhập thông tin cá nhân của bạn để chúng tôi có thể tạo tài khoản
           cho bạn một cách chính xác
         </h3>
+        <div className="w-[70%] flex flex-col gap-1">
+          <TextField
+            label="Họ và tên"
+            id="fullname"
+            variant="filled"
+            size="small"
+            className="w-full"
+            autoComplete="off"
+            name="fullname"
+            value={formik.values.fullname}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.fullname && Boolean(formik.errors.fullname)}
+            helperText={formik.touched.fullname && formik.errors.fullname}
+          />
+        </div>
         <div className="w-[70%] flex flex-col gap-1">
           <TextField
             label="Tên đăng nhập"
@@ -300,6 +326,34 @@ const StepTwo = (props) => {
             ) : (
               <MenuItem value="" disabled>
                 Đang tải danh sách thành phố.
+              </MenuItem>
+            )}
+          </TextField>
+        </div>
+        <div className="w-[70%] flex flex-col gap-1">
+          <TextField
+            id="faculty"
+            label="Khoa"
+            name="faculty"
+            autoComplete="off"
+            value={formik.values.faculty}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.faculty && Boolean(formik.errors.faculty)}
+            helperText={formik.touched.faculty && formik.errors.faculty}
+            select
+          >
+            {props.listFaculty ? (
+              props.listFaculty.map((item) => {
+                return (
+                  <MenuItem value={item.name} key={item.id}>
+                    {item.name}
+                  </MenuItem>
+                );
+              })
+            ) : (
+              <MenuItem value="" disabled>
+                Đang tải danh sách khoa.
               </MenuItem>
             )}
           </TextField>
