@@ -5,14 +5,27 @@ import {
   Dialog,
   Divider,
   IconButton,
+  ImageList,
+  ImageListItem,
   Skeleton,
+  Switch,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
 import PostContainer from "../HomeItems/PostContainer/PostContainer";
-import EmojiPicker from "emoji-picker-react";
+import { API_MESSAGES, API_POST } from "../../fakeApi";
+import FriendCard from "../FriendItem/FriendCard";
+import { useNavigate } from "react-router-dom";
 const Body = (props) => {
   const [isEdit, setIsEdit] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const navigate = useNavigate();
+  const handleChange = () => {
+    setChecked(!checked);
+  };
+  const handleNavigate = (id) => {
+    navigate(`/post/${id}`);
+  };
   return (
     <div className=" bg-white w-full flex justify-center items-start">
       {props.activeTab === 0 && (
@@ -148,177 +161,83 @@ const Body = (props) => {
           </div>
         </div>
       )}
-      <div className="flex flex-col w-full p-5 md:gap-3 gap-2">
-        <Card className="w-full ">
-          <CardHeader
-            avatar={
-              loading ? (
-                <Skeleton
-                  animation="wave"
-                  variant="circular"
-                  width={40}
-                  height={40}
+      {props.activeTab === 1 && (
+        <div className="flex flex-col w-full md:p-10 md:gap-3 gap-3">
+          {API_POST &&
+            API_POST.map((post, index) => {
+              return (
+                <PostContainer
+                  key={index}
+                  name={post.user.name}
+                  user_avatar={post.user.image_avatar}
+                  image={post.image}
+                  content={post.content}
+                  dateCreated={post.dateCreated}
                 />
-              ) : (
-                <Avatar alt="Ted talk" src={props.user_avatar} />
-              )
-            }
-            action={
-              loading ? null : (
-                <IconButton aria-label="settings" className="relative">
-                  <MoreVertOutlinedIcon onClick={() => setIsEdit(!isEdit)} />
-                  {isEdit && (
-                    <div className="absolute top-[110%] right-0 text-center w-[100px] border bg-white border-textLightColor flex flex-col">
-                      <div
-                        className="w-full py-2 text-[14px]"
-                        onClick={() => alert("hi")}
-                      >
-                        Chỉnh sửa
-                      </div>
-                      <Divider />
-                      <div className="w-full py-2 text-[14px]">Xóa</div>
-                    </div>
-                  )}
-                </IconButton>
-              )
-            }
-            title={props.name}
-            subheader={`${props.dateCreated} giờ trước`}
-          />
-          <CardMedia
-            component="img"
-            className="h-[200px] md:h-[400px] object-cover"
-            image={props.image}
-            alt="Paella dish"
-          />
-          <CardContent>
-            <Typography variant="body2" color="text.secondary">
-              {props.content}
-            </Typography>
-          </CardContent>
-          <div className="px-4 flex justify-between items-center w-full">
-            <div className="flex items-center gap-1">
-              <ThumbUpIcon className="text-mainColor" />
-              <AvatarGroup
-                componentsProps={{
-                  additionalAvatar: {
-                    sx: {
-                      height: 20,
-                      width: 20,
-                      background: "red",
-                      fontSize: 10,
-                      marginLeft: 20,
-                    },
-                  },
-                }}
-                spacing={"medium"}
-                max={2}
-              >
-                <Avatar
-                  sx={{ width: 20, height: 20, fontSize: 10 }}
-                  alt="Remy Sharp"
-                  src="https://i.pinimg.com/474x/35/db/aa/35dbaad6b34e438680b40668bc86942d.jpg"
+              );
+            })}
+        </div>
+      )}
+      {props.activeTab === 2 && (
+        <div className="flex flex-col w-full p-5">
+          <Card className="w-full h-full bg-white">
+            <div className="px-3 py-2 border-b flex justify-between items-center">
+              <h3 className="font-bold text-[18px]">Bạn bè</h3>
+              <div className="flex gap-1 items-center">
+                <Switch
+                  checked={checked}
+                  onChange={handleChange}
+                  inputProps={{ "aria-label": "controlled" }}
                 />
-                <Avatar
-                  sx={{ width: 20, height: 20, fontSize: 10 }}
-                  alt="Remy Sharp"
-                  src="https://i.pinimg.com/474x/35/db/aa/35dbaad6b34e438680b40668bc86942d.jpg"
-                />{" "}
-                <Avatar
-                  sx={{ width: 20, height: 20, fontSize: 10 }}
-                  alt="Remy Sharp"
-                  src="https://i.pinimg.com/474x/35/db/aa/35dbaad6b34e438680b40668bc86942d.jpg"
-                />
-              </AvatarGroup>
+                <span className="text-[14px] font-semibold">
+                  Xếp theo thời gian
+                </span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <span>100 bình luận</span>
-            </div>
-          </div>
-
-          <CardActions className="flex justify-between w-full p-0 border mt-4">
-            <button className="w-1/2 flex justify-center items-center gap-3 md:py-1">
-              <ThumbUpIcon className="text-textLightColor " fontSize="small" />
-              <span className="font-medium text-[12px] md:text-[15px]">
-                Thích
-              </span>
-            </button>
-            <Divider orientation="vertical" variant="middle" flexItem />
-            <button
-              className="w-1/2 flex justify-center items-center gap-3 md:py-1"
-              onClick={handleExpandClick}
-            >
-              <ModeCommentIcon
-                className="text-textLightColor "
-                fontSize="small"
-              />
-              <span className="font-medium text-[12px] md:text-[15px]">
-                Bình luận
-              </span>
-            </button>
-          </CardActions>
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
-            {listComment &&
-              listComment.map((comment, index) => {
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
+              {API_MESSAGES.map((friend) => {
                 return (
-                  <Comment
-                    key={index}
-                    name={comment.name}
-                    content={comment.content}
-                    dateCreate={comment.dateCreate}
-                    id={comment.id}
+                  <FriendCard
+                    key={friend.id}
+                    avatar={friend.img_avatar}
+                    name={friend.name}
                   />
                 );
               })}
-            <CardContent>
-              <div className="flex gap-4 w-full">
-                <Avatar
-                  alt="Remy Sharp"
-                  src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
-                />
-                <div className="flex flex-col w-full gap-2">
-                  <Textarea
-                    placeholder="Viết bình luận…"
-                    minRows={1}
-                    className="outline-none text-justify"
-                    variant="soft"
-                    value={textComment}
-                    onChange={(e) => setTextComment(e.target.value)}
-                    endDecorator={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: "var(--Textarea-paddingBlock)",
-                          pt: "var(--Textarea-paddingBlock)",
-                          borderTop: "1px solid",
-                          borderColor: "divider",
-                          flex: "auto",
-                        }}
-                      >
-                        <Button onClick={() => setOpen(!open)}>
-                          <MoodIcon />
-                        </Button>
-                        <Button sx={{ ml: "auto" }}>
-                          <SendIcon />
-                        </Button>
-                      </Box>
-                    }
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Collapse>
-        </Card>
-        <Dialog open={open} onClose={handleClose}>
-          <EmojiPicker
-            skinTonesDisabled={true}
-            searchDisabled={true}
-            previewConfig={{ showPreview: false }}
-            size="16"
-            onEmojiClick={onEmojiClick}
-          />
-        </Dialog>
-      </div>
+            </div>
+          </Card>
+        </div>
+      )}
+      {props.activeTab === 3 && (
+        <div className="w-full p-5">
+          <ImageList
+            gap={20}
+            sx={{
+              md: 8,
+              gridTemplateColumns:
+                "repeat(auto-fill,minmax(280px,1fr))!important",
+            }}
+          >
+            {API_POST.map((item, index) => {
+              return (
+                <Card key={index}>
+                  <ImageListItem
+                    onClick={() => handleNavigate(item.id)}
+                    sx={{ height: "200px !important" }}
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.image}
+                      loading="lazy"
+                      style={{ cursor: "pointer" }}
+                    />
+                  </ImageListItem>
+                </Card>
+              );
+            })}
+          </ImageList>
+        </div>
+      )}
     </div>
   );
 };

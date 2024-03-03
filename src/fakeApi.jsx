@@ -23,6 +23,18 @@ export const API_POST = [
     content: "Hom nay la thu ba",
     dateCreated: 1,
   },
+  {
+    id: 3,
+    user: {
+      name: "Dang Dang Duy",
+      image_avatar:
+        "https://i.pinimg.com/474x/40/7d/79/407d797f82571cb5cb1f13b9665afe0a.jpg",
+    },
+    image:
+      "https://images.unsplash.com/photo-1706480883977-355f55e39342?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw4fHx8ZW58MHx8fHx8",
+    content: "Hom nay la thu ba",
+    dateCreated: 1,
+  },
 ];
 export const API_MESSAGES = [
   {

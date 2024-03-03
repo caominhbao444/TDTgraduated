@@ -10,7 +10,7 @@ const Detail = () => {
   };
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7]">
-      <main className="md:col-span-7 flex flex-col md:gap-3 gap-1 md:py-4 mt-[42px] md:mt-[58px] md:pl-8">
+      <main className="md:col-span-7 flex flex-col md:gap-3 md:py-4 mt-[42px] md:mt-[58px] md:pl-8">
         <Header handleActiveTab={handleActiveTab} />
         <Body activeTab={activeTab} />
       </main>
