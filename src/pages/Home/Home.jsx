@@ -133,7 +133,10 @@ const Home = () => {
             <ListItemText primary="Bạn bè" />
           </ListItem>
           <Divider component="li" />
-          <ListItem className="hover:cursor-pointer">
+          <ListItem
+            className="hover:cursor-pointer"
+            onClick={() => navigate("/events")}
+          >
             <ListItemIcon className="flex justify-center">
               <CalendarMonthOutlinedIcon />
             </ListItemIcon>

@@ -9,6 +9,7 @@ import Chat from "./pages/Chat/Chat";
 import Friends from "./pages/Friends/Friends";
 import Detail from "./pages/Detail/Detail";
 import Post from "./pages/Post/Post";
+import Event from "./pages/Event/Event";
 function App() {
   return (
     <>
@@ -21,6 +22,7 @@ function App() {
             <Route path="/detail" element={<Detail />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/post/:id" element={<Post />} />
+            <Route path="/events" element={<Event />} />
           </Route>
           <Route element={<PrivateArea2 />}>
             <Route path="/message/:id?" element={<Chat />} />

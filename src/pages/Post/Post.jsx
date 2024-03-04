@@ -1,4 +1,3 @@
-import React from "react";
 import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
 import { Card } from "@mui/material";
 import PostContainer from "../../components/HomeItems/PostContainer/PostContainer";
