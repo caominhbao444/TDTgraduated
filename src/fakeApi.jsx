@@ -98,3 +98,31 @@ export const API_FACULTY = [
   { id: 15, name: "Khoa tài chính - ngân hàng" },
   { id: 16, name: "Khoa toán - thống kê" },
 ];
+export const API_LISTEvents = [
+  {
+    id: 1,
+    name: "Ngày hội chia sẻ kinh nghiệm",
+    image:
+      "https://images.unsplash.com/photo-1682687220640-9d3b11ca30e5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwyMXx8fGVufDB8fHx8fA%3D%3D",
+    organizer: "Cao Minh Bảo",
+    guest_limit: 100,
+    guest_current: 20,
+    date_start: "1/1/2014",
+    date_end: "1/4/2014",
+    desc: "Ngày hội gặp gỡ những người đã tốt nghiệp",
+    event_method: "Online",
+  },
+  {
+    id: 2,
+    name: "Ngày hội chia sẻ kinh nghiệm",
+    image:
+      "https://images.unsplash.com/photo-1709548145082-04d0cde481d4?q=80&w=2066&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    organizer: "Cao Minh Bảo",
+    guest_limit: 100,
+    guest_current: 20,
+    date_start: "1/1/2014",
+    date_end: "1/4/2014",
+    desc: "Ngày hội gặp gỡ những người đã tốt nghiệp",
+    event_method: "Offline",
+  },
+];

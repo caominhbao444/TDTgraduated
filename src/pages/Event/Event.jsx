@@ -1,12 +1,8 @@
 import { useState } from "react";
 import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
-import { Avatar, Divider, MenuItem, Select } from "@mui/material";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { MultiInputDateTimeRangeField } from "@mui/x-date-pickers-pro/MultiInputDateTimeRangeField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CreateEvent from "../../components/Event/CreateEvent";
 import ListEvent from "../../components/Event/ListEvent";
+import MyEvent from "../../components/Event/MyEvent";
 const Event = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [method, setMethod] = useState(0);
@@ -57,6 +53,7 @@ const Event = () => {
           <div className="md:w-4/5 w-full h-full md:p-4">
             {activeTab === 0 && <CreateEvent />}
             {activeTab === 1 && <ListEvent />}
+            {activeTab === 2 && <MyEvent />}
           </div>
         </div>
       </main>

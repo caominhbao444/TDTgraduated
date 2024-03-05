@@ -2,7 +2,7 @@ import { useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { MultiInputDateTimeRangeField } from "@mui/x-date-pickers-pro/MultiInputDateTimeRangeField";
-import { Avatar, Divider, MenuItem, Select } from "@mui/material";
+import { Avatar, MenuItem, Select } from "@mui/material";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 const CreateEvent = () => {
