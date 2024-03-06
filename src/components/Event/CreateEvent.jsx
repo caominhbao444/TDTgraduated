@@ -5,6 +5,7 @@ import { MultiInputDateTimeRangeField } from "@mui/x-date-pickers-pro/MultiInput
 import { Avatar, CircularProgress, MenuItem, Select } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
+import { API_LISTEvents } from "../../fakeApi";
 const CreateEvent = () => {
   const [method, setMethod] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,17 +60,21 @@ const CreateEvent = () => {
     var dateStart = new Date(dateEvent[0].$d);
     var dateEnd = new Date(dateEvent[1].$d);
     const data = {
-      imageUrl: imageUrl,
-      dateEvent: dateEvent,
-      dateStart: dateStart,
-      dateEnd: dateEnd,
+      id: 10,
+      image: imageUrl,
+      // dateEvent: dateEvent,
+      date_start: dateStart,
+      date_end: dateEnd,
       organizer: organizer,
-      nameEvent: nameEvent,
-      method: method,
-      amount: amount,
-      detail: detail,
+      name: nameEvent,
+      event_method: method,
+      guest_current: 0,
+      guest_limit: amount,
+      desc: detail,
     };
-    console.log("Data is", data);
+    const updateArray = [...API_LISTEvents, data];
+    API_LISTEvents.push(data);
+    console.log("Data is", API_LISTEvents);
   };
   return (
     <div className="h-full w-full bg-white">

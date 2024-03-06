@@ -37,68 +37,11 @@ import {
   MonthlyNav,
   DefaultMonthlyEventItem,
 } from "@zach.codes/react-calendar";
-const meetings = [
-  {
-    id: 1,
-    name: "Leslie Alexander",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2024-05-11T13:00",
-    endDatetime: "2024-05-11T14:30",
-  },
-  {
-    id: 2,
-    name: "Michael Foster",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2024-05-20T09:00",
-    endDatetime: "2024-05-20T11:30",
-  },
-  {
-    id: 3,
-    name: "Dries Vincent",
-    imageUrl:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-05-20T17:00",
-    endDatetime: "2022-05-20T18:30",
-  },
-  {
-    id: 4,
-    name: "Leslie Alexander",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-06-09T13:00",
-    endDatetime: "2022-06-09T14:30",
-  },
-  {
-    id: 5,
-    name: "Michael Foster",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-05-13T14:00",
-    endDatetime: "2022-05-13T14:30",
-  },
-  {
-    id: 6,
-    name: "Michael Foster",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2024-03-6T14:00",
-    endDatetime: "2024-05-13T14:30",
-  },
-  {
-    id: 7,
-    name: "Leslie Alexander",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2024-05-11T13:00",
-    endDatetime: "2024-05-11T14:30",
-  },
-];
+import { API_MyEvents } from "../../fakeApi";
 const Meeting = ({ meeting }) => {
   let startDateTime = parseISO(meeting.startDatetime);
   let endDateTime = parseISO(meeting.endDatetime);
-
+  console.log("End date time", endDateTime);
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       <img
@@ -114,7 +57,7 @@ const Meeting = ({ meeting }) => {
           </time>{" "}
           -{" "}
           <time dateTime={meeting.endDatetime}>
-            {format(endDateTime, "h:mm a")}
+            {format(endDateTime, "h:mm a dd/MM")}
           </time>
         </p>
       </div>
@@ -199,7 +142,7 @@ const SecondView = (props) => {
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
 
-  let selectedDayMeetings = meetings.filter((meeting) =>
+  let selectedDayMeetings = API_MyEvents.filter((meeting) =>
     isSameDay(parseISO(meeting.startDatetime), selectedDay)
   );
   return (
@@ -281,7 +224,7 @@ const SecondView = (props) => {
                     </button>
 
                     <div className="w-1 h-1 mx-auto mt-1">
-                      {meetings.some((meeting) =>
+                      {API_MyEvents.some((meeting) =>
                         isSameDay(parseISO(meeting.startDatetime), day)
                       ) && (
                         <div className="w-1 h-1 rounded-full bg-sky-500"></div>
@@ -293,9 +236,9 @@ const SecondView = (props) => {
             </div>
             <section className="mt-12 md:mt-0 md:pl-14">
               <h2 className="font-semibold text-gray-900">
-                Schedule for{" "}
+                Sự kiện trong{" "}
                 <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
-                  {format(selectedDay, "MMM dd, yyy")}
+                  {format(selectedDay, "dd/MM/yyy", { locale: vi })}
                 </time>
               </h2>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
@@ -304,7 +247,7 @@ const SecondView = (props) => {
                     <Meeting meeting={meeting} key={meeting.id} />
                   ))
                 ) : (
-                  <p>No meetings for today.</p>
+                  <p>Không có sự kiện trong ngày.</p>
                 )}
               </ol>
             </section>
