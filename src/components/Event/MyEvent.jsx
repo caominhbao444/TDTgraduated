@@ -2,14 +2,20 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Menu,
   ToggleButton,
   ToggleButtonGroup,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import vi from "date-fns/locale/vi";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ReorderIcon from "@mui/icons-material/Reorder";
-import { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { API_LISTEvents } from "../../fakeApi";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import WestIcon from "@mui/icons-material/West";
@@ -38,6 +44,9 @@ import {
   DefaultMonthlyEventItem,
 } from "@zach.codes/react-calendar";
 import { API_MyEvents } from "../../fakeApi";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { MultiInputDateTimeRangeField } from "@mui/x-date-pickers-pro/MultiInputDateTimeRangeField";
 const Meeting = ({ meeting }) => {
   let startDateTime = parseISO(meeting.startDatetime);
   let endDateTime = parseISO(meeting.endDatetime);
@@ -73,13 +82,53 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 const FirstView = (props) => {
+  const [open, setOpen] = React.useState(false);
+  const [scroll, setScroll] = React.useState("paper");
+  const theme = useTheme();
+  const [dataEdit, setDataEdit] = useState({});
+  const [nameEditEvent, setNameEditEvent] = useState("");
+  const [descEditEvent, setDescEditEvent] = useState("");
+  const [amountEditEvent, setAmountEditEvent] = useState("");
+  const [editDateEvent, setEditDateEvent] = useState([]);
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const handleClickOpen = (data) => () => {
+    setOpen(true);
+    setDataEdit(data);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleEditDate = (newvalue) => {
+    setEditDateEvent(newvalue);
+  };
+  const handleEdit = () => {
+    var dateStart = new Date(editDateEvent[0].$d);
+    var dateEnd = new Date(editDateEvent[1].$d);
+    console.log("Edit data", {
+      name: nameEditEvent,
+      desc: descEditEvent,
+      guest_limit: amountEditEvent,
+      date_start: dateStart,
+      date_end: dateEnd,
+    });
+  };
+  useEffect(() => {
+    setNameEditEvent(dataEdit.name);
+    setDescEditEvent(dataEdit.desc);
+    setAmountEditEvent(dataEdit.guest_limit);
+    setEditDateEvent([
+      new Date(dataEdit.dateEvent[0]),
+      new Date(dataEdit.dateEvent[1]),
+    ]);
+  }, [dataEdit]);
   return (
     <>
       {API_LISTEvents.map((event) => {
         return (
           <div className="border" key={event.id}>
             <img
-              src={event.image}
+              src={event.imageUrl}
               alt=""
               className="w-full h-[200px] object-cover object-center"
             />
@@ -88,7 +137,7 @@ const FirstView = (props) => {
               <p>Người tổ chức: {event.organizer}</p>
               <div className="flex flex-col md:flex-row w-full md:items-center">
                 <p className="w-full md:w-2/3 flex justify-start items-center">
-                  Thời gian: {event.date_start} - {event.date_end}
+                  Thời gian: {event.startDatetime} - {event.endDatetime}
                 </p>
                 <p className="w-full md:w-1/3 flex justify-end items-center">
                   Số lượng: {event.guest_current}/{event.guest_limit}
@@ -111,13 +160,101 @@ const FirstView = (props) => {
               </div>
               <div className="w-full flex justify-end items-center gap-3">
                 <button className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg">
+                  Xóa sự kiện
+                </button>
+                <button className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg">
                   Huỷ tham gia
+                </button>
+                <button
+                  className="px-3 py-2 bg-mainColor text-white hover:bg-white hover:text-mainColor border border-mainColor rounded-lg"
+                  onClick={handleClickOpen(event)}
+                >
+                  Chỉnh sửa
                 </button>
               </div>
             </div>
           </div>
         );
       })}
+      <React.Fragment>
+        <Dialog
+          fullScreen={fullScreen}
+          open={open}
+          onClose={handleClose}
+          scroll="paper"
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          <DialogTitle id="scroll-dialog-title">
+            Chỉnh sửa thông tin sự kiện
+          </DialogTitle>
+          <DialogContent dividers={scroll === "paper"}>
+            <div className=" flex flex-col gap-3">
+              <img
+                src={dataEdit && dataEdit.imageUrl}
+                className="md:w-[500px] h-[200px] w-full object-cover object-center"
+              />
+              <div className="flex flex-col w-full justify-center items-start">
+                <label htmlFor="nameEvent" className="cursor-pointer">
+                  Tên sự kiện
+                </label>
+                <input
+                  id="nameEvent"
+                  value={nameEditEvent}
+                  placeholder={nameEditEvent}
+                  onChange={(e) => setNameEditEvent(e.target.value)}
+                  className="w-full px-2 py-2 outline-none border"
+                />
+              </div>
+              <div className="flex flex-col w-full justify-center items-start">
+                <label htmlFor="desEvent" className="cursor-pointer">
+                  Mô tả sự kiện
+                </label>
+                <textarea
+                  id="desEvent"
+                  className="w-full px-2 py-2 outline-none border resize-none h-[100px] overflow-y-scroll"
+                  value={descEditEvent}
+                  placeholder={descEditEvent}
+                  onChange={(e) => setDescEditEvent(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col w-full justify-center items-start">
+                <label htmlFor="amountEvent" className="cursor-pointer">
+                  Số lượng người tham dự
+                </label>
+                <input
+                  type="number"
+                  id="amountEvent"
+                  className="w-full px-2 py-2 outline-none border"
+                  value={amountEditEvent}
+                  placeholder={amountEditEvent}
+                  onChange={(e) => setAmountEditEvent(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col w-full justify-center items-start">
+                <label htmlFor="dateEvent" className="cursor-pointer">
+                  Thời gian diễn ra sự kiện
+                </label>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <MultiInputDateTimeRangeField
+                    value={editDateEvent}
+                    onChange={handleEditDate}
+                    slotProps={{
+                      textField: ({ position }) => ({
+                        label: position === "start" ? "Bắt đầu" : "Kết thúc",
+                      }),
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <button onClick={handleClose}>Hủy bỏ</button>
+            <button onClick={handleEdit}>Cập nhật</button>
+          </DialogActions>
+        </Dialog>
+      </React.Fragment>
     </>
   );
 };

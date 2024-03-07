@@ -62,7 +62,7 @@ const CreateEvent = () => {
     const data = {
       id: 10,
       image: imageUrl,
-      // dateEvent: dateEvent,
+      dateEvent: dateEvent,
       date_start: dateStart,
       date_end: dateEnd,
       organizer: organizer,

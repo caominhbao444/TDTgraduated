@@ -6,11 +6,14 @@ import { API_LISTEvents } from "../../fakeApi";
 const ListEvent = () => {
   return (
     <div className="h-full w-full bg-white flex flex-col gap-4 md:p-4">
+      <div className="flex justify-between items-center md:p-0 p-4">
+        <h3 className="text-[18px] font-semibold">Danh sách sự kiện</h3>
+      </div>
       {API_LISTEvents.map((event) => {
         return (
           <div className="border" key={event.id}>
             <img
-              src={event.image}
+              src={event.imageUrl}
               alt=""
               className="w-full h-[200px] object-cover object-center"
             />
