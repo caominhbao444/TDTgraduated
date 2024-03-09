@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
 import { Card, Switch } from "@mui/material";
 import FriendCard from "../../components/FriendItem/FriendCard";
 import { API_MESSAGES } from "../../fakeApi";
+import axios from "axios";
 const Friends = () => {
   const [checked, setChecked] = useState(false);
   const handleChange = () => {
     setChecked(!checked);
   };
+  useEffect(() => {
+    axios.get(import.meta.env.VITE_APP_BASE_URL + '/friend-list/' + 1)
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }, [])
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7] ">
       <main className="md:col-span-7 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px] md:pl-8">

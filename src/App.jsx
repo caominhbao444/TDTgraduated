@@ -10,7 +10,28 @@ import Friends from "./pages/Friends/Friends";
 import Detail from "./pages/Detail/Detail";
 import Post from "./pages/Post/Post";
 import Event from "./pages/Event/Event";
+// import { useEffect } from "react";
+// import axios from "axios";
+// import { useDispatch, useSelector } from 'react-redux';
+// import { setUserDetails } from './store/usersSlice';
+
 function App() {
+  // const dispatch = useDispatch()
+  // const userDetail = useSelector((state) => state.user.userDetail);
+
+  // // useEffect(() => {
+  //   if(!userDetail.id) {
+  //     axios.get(import.meta.env.VITE_APP_BASE_URL + '/users/me', {
+  //       headers: {
+  //         Authorization: `Bearer ` + localStorage.getItem('token')
+  //       }
+  //     }).then((res) => {
+  //       dispatch(setUserDetails(res.data))
+  //     }).catch((error) => {
+  //       console.log(error)
+  //     })
+  //   }
+  // // }, [])
   return (
     <>
       <BrowserRouter>

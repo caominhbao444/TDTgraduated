@@ -16,9 +16,13 @@ import PostContainer from "../HomeItems/PostContainer/PostContainer";
 import { API_MESSAGES, API_POST } from "../../fakeApi";
 import FriendCard from "../FriendItem/FriendCard";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
+
 const Body = (props) => {
   const [isEdit, setIsEdit] = useState(false);
   const [checked, setChecked] = useState(false);
+  const userDetail = useSelector((state) => state.user.userDetail);
+
   const navigate = useNavigate();
   const handleChange = () => {
     setChecked(!checked);
@@ -39,7 +43,7 @@ const Body = (props) => {
                 <input className="w-2/3 p-1 outline-none border text-[2vw] md:text-[15px]" />
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  Cao Minh Bảo
+                  { userDetail.fullname }
                 </span>
               )}
               <div onClick={() => setIsEdit(!isEdit)}>
@@ -57,7 +61,7 @@ const Body = (props) => {
                 <input className="w-2/3 p-1 outline-none border text-[2vw] md:text-[15px]" />
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  Cao Minh Bảo
+                  { userDetail.username }
                 </span>
               )}
               <div onClick={() => setIsEdit(!isEdit)}>
@@ -72,7 +76,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                Cao Minh Bảo
+              { userDetail.email }
               </span>
               <div className="hidden">
                 <EditIcon className="h-full w-full" />
@@ -86,7 +90,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                Cao Minh Bảo
+                ***
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -100,7 +104,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                Cao Minh Bảo
+              { userDetail.gender}
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -114,7 +118,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                Cao Minh Bảo
+              { userDetail.country }
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -128,7 +132,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                Cao Minh Bảo
+              { userDetail.faculty }
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -142,7 +146,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                Cao Minh Bảo
+              { userDetail.course }
               </span>
               <div>
                 <EditIcon className="h-full w-full" />

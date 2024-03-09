@@ -4,11 +4,15 @@ import TextField from "@mui/material/TextField";
 import { IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from 'react-redux';
+import { setLogin } from '../../store/usersSlice';
+
 const Login = () => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch()
   const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
@@ -16,7 +20,16 @@ const Login = () => {
   };
   const handleSignin = (e) => {
     e.preventDefault();
-    navigate("/home");
+    axios
+    .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local`, {
+      identifier: username,
+      password: password
+    }).then((res) => {
+      dispatch(setLogin(res.data))
+      navigate("/home");
+    }).catch((error) => {
+      console.log(error)
+    })
   };
   return (
     <div className="bg-mainColor h-screen w-full md:px-8 md:py-14">

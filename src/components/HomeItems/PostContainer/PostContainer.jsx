@@ -26,11 +26,15 @@ import Swal from "sweetalert2";
 import ModeCommentIcon from "@mui/icons-material/ModeComment";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import moment from "moment";
+import 'moment/locale/vi';
 import Comment from "../../Comment/Comment";
 import Textarea from "@mui/joy/Textarea";
 import SendIcon from "@mui/icons-material/Send";
 import EmojiPicker from "emoji-picker-react";
 import MoodIcon from "@mui/icons-material/Mood";
+import { useSelector } from 'react-redux';
+
 const listComment = [
   {
     id: 1,
@@ -48,19 +52,18 @@ const listComment = [
   },
 ];
 const PostContainer = (props) => {
-  // eslint-disable-next-line react/prop-types
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
   const [textComment, setTextComment] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const { loading = false } = props;
+  const userDetail = useSelector((state) => state.user.userDetail);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
   const handleClose = () => {
     setOpen(false);
   };
-
   const onEmojiClick = (e) => {
     const sym = e.unified.split("_");
     const codeArray = [];
@@ -68,6 +71,24 @@ const PostContainer = (props) => {
     let emoji = String.fromCodePoint(...codeArray);
     setTextComment(textComment + emoji);
   };
+  const formatTime = (time) => {
+    const translations = {
+      years: 'năm',
+      months: 'tháng',
+      weeks: 'tuần',
+      days: 'ngày',
+      hours: 'giờ',
+      minutes: 'phút',
+      seconds: 'giây',
+      milliseconds: 'mili giây',
+      ago: 'trước'
+    };
+    const vietnameseTimeIntervalString = time.replace(
+      /\b\w+\b/g,
+      match => translations[match] || match
+    );
+    return vietnameseTimeIntervalString
+  }
   return (
     <>
       <Card className="w-full ">
@@ -81,7 +102,7 @@ const PostContainer = (props) => {
                 height={40}
               />
             ) : (
-              <Avatar alt="Ted talk" src={props.user_avatar} />
+              <Avatar alt="Ted talk" src={props.post.author.image} />
             )
           }
           action={
@@ -103,23 +124,28 @@ const PostContainer = (props) => {
               </IconButton>
             )
           }
-          title={props.name}
-          subheader={`${props.dateCreated} giờ trước`}
+          title={props.post.author.fullname}
+          subheader={`${formatTime(moment(props.post.createdAt).locale('vi').fromNow())}`}
         />
-        <CardMedia
-          component="img"
-          className="h-[200px] md:h-[400px] object-cover"
-          image={props.image}
-          alt="Paella dish"
-        />
+        {
+          props.post.media ? 
+            <CardMedia
+              component="img"
+              className="h-[200px] md:h-[400px] object-cover"
+              image={props.post.media}
+              alt="Paella dish"
+            /> 
+          : null
+        }
+        
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {props.content}
+            {props.post.content}
           </Typography>
         </CardContent>
         <div className="px-4 flex justify-between items-center w-full">
           <div className="flex items-center gap-1">
-            <ThumbUpIcon className="text-mainColor" />
+            <ThumbUpIcon className={props.post.id === userDetail.id ? 'text-mainColor' : 'text-gray-200'} />
             <AvatarGroup
               componentsProps={{
                 additionalAvatar: {
@@ -135,25 +161,20 @@ const PostContainer = (props) => {
               spacing={"medium"}
               max={2}
             >
-              <Avatar
-                sx={{ width: 20, height: 20, fontSize: 10 }}
-                alt="Remy Sharp"
-                src="https://i.pinimg.com/474x/35/db/aa/35dbaad6b34e438680b40668bc86942d.jpg"
-              />
-              <Avatar
-                sx={{ width: 20, height: 20, fontSize: 10 }}
-                alt="Remy Sharp"
-                src="https://i.pinimg.com/474x/35/db/aa/35dbaad6b34e438680b40668bc86942d.jpg"
-              />{" "}
-              <Avatar
-                sx={{ width: 20, height: 20, fontSize: 10 }}
-                alt="Remy Sharp"
-                src="https://i.pinimg.com/474x/35/db/aa/35dbaad6b34e438680b40668bc86942d.jpg"
-              />
+              {
+                props.post.liked ? props.post.liked.map((el) => (
+                  <Avatar
+                    key={el.id}
+                    sx={{ width: 20, height: 20, fontSize: 10 }}
+                    alt="Remy Sharp"
+                    src={el.image}
+                  />
+                )) : null
+              }
             </AvatarGroup>
           </div>
           <div className="flex items-center">
-            <span>100 bình luận</span>
+            <span>{props.post.comments.length}</span><span className="ml-1">Bình luận</span>
           </div>
         </div>
 

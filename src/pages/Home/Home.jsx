@@ -16,7 +16,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_POST } from "../../fakeApi";
@@ -24,6 +24,8 @@ import PostContainer from "../../components/HomeItems/PostContainer/PostContaine
 import FirstAside from "../../components/HomeItems/FirstAside/FirstAside";
 import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
+
 const style = {
   py: 0,
   width: "100%",
@@ -38,7 +40,30 @@ const Home = () => {
   );
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState();
   const navigate = useNavigate();
+  const userDetail = useSelector((state) => state.user.userDetail);
+  console.log(userDetail)
+  useEffect(() => {
+    if(userDetail.id){
+      axios.get(import.meta.env.VITE_APP_BASE_URL + '/posts', {
+        params: {
+          id:  userDetail.id
+        },
+        headers: {
+          Authorization: `Bearer ` + localStorage.getItem('token')
+        }
+      })
+      .then((res) => {
+        console.log(res.data)
+        setPosts(res.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    }
+  }, [userDetail.id])
+
   const handleOpenPost = () => {
     setOpen(true);
   };
@@ -102,9 +127,11 @@ const Home = () => {
       });
     }
   };
+
   const handleCreatePost = () => {
     console.log(imageUrl);
   };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7] ">
       <aside className="hidden md:flex md:flex-col justify-start items-center bg-white  md:col-span-2  sticky top-[58px] h-[calc(100vh-58px)] ">
@@ -153,16 +180,17 @@ const Home = () => {
         </List>
       </aside>
       <main className="md:col-span-5 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px]">
-        {API_POST &&
-          API_POST.map((post, index) => {
+        {posts &&
+          posts.map((post, index) => {
             return (
               <PostContainer
                 key={index}
-                name={post.user.name}
-                user_avatar={post.user.image_avatar}
-                image={post.image}
+                post={post}
+                name={post.author.fullname}
+                user_avatar={post.author.image}
+                image={post.media}
                 content={post.content}
-                dateCreated={post.dateCreated}
+                dateCreated={post.createdAt}
               />
             );
           })}

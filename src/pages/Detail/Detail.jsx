@@ -5,6 +5,7 @@ import Body from "../../components/DetailItems/Body";
 
 const Detail = () => {
   const [activeTab, setActiveTab] = useState(0);
+  
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
   };

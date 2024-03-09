@@ -71,6 +71,17 @@ const Signup = () => {
   }, []);
   const submitForm = (newData) => {
     console.log("Form data: ", newData);
+    axios
+    .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local/register`, {
+      // newData
+    })
+    .then((res) => {
+      console.log(res)
+      // navigate("/home");
+    })
+    .catch((error) => {
+      console.log(error)
+    })
     // let timerInterval;
     // Swal.fire({
     //   title: "Vui lòng chờ trong giây lát!",

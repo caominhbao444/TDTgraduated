@@ -14,6 +14,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import EmailIcon from "@mui/icons-material/Email";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+import { useSelector } from 'react-redux';
 
 const actions = [
   { icon: <GroupAddIcon />, name: "Thêm bạn bè" },
@@ -27,6 +28,8 @@ const Header = (props) => {
     setIsActive(active);
     props.handleActiveTab(active);
   };
+  const userDetail = useSelector((state) => state.user.userDetail);
+  console.log(userDetail)
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -102,7 +105,7 @@ const Header = (props) => {
             className="md:w-[150px] md:h-[150px] w-[20vw] h-[20vw] absolute md:-top-[140px] -top-[19vw] object-cover object-center rounded-[100%] left-1/2 -translate-x-1/2 translate-x"
           />
           <p className="text-center md:text-[14px] text-[2vw] font-semibold whitespace-nowrap">
-            Cao Minh Bao
+              {userDetail.fullname}
           </p>
         </div>
         <div
