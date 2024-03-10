@@ -14,12 +14,12 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import EmailIcon from "@mui/icons-material/Email";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
 const actions = [
-  { icon: <GroupAddIcon />, name: "Thêm bạn bè" },
-  { icon: <EmailIcon />, name: "Nhắn tin" },
-  { icon: <DeleteIcon />, name: "Hủy bạn bè" },
+  { id: 1, icon: <GroupAddIcon />, name: "Thêm bạn bè" },
+  { id: 2, icon: <EmailIcon />, name: "Nhắn tin" },
+  { id: 3, icon: <DeleteIcon />, name: "Hủy bạn bè" },
 ];
 const Header = (props) => {
   const [isActive, setIsActive] = useState(0);
@@ -29,7 +29,6 @@ const Header = (props) => {
     props.handleActiveTab(active);
   };
   const userDetail = useSelector((state) => state.user.userDetail);
-  console.log(userDetail)
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -48,10 +47,14 @@ const Header = (props) => {
         </div>
         {open && (
           <div className="absolute top-3 md:top-[50px] right-12 md:right-6 flex flex-col gap-1 md:gap-2">
-            {actions.map((item, index) => {
+            {actions.map((item) => {
               return (
                 <>
-                  <Tooltip title={item.name} key={index} placement="left-start">
+                  <Tooltip
+                    title={item.name}
+                    key={item.id}
+                    placement="left-start"
+                  >
                     <IconButton sx={{ color: "white" }}>{item.icon}</IconButton>
                   </Tooltip>
                 </>
@@ -105,7 +108,7 @@ const Header = (props) => {
             className="md:w-[150px] md:h-[150px] w-[20vw] h-[20vw] absolute md:-top-[140px] -top-[19vw] object-cover object-center rounded-[100%] left-1/2 -translate-x-1/2 translate-x"
           />
           <p className="text-center md:text-[14px] text-[2vw] font-semibold whitespace-nowrap">
-              {userDetail.fullname}
+            {userDetail.fullname}
           </p>
         </div>
         <div

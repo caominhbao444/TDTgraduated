@@ -27,13 +27,13 @@ import ModeCommentIcon from "@mui/icons-material/ModeComment";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import moment from "moment";
-import 'moment/locale/vi';
+import "moment/locale/vi";
 import Comment from "../../Comment/Comment";
 import Textarea from "@mui/joy/Textarea";
 import SendIcon from "@mui/icons-material/Send";
 import EmojiPicker from "emoji-picker-react";
 import MoodIcon from "@mui/icons-material/Mood";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
 const listComment = [
   {
@@ -73,22 +73,22 @@ const PostContainer = (props) => {
   };
   const formatTime = (time) => {
     const translations = {
-      years: 'năm',
-      months: 'tháng',
-      weeks: 'tuần',
-      days: 'ngày',
-      hours: 'giờ',
-      minutes: 'phút',
-      seconds: 'giây',
-      milliseconds: 'mili giây',
-      ago: 'trước'
+      years: "năm",
+      months: "tháng",
+      weeks: "tuần",
+      days: "ngày",
+      hours: "giờ",
+      minutes: "phút",
+      seconds: "giây",
+      milliseconds: "mili giây",
+      ago: "trước",
     };
     const vietnameseTimeIntervalString = time.replace(
       /\b\w+\b/g,
-      match => translations[match] || match
+      (match) => translations[match] || match
     );
-    return vietnameseTimeIntervalString
-  }
+    return vietnameseTimeIntervalString;
+  };
   return (
     <>
       <Card className="w-full ">
@@ -125,19 +125,19 @@ const PostContainer = (props) => {
             )
           }
           title={props.post.author.fullname}
-          subheader={`${formatTime(moment(props.post.createdAt).locale('vi').fromNow())}`}
+          subheader={`${formatTime(
+            moment(props.post.createdAt).locale("vi").fromNow()
+          )}`}
         />
-        {
-          props.post.media ? 
-            <CardMedia
-              component="img"
-              className="h-[200px] md:h-[400px] object-cover"
-              image={props.post.media}
-              alt="Paella dish"
-            /> 
-          : null
-        }
-        
+        {props.post.media ? (
+          <CardMedia
+            component="img"
+            className="h-[200px] md:h-[400px] object-cover"
+            image={props.post.media}
+            alt="Paella dish"
+          />
+        ) : null}
+
         <CardContent>
           <Typography variant="body2" color="text.secondary">
             {props.post.content}
@@ -145,7 +145,13 @@ const PostContainer = (props) => {
         </CardContent>
         <div className="px-4 flex justify-between items-center w-full">
           <div className="flex items-center gap-1">
-            <ThumbUpIcon className={props.post.id === userDetail.id ? 'text-mainColor' : 'text-gray-200'} />
+            <ThumbUpIcon
+              className={
+                props.post.id === userDetail.id
+                  ? "text-mainColor"
+                  : "text-gray-200"
+              }
+            />
             <AvatarGroup
               componentsProps={{
                 additionalAvatar: {
@@ -161,20 +167,21 @@ const PostContainer = (props) => {
               spacing={"medium"}
               max={2}
             >
-              {
-                props.post.liked ? props.post.liked.map((el) => (
-                  <Avatar
-                    key={el.id}
-                    sx={{ width: 20, height: 20, fontSize: 10 }}
-                    alt="Remy Sharp"
-                    src={el.image}
-                  />
-                )) : null
-              }
+              {props.post.liked
+                ? props.post.liked.map((el) => (
+                    <Avatar
+                      key={el.id}
+                      sx={{ width: 20, height: 20, fontSize: 10 }}
+                      alt="Remy Sharp"
+                      src={el.image}
+                    />
+                  ))
+                : null}
             </AvatarGroup>
           </div>
           <div className="flex items-center">
-            <span>{props.post.comments.length}</span><span className="ml-1">Bình luận</span>
+            <span>{props.post.comments.length}</span>
+            <span className="ml-1">Bình luận</span>
           </div>
         </div>
 

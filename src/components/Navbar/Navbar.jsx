@@ -51,8 +51,10 @@ const Navbar = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
-    localStorage.removeItem('token')
-    navigate("/");
+    // navigate("/");
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
   };
   const [state, setState] = React.useState({
     top: false,
@@ -195,18 +197,22 @@ const Navbar = () => {
   };
   const handleCreatePost = () => {
     axios
-    .post(import.meta.env.VITE_APP_BASE_URL + `/post`, {
-      author: 1,
-      media: Urlimg,
-      content: content
-    })
-    .then((res) => {
-      console.log(res)
-      // navigate("/home");
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+      .post(import.meta.env.VITE_APP_BASE_URL + `/post`, {
+        author: 1,
+        media: Urlimg,
+        content: content,
+      })
+      .then((res) => {
+        console.log(res);
+        // navigate("/home");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleDetail = () => {
+    // setAnchorEl(null);
+    navigate("/detail");
   };
   return (
     <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-10">
@@ -301,18 +307,13 @@ const Navbar = () => {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            <MenuItem
-              onClick={() => {
-                setAnchorEl(null);
-                navigate("/detail");
-              }}
-            >
+            <MenuItem onClick={handleDetail}>
               <ListItemIcon>
                 <Person fontSize="small" />
               </ListItemIcon>
               Trang cá nhân
             </MenuItem>
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>

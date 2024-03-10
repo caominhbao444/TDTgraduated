@@ -11,18 +11,21 @@ import {
   Switch,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PostContainer from "../HomeItems/PostContainer/PostContainer";
 import { API_MESSAGES, API_POST } from "../../fakeApi";
 import FriendCard from "../FriendItem/FriendCard";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
+import { CallApiMyListPosts } from "../../store/postsSlice";
 
 const Body = (props) => {
   const [isEdit, setIsEdit] = useState(false);
   const [checked, setChecked] = useState(false);
+  const authToken = localStorage.getItem("token");
   const userDetail = useSelector((state) => state.user.userDetail);
-
+  const myPost = useSelector((state) => state.post.myPost);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = () => {
     setChecked(!checked);
@@ -30,6 +33,16 @@ const Body = (props) => {
   const handleNavigate = (id) => {
     navigate(`/post/${id}`);
   };
+  useEffect(() => {
+    if (userDetail) {
+      dispatch(
+        CallApiMyListPosts({
+          headers: { authorization: `Bearer ${authToken}` },
+          id: userDetail.id,
+        })
+      );
+    }
+  }, [userDetail, dispatch, authToken]);
   return (
     <div className=" bg-white w-full flex justify-center items-start">
       {props.activeTab === 0 && (
@@ -43,7 +56,7 @@ const Body = (props) => {
                 <input className="w-2/3 p-1 outline-none border text-[2vw] md:text-[15px]" />
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  { userDetail.fullname }
+                  {userDetail.fullname}
                 </span>
               )}
               <div onClick={() => setIsEdit(!isEdit)}>
@@ -61,7 +74,7 @@ const Body = (props) => {
                 <input className="w-2/3 p-1 outline-none border text-[2vw] md:text-[15px]" />
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  { userDetail.username }
+                  {userDetail.username}
                 </span>
               )}
               <div onClick={() => setIsEdit(!isEdit)}>
@@ -76,7 +89,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-              { userDetail.email }
+                {userDetail.email}
               </span>
               <div className="hidden">
                 <EditIcon className="h-full w-full" />
@@ -89,9 +102,7 @@ const Body = (props) => {
               Mật khẩu
             </div>
             <div className="w-1/2 flex justify-between items-center">
-              <span className="text-[2vw] md:text-[15px] font-normal">
-                ***
-              </span>
+              <span className="text-[2vw] md:text-[15px] font-normal">***</span>
               <div>
                 <EditIcon className="h-full w-full" />
               </div>
@@ -104,7 +115,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-              { userDetail.gender}
+                {userDetail.gender}
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -118,7 +129,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-              { userDetail.country }
+                {userDetail.country}
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -132,7 +143,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-              { userDetail.faculty }
+                {userDetail.faculty}
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -146,7 +157,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-              { userDetail.course }
+                {userDetail.course}
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -167,18 +178,9 @@ const Body = (props) => {
       )}
       {props.activeTab === 1 && (
         <div className="flex flex-col w-full md:p-10 md:gap-3 gap-3">
-          {API_POST &&
-            API_POST.map((post, index) => {
-              return (
-                <PostContainer
-                  key={index}
-                  name={post.user.name}
-                  user_avatar={post.user.image_avatar}
-                  image={post.image}
-                  content={post.content}
-                  dateCreated={post.dateCreated}
-                />
-              );
+          {myPost &&
+            myPost.map((post, index) => {
+              return <PostContainer key={index} post={post} />;
             })}
         </div>
       )}
