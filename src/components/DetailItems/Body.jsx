@@ -224,23 +224,24 @@ const Body = (props) => {
                 "repeat(auto-fill,minmax(280px,1fr))!important",
             }}
           >
-            {API_POST.map((item, index) => {
-              return (
-                <Card key={index}>
-                  <ImageListItem
-                    onClick={() => handleNavigate(item.id)}
-                    sx={{ height: "200px !important" }}
-                  >
-                    <img
-                      src={item.image}
-                      alt={item.image}
-                      loading="lazy"
-                      style={{ cursor: "pointer" }}
-                    />
-                  </ImageListItem>
-                </Card>
-              );
-            })}
+            {myPost &&
+              [...myPost].reverse().map((item, index) => {
+                return (
+                  <Card key={index}>
+                    <ImageListItem
+                      onClick={() => handleNavigate(item.id)}
+                      sx={{ height: "200px !important" }}
+                    >
+                      <img
+                        src={item.media}
+                        alt={item.media}
+                        loading="lazy"
+                        style={{ cursor: "pointer" }}
+                      />
+                    </ImageListItem>
+                  </Card>
+                );
+              })}
           </ImageList>
         </div>
       )}

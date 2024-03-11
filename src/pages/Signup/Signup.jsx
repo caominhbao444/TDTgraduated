@@ -4,12 +4,19 @@ import { useEffect, useState } from "react";
 import { API_FACULTY } from "../../fakeApi";
 import SignupImg from "../../assets/signup.png";
 import Button from "../../components/Button/Button";
-import { IconButton, InputAdornment, MenuItem, TextField } from "@mui/material";
+import {
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { Form, Formik, useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const validationSchema = yup.object({
   fullname: yup
     .string("Vui lòng nhập trường ngày")
@@ -43,8 +50,13 @@ const validationSchemaTwo = yup.object({
     .string("Vui lòng nhập trường.")
     .required("Vui lòng nhập trường này."),
 });
-
+const validationSchemaThird = yup.object({
+  image: yup
+    .string("Vui lòng nhập trường.")
+    .required("Vui lòng chọn trường này."),
+});
 const Signup = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     fullname: "",
     email: "",
@@ -54,6 +66,7 @@ const Signup = () => {
     country: "",
     course: "",
     faculty: "",
+    image: "",
   });
   const [currentStep, setCurrentStep] = useState(0);
   const [listCity, setListCity] = useState("");
@@ -65,23 +78,29 @@ const Signup = () => {
     (_, index) => index + 1
   );
   useEffect(() => {
-    axios.get("https://provinces.open-api.vn/api/").then((response) => {
-      setListCity(response.data);
-    });
+    axios
+      .get(
+        "https://vapi.vnappmob.com/api/province/?fbclid=IwAR29lW0N7ZKj5Bm2_Ih5cT6wzihhQFxCPMn20NTwGZkkYwbqTvfTN8o2tX8"
+      )
+      .then((response) => {
+        setListCity(response.data.results);
+      });
   }, []);
+  useEffect(() => {}, [listCity]);
+  console.log("ListCity", listCity);
   const submitForm = (newData) => {
     console.log("Form data: ", newData);
     axios
-    .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local/register`, {
-      // newData
-    })
-    .then((res) => {
-      console.log(res)
-      // navigate("/home");
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+      .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local/register`, {
+        newData,
+      })
+      .then((res) => {
+        console.log(res);
+        navigate("/home");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     // let timerInterval;
     // Swal.fire({
     //   title: "Vui lòng chờ trong giây lát!",
@@ -126,6 +145,7 @@ const Signup = () => {
       listCourse={listCourse}
       listFaculty={API_FACULTY}
     />,
+    <StepThird onSubmit={handleNextStep} prev={handlePreStep} data={data} />,
   ];
   return (
     <>
@@ -274,7 +294,7 @@ const StepOne = (props) => {
 };
 const StepTwo = (props) => {
   const onSubmitFinal = (values) => {
-    props.onSubmit(values, true);
+    props.onSubmit(values);
   };
   const onPrev = () => {
     props.prev(formik.values);
@@ -329,8 +349,8 @@ const StepTwo = (props) => {
             {props.listCity ? (
               props.listCity.map((city) => {
                 return (
-                  <MenuItem value={city.name} key={city.code}>
-                    {city.name}
+                  <MenuItem value={city.province_name} key={city.province_id}>
+                    {city.province_name}
                   </MenuItem>
                 );
               })
@@ -385,7 +405,7 @@ const StepTwo = (props) => {
             {props.listCourse ? (
               props.listCourse.map((course) => {
                 return (
-                  <MenuItem value={course} key={course}>
+                  <MenuItem value={course.toString()} key={course}>
                     Khoá {course}
                   </MenuItem>
                 );
@@ -397,6 +417,127 @@ const StepTwo = (props) => {
             )}
           </TextField>
         </div>
+        <div className="w-[70%] flex justify-between items-center">
+          <Button
+            title="Quay lại"
+            className="px-4 py-2 border border-mainColor rounded bg-white text-mainColor hover:text-mainColor hover:bg-white"
+            type="button"
+            // eslint-disable-next-line react/prop-types
+            onClick={onPrev}
+          />
+          <Button
+            title="Đăng ký"
+            className="px-4 py-2 border border-mainColor rounded bg-mainColor text-white hover:text-mainColor hover:bg-white"
+            type="submit"
+          />
+        </div>
+      </form>
+    </>
+  );
+};
+const StepThird = (props) => {
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(
+    "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
+  );
+  function handleFileChange(event) {
+    setLoading(true);
+    const selectedFile = event.target.files[0];
+    uploadImageToCloudinary(selectedFile)
+      .then((url) => {
+        setLoading(false);
+        setImageUrl(url);
+        formik.setFieldValue("image", url);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error(error);
+      });
+  }
+  function uploadImageToCloudinary(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "pzoe2lzh");
+    return axios
+      .post("https://api.cloudinary.com/v1_1/djhhzmcps/image/upload", formData)
+      .then((response) => {
+        return response.data.url;
+      })
+      .catch((error) => {
+        console.error(error);
+        return null;
+      });
+  }
+  const onSubmitFinal = (values) => {
+    props.onSubmit(values, true);
+  };
+  const onPrev = () => {
+    props.prev(formik.values);
+  };
+  const formik = useFormik({
+    initialValues: props.data,
+    validationSchema: validationSchemaThird,
+    onSubmit: onSubmitFinal,
+  });
+
+  return (
+    <>
+      <form
+        className={`w-full h-full flex flex-col justify-center items-center gap-4 animate-appear-left `}
+        onSubmit={formik.handleSubmit}
+      >
+        <h1 className="text-center text-[20px] font-bold">Đăng ký tài khoản</h1>
+        <h3 className="text-center text-textLightColor text-[16px] px-3">
+          Hãy nhập thông tin cá nhân của bạn để chúng tôi có thể tạo tài khoản
+          cho bạn một cách chính xác
+        </h3>
+        <div className="w-[70%] flex flex-col gap-1 items-center">
+          <div className="w-[40vw] h-[40vw] md:w-[200px] md:h-[200px] rounded-[100%] bg-black relative">
+            {loading ? (
+              <>
+                <img
+                  src={imageUrl}
+                  width="100%"
+                  alt="bag photos"
+                  className="w-full h-full object-cover object-center rounded-[100%]"
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <CircularProgress />
+                </div>
+              </>
+            ) : (
+              <>
+                <img
+                  src={imageUrl}
+                  width="100%"
+                  alt="bag photos"
+                  className="w-full h-full object-cover object-center rounded-[100%] "
+                />
+                <input
+                  onChange={handleFileChange}
+                  type="file"
+                  style={{
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    width: "100%",
+                    height: "100%",
+                    opacity: "0",
+                    cursor: "pointer",
+                  }}
+                />
+              </>
+            )}
+          </div>
+        </div>
+
         <div className="w-[70%] flex justify-between items-center">
           <Button
             title="Quay lại"

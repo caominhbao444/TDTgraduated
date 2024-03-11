@@ -117,10 +117,7 @@ const FirstView = (props) => {
     setNameEditEvent(dataEdit.name);
     setDescEditEvent(dataEdit.desc);
     setAmountEditEvent(dataEdit.guest_limit);
-    setEditDateEvent([
-      new Date(dataEdit.dateEvent[0]),
-      new Date(dataEdit.dateEvent[1]),
-    ]);
+    setEditDateEvent();
   }, [dataEdit]);
   return (
     <>
@@ -250,8 +247,18 @@ const FirstView = (props) => {
             </div>
           </DialogContent>
           <DialogActions>
-            <button onClick={handleClose}>Hủy bỏ</button>
-            <button onClick={handleEdit}>Cập nhật</button>
+            <button
+              onClick={handleClose}
+              className="px-2 py-2 bg-white rounded-md text-mainColor border border-mainColor"
+            >
+              Hủy bỏ
+            </button>
+            <button
+              onClick={handleEdit}
+              className="px-2 py-2 bg-mainColor rounded-md text-white"
+            >
+              Cập nhật
+            </button>
           </DialogActions>
         </Dialog>
       </React.Fragment>

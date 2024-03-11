@@ -82,6 +82,8 @@ const PostContainer = (props) => {
       seconds: "giây",
       milliseconds: "mili giây",
       ago: "trước",
+      an: "Một",
+      hour: "giờ",
     };
     const vietnameseTimeIntervalString = time.replace(
       /\b\w+\b/g,

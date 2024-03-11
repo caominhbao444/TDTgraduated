@@ -23,7 +23,7 @@ import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import SearchIcon from "@mui/icons-material/Search";
 import React, { useState } from "react";
-import { Logout, Person } from "@mui/icons-material";
+import { Lock, Logout, Person } from "@mui/icons-material";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -36,6 +36,8 @@ import { Link, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [openChange, setOpenChange] = React.useState(false);
+
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [Urlimg, setUrlimg] = useState(
@@ -52,6 +54,16 @@ const Navbar = () => {
   const handleClose = () => {
     setAnchorEl(null);
     // navigate("/");
+  };
+  const handleCloseChange = () => {
+    setAnchorEl(null);
+    // navigate("/");
+  };
+  const handleChangePassword = () => {
+    setOpenChange(true);
+  };
+  const handleSubmitChangePassword = () => {
+    console.log("Submit change password");
   };
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -313,6 +325,12 @@ const Navbar = () => {
               </ListItemIcon>
               Trang cá nhân
             </MenuItem>
+            <MenuItem onClick={handleChangePassword}>
+              <ListItemIcon>
+                <Lock fontSize="small" />
+              </ListItemIcon>
+              Đổi mật khẩu
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <Logout fontSize="small" />
@@ -418,6 +436,50 @@ const Navbar = () => {
           </Box>
           <Button
             onClick={handleCreatePost}
+            variant="contained"
+            style={{
+              backgroundColor: "#1877f2",
+              borderRadius: "0",
+              fontWeight: "bold",
+            }}
+            fullWidth
+          >
+            Đăng bài
+          </Button>
+        </div>
+      </Dialog>
+      <Dialog open={openChange} onClose={() => setOpenChange(false)}>
+        <DialogTitle style={{ backgroundColor: "#1877f2" }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <span style={{ fontWeight: "bold", color: "white" }}>
+              Thay đổi mật khẩu
+            </span>
+            <CloseOutlinedIcon
+              name="close-circle-outline"
+              onClick={() => setOpenChange(false)}
+              className="w-[30px] h-[30px] block cursor-pointer border-none z-10 text-white"
+            />
+          </Box>
+        </DialogTitle>
+        <div className="flex flex-col md:justify-around relative p-[20px] gap-[10px]">
+          <div className="w-full flex flex-col gap-1">
+            <label htmlFor="password" className="cursor-pointer">
+              Mật khẩu hiện tại
+            </label>
+            <input id="password" className="outline-none border px-2 py-2" />
+          </div>
+          <div className="w-full flex flex-col gap-1">
+            <label htmlFor="newpassword" className="cursor-pointer">
+              Mật khẩu mới
+            </label>
+            <input id="newpassword" className="outline-none border px-2 py-2" />
+          </div>
+          <Button
+            onClick={handleSubmitChangePassword}
             variant="contained"
             style={{
               backgroundColor: "#1877f2",

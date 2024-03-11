@@ -3,6 +3,7 @@ import axios from "axios";
 
 const initialState = {
   myPost: [],
+  postId: [],
 };
 
 //CallApiMyListPosts
@@ -23,9 +24,26 @@ export const CallApiMyListPosts = createAsyncThunk(
       console.log(err);
     }
   }
-  // return apiUserResponse;
 );
-
+//CallApiPostId
+export const CallApiPostId = createAsyncThunk(
+  "user/callApiPostId",
+  async function ({ headers, id }) {
+    try {
+      const apiPostIdResponse = await axios.get(
+        `http://localhost:1337/api/posts/${id}`,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiPostIdResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 const postsSlice = createSlice({
   name: "post",
   initialState,
@@ -39,6 +57,17 @@ const postsSlice = createSlice({
         state.myPost = action.payload;
       })
       .addCase(CallApiMyListPosts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiPostId.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiPostId.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.postId = action.payload;
+      })
+      .addCase(CallApiPostId.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

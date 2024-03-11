@@ -24,7 +24,7 @@ import PostContainer from "../../components/HomeItems/PostContainer/PostContaine
 import FirstAside from "../../components/HomeItems/FirstAside/FirstAside";
 import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
 const style = {
   py: 0,
@@ -32,9 +32,7 @@ const style = {
 };
 const Home = () => {
   const [open, setOpen] = useState(false);
-  const [Urlimg, setUrlimg] = useState(
-    "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
-  );
+
   const [imageUrl, setImageUrl] = useState(
     "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
   );
@@ -43,26 +41,27 @@ const Home = () => {
   const [posts, setPosts] = useState();
   const navigate = useNavigate();
   const userDetail = useSelector((state) => state.user.userDetail);
-  console.log(userDetail)
+  console.log(userDetail);
   useEffect(() => {
-    if(userDetail.id){
-      axios.get(import.meta.env.VITE_APP_BASE_URL + '/posts', {
-        params: {
-          id:  userDetail.id
-        },
-        headers: {
-          Authorization: `Bearer ` + localStorage.getItem('token')
-        }
-      })
-      .then((res) => {
-        console.log(res.data)
-        setPosts(res.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    if (userDetail.id) {
+      axios
+        .get(import.meta.env.VITE_APP_BASE_URL + "/posts", {
+          params: {
+            id: userDetail.id,
+          },
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          setPosts(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-  }, [userDetail.id])
+  }, [userDetail.id]);
 
   const handleOpenPost = () => {
     setOpen(true);
@@ -83,13 +82,11 @@ const Home = () => {
   function uploadImageToCloudinary(file) {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "pzoe2lzh"); // replace with your Cloudinary upload preset
-
+    formData.append("upload_preset", "pzoe2lzh");
     return axios
       .post("https://api.cloudinary.com/v1_1/djhhzmcps/image/upload", formData)
       .then((response) => {
-        setUrlimg(response.data.url);
-        return response.data.url; // return the URL of the uploaded image
+        return response.data.url;
       })
       .catch((error) => {
         console.error(error);
@@ -119,7 +116,7 @@ const Home = () => {
           setImageUrl(
             "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
           );
-          setContent(""); // clear the content state
+          setContent("");
           Swal.fire("Bỏ", "Bài viết nháp đã được xóa.", "success");
         } else {
           setOpen(true);
@@ -181,7 +178,7 @@ const Home = () => {
       </aside>
       <main className="md:col-span-5 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px]">
         {posts &&
-          posts.map((post, index) => {
+          [...posts].reverse().map((post, index) => {
             return (
               <PostContainer
                 key={index}
