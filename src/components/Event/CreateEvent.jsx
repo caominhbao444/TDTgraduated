@@ -5,7 +5,8 @@ import { MultiInputDateTimeRangeField } from "@mui/x-date-pickers-pro/MultiInput
 import { Avatar, CircularProgress, MenuItem, Select } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
-import { API_LISTEvents } from "../../fakeApi";
+import { useSelector } from "react-redux";
+
 const CreateEvent = () => {
   const [method, setMethod] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,9 @@ const CreateEvent = () => {
   const [dateEvent, setDateEvent] = useState("");
   const [amount, setAmount] = useState(0);
   const [detail, setDetail] = useState("");
+  const authToken = localStorage.getItem("token");
+  const userDetail = useSelector((state) => state.user.userDetail);
+
   function handleFileChange(event) {
     setLoading(true);
     const selectedFile = event.target.files[0];
@@ -59,22 +63,41 @@ const CreateEvent = () => {
     e.preventDefault();
     var dateStart = new Date(dateEvent[0].$d);
     var dateEnd = new Date(dateEvent[1].$d);
-    const data = {
-      id: 10,
-      image: imageUrl,
-      dateEvent: dateEvent,
-      date_start: dateStart,
-      date_end: dateEnd,
-      organizer: organizer,
-      name: nameEvent,
-      event_method: method,
-      guest_current: 0,
-      guest_limit: amount,
-      desc: detail,
-    };
-    const updateArray = [...API_LISTEvents, data];
-    API_LISTEvents.push(data);
-    console.log("Data is", API_LISTEvents);
+    // const data = {
+    //   id: 10,
+    //   image: imageUrl,
+    //   dateEvent: dateEvent,
+    //   date_start: dateStart,
+    //   date_end: dateEnd,
+    //   organizer: organizer,
+    //   name: nameEvent,
+    //   event_method: method,
+    //   guest_current: 0,
+    //   guest_limit: amount,
+    //   desc: detail,
+    // };
+    // const updateArray = [...API_LISTEvents, data];
+    // API_LISTEvents.push(data);
+    // console.log("Data is", API_LISTEvents);
+    axios.post(import.meta.env.VITE_APP_BASE_URL + '/events', 
+    {
+      author: userDetail.id,
+      title: nameEvent,
+      from: dateStart,
+      to: dateEnd,
+      method: method,
+      content: detail,
+      media: imageUrl,
+      limit: amount,
+    },{
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem('token')
+      },
+    }).then((res) => {
+      console.log(res.data)
+    }).catch((error) => {
+      console.log(error)
+    })
   };
   return (
     <div className="h-full w-full bg-white">

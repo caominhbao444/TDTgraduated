@@ -47,10 +47,12 @@ import { API_MyEvents } from "../../fakeApi";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { MultiInputDateTimeRangeField } from "@mui/x-date-pickers-pro/MultiInputDateTimeRangeField";
+import axios from "axios";
+import moment from "moment";
+import { useSelector } from "react-redux";
 const Meeting = ({ meeting }) => {
   let startDateTime = parseISO(meeting.startDatetime);
   let endDateTime = parseISO(meeting.endDatetime);
-  console.log("End date time", endDateTime);
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       <img
@@ -90,10 +92,16 @@ const FirstView = (props) => {
   const [descEditEvent, setDescEditEvent] = useState("");
   const [amountEditEvent, setAmountEditEvent] = useState("");
   const [editDateEvent, setEditDateEvent] = useState([]);
+  const [editEventId, setEditEventId] = useState()
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const handleClickOpen = (data) => () => {
     setOpen(true);
     setDataEdit(data);
+    setNameEditEvent(data.title);
+    setDescEditEvent(data.conent);
+    setAmountEditEvent(data.limit);
+    setEditDateEvent([data.from, data.to]);
+    setEditEventId(data.id);
   };
 
   const handleClose = () => {
@@ -103,25 +111,56 @@ const FirstView = (props) => {
     setEditDateEvent(newvalue);
   };
   const handleEdit = () => {
-    var dateStart = new Date(editDateEvent[0].$d);
-    var dateEnd = new Date(editDateEvent[1].$d);
-    console.log("Edit data", {
-      name: nameEditEvent,
-      desc: descEditEvent,
-      guest_limit: amountEditEvent,
-      date_start: dateStart,
-      date_end: dateEnd,
-    });
+    axios.put(import.meta.env.VITE_APP_BASE_URL + '/events/' + editEventId,{
+      title: nameEditEvent,
+      content: descEditEvent,
+      limit: amountEditEvent,
+      // from: moment(editDateEvent[0].$d),
+      // to: moment(editDateEvent[1].$d)
+    },{
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem('token')
+      },
+    }).then((res) => {
+      console.log(res.data)
+    }).catch((error) => {
+      console.log(error)
+    })
   };
   useEffect(() => {
-    setNameEditEvent(dataEdit.name);
-    setDescEditEvent(dataEdit.desc);
-    setAmountEditEvent(dataEdit.guest_limit);
+    setNameEditEvent(dataEdit.title);
+    setDescEditEvent(dataEdit.conent);
+    setAmountEditEvent(dataEdit.limit);
     setEditDateEvent();
   }, [dataEdit]);
+  const handleDeleteEvent = (eventId) => {
+    axios.delete(import.meta.env.VITE_APP_BASE_URL + '/events/' + eventId,{
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem('token')
+      },
+    }).then((res) => {
+      console.log(res.data)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+  const handleCancel = (event) => {
+    axios.put(import.meta.env.VITE_APP_BASE_URL + '/events/' + event.id,{
+      participants: event.participants.filter(item => item !== props.userDetail.id)
+    },{
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem('token')
+      },
+    }).then((res) => {
+      console.log(res.data)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
   return (
     <>
-      {API_LISTEvents.map((event) => {
+      {props.events.map((event) => {
         return (
           <div className="border" key={event.id}>
             <img
@@ -130,14 +169,14 @@ const FirstView = (props) => {
               className="w-full h-[200px] object-cover object-center"
             />
             <div className="flex flex-col w-full p-4 gap-4">
-              <h3 className="text-[16px] font-bold">{event.name}</h3>
-              <p>Người tổ chức: {event.organizer}</p>
+              <h3 className="text-[16px] font-bold">{event.title}</h3>
+              <p>Người tổ chức: {event.author.fullname}</p>
               <div className="flex flex-col md:flex-row w-full md:items-center">
                 <p className="w-full md:w-2/3 flex justify-start items-center">
-                  Thời gian: {event.startDatetime} - {event.endDatetime}
+                  Thời gian: {moment(event.from).format("DD/MM/YYYY HH:mm A")} - {moment(event.to ).format("DD/MM/YYYY HH:mm A")}
                 </p>
                 <p className="w-full md:w-1/3 flex justify-end items-center">
-                  Số lượng: {event.guest_current}/{event.guest_limit}
+                  Số lượng: {event.participants.length}/{event.limit}
                 </p>
               </div>
               <div className="w-full">
@@ -150,24 +189,34 @@ const FirstView = (props) => {
                     Chi tiết
                   </AccordionSummary>
                   <AccordionDetails>
-                    <p>Hình thức tổ chức : {event.event_method}</p>
-                    <p>Nội dung: {event.desc}</p>
+                    <p>Hình thức tổ chức : {event.method}</p>
+                    <p>Nội dung: {event.content}</p>
                   </AccordionDetails>
                 </Accordion>
               </div>
               <div className="w-full flex justify-end items-center gap-3">
-                <button className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg">
-                  Xóa sự kiện
-                </button>
-                <button className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg">
-                  Huỷ tham gia
-                </button>
-                <button
-                  className="px-3 py-2 bg-mainColor text-white hover:bg-white hover:text-mainColor border border-mainColor rounded-lg"
-                  onClick={handleClickOpen(event)}
-                >
-                  Chỉnh sửa
-                </button>
+                {
+                  event.participants.filter(el => el.id != props.userDetail.id).length > 0 ? 
+                    <button className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg"
+                      onClick={() => handleCancel(event.id)}
+                    >
+                      Huỷ tham gia
+                    </button>
+                    : 
+                    <>
+                      <button className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg"
+                        onClick={() => handleDeleteEvent(event.id)}>
+                        Xóa sự kiện
+                      </button>
+                      <button
+                        className="px-3 py-2 bg-mainColor text-white hover:bg-white hover:text-mainColor border border-mainColor rounded-lg"
+                        onClick={handleClickOpen(event)}
+                      >
+                        Chỉnh sửa
+                      </button>
+                    </> 
+                } 
+                
               </div>
             </div>
           </div>
@@ -407,6 +456,26 @@ const MyEvent = () => {
   const handleView = (event, newAlignment) => {
     setView(newAlignment);
   };
+  const [events, setEvents] = useState();
+  const userDetail = useSelector((state) => state.user.userDetail);
+  useEffect(() => {
+    axios.get(import.meta.env.VITE_APP_BASE_URL + '/events',{
+      params: {
+        id: userDetail.id
+      },
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem('token')
+      },
+    }).then((res) => {
+      setEvents(res.data)
+      console.log('////', res.data)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }, [])
+  if(!events) {
+    return null
+  }
   return (
     <div className="h-full w-full bg-white flex flex-col gap-4 md:p-4">
       <div className="flex justify-between items-center md:p-0 p-4">
@@ -427,7 +496,7 @@ const MyEvent = () => {
           </ToggleButtonGroup>
         </div>
       </div>
-      {view === "left" ? <FirstView /> : <SecondView />}
+      {view === "left" ? <FirstView events={events} userDetail={userDetail} /> : <SecondView />}
     </div>
   );
 };

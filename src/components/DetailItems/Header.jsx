@@ -9,12 +9,14 @@ import {
   SpeedDialIcon,
   Tooltip,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import EmailIcon from "@mui/icons-material/Email";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import axios from 'axios'
 
 const actions = [
   { id: 1, icon: <GroupAddIcon />, name: "Thêm bạn bè" },
@@ -28,10 +30,25 @@ const Header = (props) => {
     setIsActive(active);
     props.handleActiveTab(active);
   };
+  const params = useParams();
+  const authToken = localStorage.getItem("token");
+  const [userDetails, setUserDetails] = useState()
   const userDetail = useSelector((state) => state.user.userDetail);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  useEffect(() => {
+    axios.get(import.meta.env.VITE_APP_BASE_URL + '/user-details/' + params.id, {
+      headers: { authorization: `Bearer ${authToken}` }
+    }).then((res) => {
+        setUserDetails(res.data)
+        console.log('?????', res.data)
+      }).catch((error) => {
+        console.log(error)
+      })
+  }, []);
+  if(!userDetails) {
+    return null
+  }
   return (
     <div className="flex flex-col w-full">
       <div className="w-full md:h-[40vh] h-[30vh] relative">
@@ -108,7 +125,7 @@ const Header = (props) => {
             className="md:w-[150px] md:h-[150px] w-[20vw] h-[20vw] absolute md:-top-[140px] -top-[19vw] object-cover object-center rounded-[100%] left-1/2 -translate-x-1/2 translate-x"
           />
           <p className="text-center md:text-[14px] text-[2vw] font-semibold whitespace-nowrap">
-            {userDetail.fullname}
+            {userDetails.fullname}
           </p>
         </div>
         <div

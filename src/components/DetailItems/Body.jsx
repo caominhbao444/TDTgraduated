@@ -15,18 +15,21 @@ import { useEffect, useState } from "react";
 import PostContainer from "../HomeItems/PostContainer/PostContainer";
 import { API_MESSAGES, API_POST } from "../../fakeApi";
 import FriendCard from "../FriendItem/FriendCard";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CallApiMyListPosts } from "../../store/postsSlice";
+import axios from "axios";
 
 const Body = (props) => {
   const [isEdit, setIsEdit] = useState(false);
   const [checked, setChecked] = useState(false);
   const authToken = localStorage.getItem("token");
-  const userDetail = useSelector((state) => state.user.userDetail);
+  const [friends, setFriends] = useState()
+  const [userDetails, setUserDetails] = useState()
   const myPost = useSelector((state) => state.post.myPost);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const params = useParams();
   const handleChange = () => {
     setChecked(!checked);
   };
@@ -34,15 +37,32 @@ const Body = (props) => {
     navigate(`/post/${id}`);
   };
   useEffect(() => {
-    if (userDetail) {
+    axios.get(import.meta.env.VITE_APP_BASE_URL + '/user-details/' + params.id, {
+      headers: { authorization: `Bearer ${authToken}` }
+    }).then((res) => {
+        setUserDetails(res.data)
+        console.log('?????', res.data)
+      }).catch((error) => {
+        console.log(error)
+      })
       dispatch(
         CallApiMyListPosts({
           headers: { authorization: `Bearer ${authToken}` },
-          id: userDetail.id,
+          id: params.id,
         })
       );
-    }
-  }, [userDetail, dispatch, authToken]);
+      axios.get(import.meta.env.VITE_APP_BASE_URL + '/friend-list/' + params.id, {
+        headers: { authorization: `Bearer ${authToken}` }
+      }).then((res) => {
+        setFriends(res.data)
+        console.log(res.data)
+      }).catch((error) => {
+        console.log(error)
+      })
+  }, []);
+  if(!userDetails) {
+    return null
+  }
   return (
     <div className=" bg-white w-full flex justify-center items-start">
       {props.activeTab === 0 && (
@@ -56,7 +76,7 @@ const Body = (props) => {
                 <input className="w-2/3 p-1 outline-none border text-[2vw] md:text-[15px]" />
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  {userDetail.fullname}
+                  {userDetails.fullname}
                 </span>
               )}
               <div onClick={() => setIsEdit(!isEdit)}>
@@ -74,7 +94,7 @@ const Body = (props) => {
                 <input className="w-2/3 p-1 outline-none border text-[2vw] md:text-[15px]" />
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  {userDetail.username}
+                  {userDetails.username}
                 </span>
               )}
               <div onClick={() => setIsEdit(!isEdit)}>
@@ -89,7 +109,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                {userDetail.email}
+                {userDetails.email}
               </span>
               <div className="hidden">
                 <EditIcon className="h-full w-full" />
@@ -115,7 +135,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                {userDetail.gender}
+                {userDetails.gender}
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -129,7 +149,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                {userDetail.country}
+                {userDetails.country}
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -143,7 +163,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                {userDetail.faculty}
+                {userDetails.faculty}
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -157,7 +177,7 @@ const Body = (props) => {
             </div>
             <div className="w-1/2 flex justify-between items-center">
               <span className="text-[2vw] md:text-[15px] font-normal">
-                {userDetail.course}
+                Khóa {userDetails.course}
               </span>
               <div>
                 <EditIcon className="h-full w-full" />
@@ -201,15 +221,14 @@ const Body = (props) => {
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
-              {API_MESSAGES.map((friend) => {
+              {friends ?  friends.map((friend) => {
                 return (
                   <FriendCard
                     key={friend.id}
-                    avatar={friend.img_avatar}
-                    name={friend.name}
+                    friend={friend}
                   />
                 );
-              })}
+              }): null}
             </div>
           </Card>
         </div>

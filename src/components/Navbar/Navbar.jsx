@@ -32,12 +32,13 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [openChange, setOpenChange] = React.useState(false);
-
+  const userDetail = useSelector((state) => state.user.userDetail);
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [Urlimg, setUrlimg] = useState(
@@ -224,7 +225,7 @@ const Navbar = () => {
   };
   const handleDetail = () => {
     // setAnchorEl(null);
-    navigate("/detail");
+    navigate(`/detail/${userDetail.id}`);
   };
   return (
     <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-10">

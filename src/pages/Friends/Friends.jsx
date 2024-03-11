@@ -6,6 +6,7 @@ import { API_MESSAGES } from "../../fakeApi";
 import axios from "axios";
 const Friends = () => {
   const [checked, setChecked] = useState(false);
+  const [friends, setFriends] = useState()
   const handleChange = () => {
     setChecked(!checked);
   };
@@ -13,6 +14,7 @@ const Friends = () => {
     axios.get(import.meta.env.VITE_APP_BASE_URL + '/friend-list/' + 1)
     .then((res) => {
       console.log(res)
+      setFriends(res.data)
     })
     .catch((error) => {
       console.log(error)
@@ -36,15 +38,14 @@ const Friends = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
-            {API_MESSAGES.map((friend) => {
+            {friends ?  friends.map((friend) => {
               return (
                 <FriendCard
                   key={friend.id}
-                  avatar={friend.img_avatar}
-                  name={friend.name}
+                  friend={friend}
                 />
               );
-            })}
+            }): null}
           </div>
         </Card>
       </main>

@@ -25,6 +25,7 @@ import FirstAside from "../../components/HomeItems/FirstAside/FirstAside";
 import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Switch from '@mui/material/Switch';
 
 const style = {
   py: 0,
@@ -39,6 +40,7 @@ const Home = () => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState();
+  const [isPublic, setIsPublic] = useState(true);
   const navigate = useNavigate();
   const userDetail = useSelector((state) => state.user.userDetail);
   console.log(userDetail);
@@ -125,8 +127,25 @@ const Home = () => {
     }
   };
 
-  const handleCreatePost = () => {
-    console.log(imageUrl);
+  const handleCreatePost = (event) => {
+    event.preventDefault();
+    axios.post(import.meta.env.VITE_APP_BASE_URL + '/posts', 
+    {
+      content: content,
+      media: imageUrl,
+      isPublic: isPublic,
+      author: userDetail.id
+    },
+    {
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem('token')
+      },
+    }).then((res) => {
+      console.log(res)
+      setOpen(false);
+    }).catch((error) => {
+      console.log(error)
+    })
   };
 
   return (
@@ -300,9 +319,11 @@ const Home = () => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
+            <Switch value={isPublic} onClick={() => setIsPublic(!isPublic)}></Switch>
           </Box>
           <Button
             onClick={handleCreatePost}
+            type="submit"
             variant="contained"
             style={{
               backgroundColor: "#1877f2",

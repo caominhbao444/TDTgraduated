@@ -19,9 +19,14 @@ import {
   ListItemText,
   Skeleton,
   Typography,
+  CircularProgress,
+  DialogTitle,
+  ListItemIcon,
 } from "@mui/material";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import Switch from '@mui/material/Switch';
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import ModeCommentIcon from "@mui/icons-material/ModeComment";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
@@ -57,6 +62,12 @@ const PostContainer = (props) => {
   const [textComment, setTextComment] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const { loading = false } = props;
+  const [componentLoading, setComponentLoading] = useState(false);
+  const [openEditPost, setOpenEditPost] = useState(false);
+  const [imageUrl, setImageUrl] = useState("https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6");
+  const [content, setContent] = useState("");
+  const [editLoading, setEditLoading] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
   const userDetail = useSelector((state) => state.user.userDetail);
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -64,6 +75,17 @@ const PostContainer = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleCloseEdit = () => {
+    setOpenEditPost(false)
+  }
+  const handleOpenEditPost = (post) => {
+    setOpenEditPost(true)
+    setContent(post.content)
+    setIsPublic(post.isPublic | true)
+    if(post.image){
+      setImageUrl(post.image)
+    }
+  }
   const onEmojiClick = (e) => {
     const sym = e.unified.split("_");
     const codeArray = [];
@@ -91,6 +113,70 @@ const PostContainer = (props) => {
     );
     return vietnameseTimeIntervalString;
   };
+
+  function editPost(){
+    axios.put(import.meta.env.VITE_APP_BASE_URL + '/posts/' + props.post.id, 
+    {
+      content: content,
+      media: imageUrl,
+      isPublic: isPublic
+    },
+    {
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem('token')
+      },
+    }).then((res) => {
+      console.log(res)
+      setOpenEditPost(false)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+  function handleFileChange(event) {
+    setEditLoading(true);
+    const selectedFile = event.target.files[0];
+    uploadImageToCloudinary(selectedFile)
+      .then((url) => {
+        setEditLoading(false);
+        setImageUrl(url);
+      })
+      .catch((error) => {
+        setEditLoading(false);
+        console.error(error);
+      });
+  }
+  function uploadImageToCloudinary(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "pzoe2lzh");
+    return axios
+      .post("https://api.cloudinary.com/v1_1/djhhzmcps/image/upload", formData)
+      .then((response) => {
+        return response.data.url;
+      })
+      .catch((error) => {
+        console.error(error);
+        return null;
+      });
+  }
+  const onLiked = () => {
+    setComponentLoading(true)
+    axios.put(import.meta.env.VITE_APP_BASE_URL + '/posts/' + props.post.id, 
+    {
+      liked: props.post.liked.filter(el => el.id == userDetail.id).length > 0 ? null : userDetail.id 
+    },
+    {
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem('token')
+      },
+    }).then((res) => {
+      console.log(res)
+      setComponentLoading(false)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
   return (
     <>
       <Card className="w-full ">
@@ -115,7 +201,7 @@ const PostContainer = (props) => {
                   <div className="absolute top-[110%] right-0 text-center w-[100px] border bg-white border-textLightColor flex flex-col">
                     <div
                       className="w-full py-2 text-[14px]"
-                      onClick={() => alert("hi")}
+                      onClick={() => handleOpenEditPost(props.post)}
                     >
                       Chỉnh sửa
                     </div>
@@ -149,7 +235,7 @@ const PostContainer = (props) => {
           <div className="flex items-center gap-1">
             <ThumbUpIcon
               className={
-                props.post.id === userDetail.id
+                props.post.liked.filter(el => el.id == userDetail.id).length > 0
                   ? "text-mainColor"
                   : "text-gray-200"
               }
@@ -188,7 +274,7 @@ const PostContainer = (props) => {
         </div>
 
         <CardActions className="flex justify-between w-full p-0 border mt-4">
-          <button className="w-1/2 flex justify-center items-center gap-3 md:py-1">
+          <button className="w-1/2 flex justify-center items-center gap-3 md:py-1" onClick={() => onLiked()}>
             <ThumbUpIcon className="text-textLightColor " fontSize="small" />
             <span className="font-medium text-[12px] md:text-[15px]">
               Thích
@@ -268,6 +354,106 @@ const PostContainer = (props) => {
           size="16"
           onEmojiClick={onEmojiClick}
         />
+      </Dialog>
+
+      <Dialog open={openEditPost} onClose={handleCloseEdit}>
+        <DialogTitle style={{ backgroundColor: "#1877f2" }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <span style={{ fontWeight: "bold", color: "white" }}>
+              Sửa bài viết
+            </span>
+            <CloseOutlinedIcon
+              name="close-circle-outline"
+              onClick={handleCloseEdit}
+              className="w-[30px] h-[30px] block cursor-pointer border-none z-10 text-white"
+            />
+          </Box>
+        </DialogTitle>
+        <div className="flex flex-col md:justify-around relative p-[20px] max-w-[600px] md:h-[400px] gap-[10px]">
+          <Box
+            maxWidth="600px"
+            className="flex flex-col md:flex-row gap-[10px] relative"
+          >
+            <div className="max-w-[300px] md:w-[300px] relative">
+              {editLoading ? (
+                <>
+                  <img
+                    src={imageUrl}
+                    width="100%"
+                    alt="bag photos?"
+                    style={{
+                      display: "block",
+                      height: "253px",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  >
+                    <CircularProgress />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <img
+                    src={imageUrl}
+                    width="100%"
+                    alt="bag photos"
+                    style={{
+                      display: "block",
+                      height: "253px",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                    }}
+                  />
+                  <input
+                    onChange={handleFileChange}
+                    type="file"
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      left: "0",
+                      width: "100%",
+                      height: "100%",
+                      opacity: "0",
+                      cursor: "pointer",
+                    }}
+                  />
+                </>
+              )}
+            </div>
+            <textarea
+              aria-label="empty textarea"
+              placeholder="Bạn đang nghĩ gì..."
+              className="max-w-[300px] md:w-[300px] min-h-[100px] md:h-[253px] h-[100px] border-none resize-none outline-none overflow-hidden"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+            <Switch value={isPublic} onClick={() => setIsPublic(!isPublic)}></Switch>
+          </Box>
+          <Button
+            onClick={() => editPost()}
+            variant="contained"
+            style={{
+              backgroundColor: "#1877f2",
+              borderRadius: "0",
+              fontWeight: "bold",
+            }}
+            fullWidth
+          >
+            Sửa bài
+          </Button>
+        </div>
       </Dialog>
     </>
   );

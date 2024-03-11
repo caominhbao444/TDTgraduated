@@ -40,7 +40,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route element={<PrivateArea />}>
             <Route path="/home" element={<Home />} />
-            <Route path="/detail" element={<Detail />} />
+            <Route path="/detail/:id" element={<Detail />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/post/:id" element={<Post />} />
             <Route path="/events" element={<Event />} />
