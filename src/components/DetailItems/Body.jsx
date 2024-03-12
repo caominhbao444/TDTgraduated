@@ -24,8 +24,8 @@ const Body = (props) => {
   const [isEdit, setIsEdit] = useState(false);
   const [checked, setChecked] = useState(false);
   const authToken = localStorage.getItem("token");
-  const [friends, setFriends] = useState()
-  const [userDetails, setUserDetails] = useState()
+  const [friends, setFriends] = useState();
+  const [userDetails, setUserDetails] = useState();
   const myPost = useSelector((state) => state.post.myPost);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,31 +37,37 @@ const Body = (props) => {
     navigate(`/post/${id}`);
   };
   useEffect(() => {
-    axios.get(import.meta.env.VITE_APP_BASE_URL + '/user-details/' + params.id, {
-      headers: { authorization: `Bearer ${authToken}` }
-    }).then((res) => {
-        setUserDetails(res.data)
-        console.log('?????', res.data)
-      }).catch((error) => {
-        console.log(error)
+    axios
+      .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/" + params.id, {
+        headers: { authorization: `Bearer ${authToken}` },
       })
-      dispatch(
-        CallApiMyListPosts({
-          headers: { authorization: `Bearer ${authToken}` },
-          id: params.id,
-        })
-      );
-      axios.get(import.meta.env.VITE_APP_BASE_URL + '/friend-list/' + params.id, {
-        headers: { authorization: `Bearer ${authToken}` }
-      }).then((res) => {
-        setFriends(res.data)
-        console.log(res.data)
-      }).catch((error) => {
-        console.log(error)
+      .then((res) => {
+        setUserDetails(res.data);
+        console.log("?????", res.data);
       })
+      .catch((error) => {
+        console.log(error);
+      });
+    dispatch(
+      CallApiMyListPosts({
+        headers: { authorization: `Bearer ${authToken}` },
+        id: params.id,
+      })
+    );
+    axios
+      .get(import.meta.env.VITE_APP_BASE_URL + "/friend-list/" + params.id, {
+        headers: { authorization: `Bearer ${authToken}` },
+      })
+      .then((res) => {
+        setFriends(res.data);
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
-  if(!userDetails) {
-    return null
+  if (!userDetails) {
+    return null;
   }
   return (
     <div className=" bg-white w-full flex justify-center items-start">
@@ -199,7 +205,7 @@ const Body = (props) => {
       {props.activeTab === 1 && (
         <div className="flex flex-col w-full md:p-10 md:gap-3 gap-3">
           {myPost &&
-            myPost.map((post, index) => {
+            [...myPost].reverse().map((post, index) => {
               return <PostContainer key={index} post={post} />;
             })}
         </div>
@@ -221,14 +227,11 @@ const Body = (props) => {
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
-              {friends ?  friends.map((friend) => {
-                return (
-                  <FriendCard
-                    key={friend.id}
-                    friend={friend}
-                  />
-                );
-              }): null}
+              {friends
+                ? friends.map((friend) => {
+                    return <FriendCard key={friend.id} friend={friend} />;
+                  })
+                : null}
             </div>
           </Card>
         </div>

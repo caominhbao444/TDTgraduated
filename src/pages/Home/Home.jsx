@@ -24,8 +24,9 @@ import PostContainer from "../../components/HomeItems/PostContainer/PostContaine
 import FirstAside from "../../components/HomeItems/FirstAside/FirstAside";
 import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import Switch from '@mui/material/Switch';
+import { useDispatch, useSelector } from "react-redux";
+import Switch from "@mui/material/Switch";
+import { CallApiMyListPosts } from "../../store/postsSlice";
 
 const style = {
   py: 0,
@@ -33,37 +34,28 @@ const style = {
 };
 const Home = () => {
   const [open, setOpen] = useState(false);
-
+  const authToken = localStorage.getItem("token");
   const [imageUrl, setImageUrl] = useState(
     "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
   );
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [posts, setPosts] = useState();
   const [isPublic, setIsPublic] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const userDetail = useSelector((state) => state.user.userDetail);
-  console.log(userDetail);
+  const myPost = useSelector((state) => state.post.myPost);
+
   useEffect(() => {
     if (userDetail.id) {
-      axios
-        .get(import.meta.env.VITE_APP_BASE_URL + "/posts", {
-          params: {
-            id: userDetail.id,
-          },
-          headers: {
-            Authorization: `Bearer ` + localStorage.getItem("token"),
-          },
+      dispatch(
+        CallApiMyListPosts({
+          headers: { authorization: `Bearer ${authToken}` },
+          id: userDetail.id,
         })
-        .then((res) => {
-          console.log(res.data);
-          setPosts(res.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      );
     }
-  }, [userDetail.id]);
+  }, [userDetail.id, dispatch, authToken]);
 
   const handleOpenPost = () => {
     setOpen(true);
@@ -129,23 +121,44 @@ const Home = () => {
 
   const handleCreatePost = (event) => {
     event.preventDefault();
-    axios.post(import.meta.env.VITE_APP_BASE_URL + '/posts', 
-    {
-      content: content,
-      media: imageUrl,
-      isPublic: isPublic,
-      author: userDetail.id
-    },
-    {
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      console.log(res)
-      setOpen(false);
-    }).catch((error) => {
-      console.log(error)
-    })
+    axios
+      .post(
+        import.meta.env.VITE_APP_BASE_URL + "/posts",
+        {
+          content: content,
+          media: imageUrl,
+          isPublic: isPublic,
+          author: userDetail.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        Swal.fire({
+          title: "Thành công",
+          text: "Bài viết đã được đăng",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() =>
+          dispatch(
+            CallApiMyListPosts({
+              headers: { authorization: `Bearer ${authToken}` },
+              id: userDetail.id,
+            })
+          )
+        );
+        setContent("");
+        setImageUrl(
+          "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
+        );
+        setOpen(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -196,8 +209,8 @@ const Home = () => {
         </List>
       </aside>
       <main className="md:col-span-5 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px]">
-        {posts &&
-          [...posts].reverse().map((post, index) => {
+        {myPost &&
+          [...myPost].reverse().map((post, index) => {
             return (
               <PostContainer
                 key={index}
@@ -319,7 +332,10 @@ const Home = () => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
-            <Switch value={isPublic} onClick={() => setIsPublic(!isPublic)}></Switch>
+            <Switch
+              value={isPublic}
+              onClick={() => setIsPublic(!isPublic)}
+            ></Switch>
           </Box>
           <Button
             onClick={handleCreatePost}

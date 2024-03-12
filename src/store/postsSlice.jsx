@@ -12,7 +12,7 @@ export const CallApiMyListPosts = createAsyncThunk(
   async function ({ headers, id }) {
     try {
       const apiMyPostsResponse = await axios.get(
-        `http://localhost:1337/api/posts/?id=${id}`,
+        `http://localhost:1337/api/posts?id=${id}`,
         {
           headers: {
             Authorization: headers.authorization,

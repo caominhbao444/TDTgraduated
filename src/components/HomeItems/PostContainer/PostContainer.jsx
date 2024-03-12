@@ -24,7 +24,7 @@ import {
   ListItemIcon,
 } from "@mui/material";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import Switch from '@mui/material/Switch';
+import Switch from "@mui/material/Switch";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -64,7 +64,9 @@ const PostContainer = (props) => {
   const { loading = false } = props;
   const [componentLoading, setComponentLoading] = useState(false);
   const [openEditPost, setOpenEditPost] = useState(false);
-  const [imageUrl, setImageUrl] = useState("https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6");
+  const [imageUrl, setImageUrl] = useState(
+    "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
+  );
   const [content, setContent] = useState("");
   const [editLoading, setEditLoading] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
@@ -76,16 +78,16 @@ const PostContainer = (props) => {
     setOpen(false);
   };
   const handleCloseEdit = () => {
-    setOpenEditPost(false)
-  }
+    setOpenEditPost(false);
+  };
   const handleOpenEditPost = (post) => {
-    setOpenEditPost(true)
-    setContent(post.content)
-    setIsPublic(post.isPublic | true)
-    if(post.image){
-      setImageUrl(post.image)
+    setOpenEditPost(true);
+    setContent(post.content);
+    setIsPublic(post.isPublic | true);
+    if (post.image) {
+      setImageUrl(post.image);
     }
-  }
+  };
   const onEmojiClick = (e) => {
     const sym = e.unified.split("_");
     const codeArray = [];
@@ -105,7 +107,11 @@ const PostContainer = (props) => {
       milliseconds: "mili giây",
       ago: "trước",
       an: "Một",
+      a: "Một",
+      day: "ngày",
       hour: "giờ",
+      few: "vài",
+      minute: "phút",
     };
     const vietnameseTimeIntervalString = time.replace(
       /\b\w+\b/g,
@@ -114,23 +120,28 @@ const PostContainer = (props) => {
     return vietnameseTimeIntervalString;
   };
 
-  function editPost(){
-    axios.put(import.meta.env.VITE_APP_BASE_URL + '/posts/' + props.post.id, 
-    {
-      content: content,
-      media: imageUrl,
-      isPublic: isPublic
-    },
-    {
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      console.log(res)
-      setOpenEditPost(false)
-    }).catch((error) => {
-      console.log(error)
-    })
+  function editPost() {
+    axios
+      .put(
+        import.meta.env.VITE_APP_BASE_URL + "/posts/" + props.post.id,
+        {
+          content: content,
+          media: imageUrl,
+          isPublic: isPublic,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        setOpenEditPost(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   function handleFileChange(event) {
@@ -161,40 +172,53 @@ const PostContainer = (props) => {
       });
   }
   const onLiked = () => {
-    setComponentLoading(true)
-    axios.put(import.meta.env.VITE_APP_BASE_URL + '/posts/' + props.post.id, 
-    {
-      liked: props.post.liked.filter(el => el.id == userDetail.id).length > 0 ? null : userDetail.id 
-    },
-    {
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      console.log(res)
-      setComponentLoading(false)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
+    setComponentLoading(true);
+    axios
+      .put(
+        import.meta.env.VITE_APP_BASE_URL + "/posts/" + props.post.id,
+        {
+          liked:
+            props.post.liked.filter((el) => el.id == userDetail.id).length > 0
+              ? null
+              : userDetail.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        setComponentLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleComment = () => {
-    axios.post(import.meta.env.VITE_APP_BASE_URL + '/comments', 
-    {
-      author: userDetail.id,
-      post: props.post.id,
-      content: textComment
-    },
-    {
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      console.log(res)
-      setComponentLoading(false)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
+    axios
+      .post(
+        import.meta.env.VITE_APP_BASE_URL + "/comments",
+        {
+          author: userDetail.id,
+          post: props.post.id,
+          content: textComment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        setComponentLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -254,7 +278,8 @@ const PostContainer = (props) => {
           <div className="flex items-center gap-1">
             <ThumbUpIcon
               className={
-                props.post.liked.filter(el => el.id == userDetail.id).length > 0
+                props.post.liked.filter((el) => el.id == userDetail.id).length >
+                0
                   ? "text-mainColor"
                   : "text-gray-200"
               }
@@ -293,14 +318,18 @@ const PostContainer = (props) => {
         </div>
 
         <CardActions className="flex justify-between w-full p-0 border mt-4">
-          <button className="w-1/2 flex justify-center items-center gap-3 md:py-1" onClick={() => onLiked()}>
-          <ThumbUpIcon
+          <button
+            className="w-1/2 flex justify-center items-center gap-3 md:py-1"
+            onClick={() => onLiked()}
+          >
+            <ThumbUpIcon
               className={
-                props.post.liked.filter(el => el.id == userDetail.id).length > 0
+                props.post.liked.filter((el) => el.id == userDetail.id).length >
+                0
                   ? "text-mainColor"
                   : "text-gray-200 "
               }
-              fontSize="small" 
+              fontSize="small"
             />
             <span className="font-medium text-[12px] md:text-[15px]">
               Thích
@@ -322,18 +351,20 @@ const PostContainer = (props) => {
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           {props.post.comments &&
-            props.post.comments.filter(el => !el.comment).map((comment, index) => {
-              return (
-                <Comment
-                  key={index}
-                  name={comment.name}
-                  content={comment.content}
-                  dateCreate={comment.dateCreate}
-                  id={comment.id}
-                  comment={comment}
-                />
-              );
-            })}
+            props.post.comments
+              .filter((el) => !el.comment)
+              .map((comment, index) => {
+                return (
+                  <Comment
+                    key={index}
+                    name={comment.name}
+                    content={comment.content}
+                    dateCreate={comment.dateCreate}
+                    id={comment.id}
+                    comment={comment}
+                  />
+                );
+              })}
           <CardContent>
             <div className="flex gap-4 w-full">
               <Avatar
@@ -362,7 +393,10 @@ const PostContainer = (props) => {
                       <Button onClick={() => setOpen(!open)}>
                         <MoodIcon />
                       </Button>
-                      <Button sx={{ ml: "auto" }} onClick={() => handleComment()}>
+                      <Button
+                        sx={{ ml: "auto" }}
+                        onClick={() => handleComment()}
+                      >
                         <SendIcon />
                       </Button>
                     </Box>
@@ -466,7 +500,10 @@ const PostContainer = (props) => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
-            <Switch value={isPublic} onClick={() => setIsPublic(!isPublic)}></Switch>
+            <Switch
+              value={isPublic}
+              onClick={() => setIsPublic(!isPublic)}
+            ></Switch>
           </Box>
           <Button
             onClick={() => editPost()}

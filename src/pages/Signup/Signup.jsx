@@ -91,9 +91,7 @@ const Signup = () => {
   const submitForm = (newData) => {
     console.log("Form data: ", newData);
     axios
-      .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local/register`, {
-        newData,
-      })
+      .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local/register`, newData)
       .then((res) => {
         console.log(res);
         navigate("/home");
@@ -158,6 +156,7 @@ const Signup = () => {
   );
 };
 const StepInitial = (props) => {
+  const navigate = useNavigate();
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center gap-2">
@@ -174,12 +173,19 @@ const StepInitial = (props) => {
           // eslint-disable-next-line react/prop-types
           onClick={props.onSubmit}
         />
+        <div
+          className="cursor-pointer text-[14px] text-textLightColor"
+          onClick={() => navigate("/home")}
+        >
+          Quay lại trang đăng nhập
+        </div>
       </div>
     </>
   );
 };
 const StepOne = (props) => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -288,11 +294,18 @@ const StepOne = (props) => {
         >
           Tiếp tục
         </button>
+        <div
+          className="cursor-pointer text-[14px] text-textLightColor"
+          onClick={() => navigate("/home")}
+        >
+          Quay lại trang đăng nhập
+        </div>
       </form>
     </>
   );
 };
 const StepTwo = (props) => {
+  const navigate = useNavigate();
   const onSubmitFinal = (values) => {
     props.onSubmit(values);
   };
@@ -405,7 +418,7 @@ const StepTwo = (props) => {
             {props.listCourse ? (
               props.listCourse.map((course) => {
                 return (
-                  <MenuItem value={course.toString()} key={course}>
+                  <MenuItem value={course} key={course}>
                     Khoá {course}
                   </MenuItem>
                 );
@@ -431,11 +444,18 @@ const StepTwo = (props) => {
             type="submit"
           />
         </div>
+        <div
+          className="cursor-pointer text-[14px] text-textLightColor"
+          onClick={() => navigate("/home")}
+        >
+          Quay lại trang đăng nhập
+        </div>
       </form>
     </>
   );
 };
 const StepThird = (props) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(
     "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
