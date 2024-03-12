@@ -3,6 +3,7 @@ import Textarea from "@mui/joy/Textarea";
 import { Avatar, Box, Button, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
+import moment from "moment";
 const ReplyComment = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isReplay_2, setIsReplay_2] = useState(false);
@@ -27,6 +28,26 @@ const ReplyComment = (props) => {
     console.log("Sending replay status:", newReplayStatus);
     props.isReplay(newReplayStatus);
   };
+  const formatTime = (time) => {
+    const translations = {
+      years: "năm",
+      months: "tháng",
+      weeks: "tuần",
+      days: "ngày",
+      hours: "giờ",
+      minutes: "phút",
+      seconds: "giây",
+      milliseconds: "mili giây",
+      ago: "trước",
+      an: "Một",
+      hour: "giờ",
+    };
+    const vietnameseTimeIntervalString = time.replace(
+      /\b\w+\b/g,
+      (match) => translations[match] || match
+    );
+    return vietnameseTimeIntervalString;
+  };
   return (
     <div className="flex gap-4 w-full">
       <Avatar
@@ -35,12 +56,12 @@ const ReplyComment = (props) => {
       />
       <div className="flex flex-col w-full gap-2">
         <h4 style={{ margin: 0, textAlign: "left", fontWeight: "500" }}>
-          {props.name}
+          {props.reply.author.fullname}
         </h4>
         {isEditing ? (
           <Textarea
             placeholder="Viết bình luận…"
-            defaultValue={props.content}
+            defaultValue={props.reply.content}
             minRows={2}
             className="outline-none text-justify"
             variant="soft"
@@ -64,7 +85,7 @@ const ReplyComment = (props) => {
           />
         ) : (
           <Textarea
-            defaultValue={props.content}
+            defaultValue={props.reply.content}
             minRows={2}
             className="outline-none text-justify "
             variant="soft"
@@ -80,7 +101,7 @@ const ReplyComment = (props) => {
               fontSize: "14px",
             }}
           >
-            {props.dateCreate} gio truoc
+           {formatTime(moment(props.reply.createdAt).fromNow())}
           </p>
           <div className="flex gap-3">
             <span

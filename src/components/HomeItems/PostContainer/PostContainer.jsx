@@ -177,6 +177,25 @@ const PostContainer = (props) => {
       console.log(error)
     })
   }
+  const handleComment = () => {
+    axios.post(import.meta.env.VITE_APP_BASE_URL + '/comments', 
+    {
+      author: userDetail.id,
+      post: props.post.id,
+      content: textComment
+    },
+    {
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem('token')
+      },
+    }).then((res) => {
+      console.log(res)
+      setComponentLoading(false)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
   return (
     <>
       <Card className="w-full ">
@@ -275,7 +294,14 @@ const PostContainer = (props) => {
 
         <CardActions className="flex justify-between w-full p-0 border mt-4">
           <button className="w-1/2 flex justify-center items-center gap-3 md:py-1" onClick={() => onLiked()}>
-            <ThumbUpIcon className="text-textLightColor " fontSize="small" />
+          <ThumbUpIcon
+              className={
+                props.post.liked.filter(el => el.id == userDetail.id).length > 0
+                  ? "text-mainColor"
+                  : "text-gray-200 "
+              }
+              fontSize="small" 
+            />
             <span className="font-medium text-[12px] md:text-[15px]">
               Thích
             </span>
@@ -295,8 +321,8 @@ const PostContainer = (props) => {
           </button>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          {listComment &&
-            listComment.map((comment, index) => {
+          {props.post.comments &&
+            props.post.comments.filter(el => !el.comment).map((comment, index) => {
               return (
                 <Comment
                   key={index}
@@ -304,6 +330,7 @@ const PostContainer = (props) => {
                   content={comment.content}
                   dateCreate={comment.dateCreate}
                   id={comment.id}
+                  comment={comment}
                 />
               );
             })}
@@ -335,7 +362,7 @@ const PostContainer = (props) => {
                       <Button onClick={() => setOpen(!open)}>
                         <MoodIcon />
                       </Button>
-                      <Button sx={{ ml: "auto" }}>
+                      <Button sx={{ ml: "auto" }} onClick={() => handleComment()}>
                         <SendIcon />
                       </Button>
                     </Box>
