@@ -17,36 +17,80 @@ import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axios from 'axios'
+import { useDispatch } from 'react-redux';
+import { setUserDetails } from '../../store/usersSlice';
 
-const actions = [
-  { id: 1, icon: <GroupAddIcon />, name: "Thêm bạn bè" },
-  { id: 2, icon: <EmailIcon />, name: "Nhắn tin" },
-  { id: 3, icon: <DeleteIcon />, name: "Hủy bạn bè" },
-];
+// let actions = 
 const Header = (props) => {
+  const [actions, setActions] = useState([
+    { id: 1, icon: <GroupAddIcon />, name: "Thêm bạn bè", disabled: true, method: 'add'},
+    { id: 2, icon: <EmailIcon />, name: "Nhắn tin", disabled: true},
+    { id: 3, icon: <DeleteIcon />, name: "Hủy bạn bè", disabled: true, method: 'delete' },
+  ])
   const [isActive, setIsActive] = useState(0);
   const [open, setOpen] = useState(false);
   const handleActive = (active) => {
     setIsActive(active);
     props.handleActiveTab(active);
   };
+  const currentUser = useSelector((state) => state.user.userDetail)
   const params = useParams();
   const authToken = localStorage.getItem("token");
-  const [userDetails, setUserDetails] = useState()
-  const userDetail = useSelector((state) => state.user.userDetail);
+  const [userDetail, setUserDetail] = useState()
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const dispatch = useDispatch()
   useEffect(() => {
-    axios.get(import.meta.env.VITE_APP_BASE_URL + '/user-details/' + params.id, {
-      headers: { authorization: `Bearer ${authToken}` }
+    axios.get(import.meta.env.VITE_APP_BASE_URL + '/user-details/', {
+      headers: { 
+        authorization: `Bearer ${authToken}` 
+      },
+      params: {
+        id: params.id
+      }
     }).then((res) => {
-        setUserDetails(res.data)
-        console.log('?????', res.data)
+        setUserDetail(res.data)
+        if (res.data.users.filter(el => el.id == currentUser.id).length > 0){
+          actions[0].disabled = true
+          actions[1].disabled = false
+          actions[2].disabled = false
+        }else{
+          actions[0].disabled = false
+          actions[1].disabled = false
+          actions[2].disabled = true
+        }
       }).catch((error) => {
         console.log(error)
       })
   }, []);
-  if(!userDetails) {
+  const handleUpdateFriends = (method) => {
+    console.log(method)
+    let friends = currentUser.friends.map(el => { return el.id })
+    if(method == 'add') {
+      friends.push(userDetail.id)
+    }else{
+      const index = friends.indexOf(userDetail.id);
+      friends.splice(index, 1);
+    }
+    axios.put(import.meta.env.VITE_APP_BASE_URL + '/user-details', {
+      friends: friends
+    },{
+      headers: { authorization: `Bearer ${authToken}` }
+    }).then((res) => {
+      axios.get(import.meta.env.VITE_APP_BASE_URL + '/user-details', {
+        headers: {
+          Authorization: `Bearer ` + localStorage.getItem('token')
+        }
+      }).then((response) => {
+        dispatch(setUserDetails(response.data))
+      }).catch((error) => {
+        console.log(error)
+      })
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+  if(!userDetail) {
     return null
   }
   return (
@@ -56,15 +100,22 @@ const Header = (props) => {
           src="https://images.unsplash.com/photo-1682687220866-c856f566f1bd?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           className="w-full h-full object-cover"
         />
-        <div
-          className="absolute top-4 right-4 flex justify-center items-center w-[25px] h-[25px]  rounded-[100%] border"
-          onClick={() => setOpen(!open)}
-        >
-          <MoreVertOutlinedIcon className="text-white cursor-pointer rounded-[100%]" />
-        </div>
+        
+          {
+            currentUser.id != userDetail.id 
+              ? <div
+                className="absolute top-4 right-4 flex justify-center items-center w-[25px] h-[25px]  rounded-[100%] border"
+                onClick={() => setOpen(!open)}
+              >
+                <MoreVertOutlinedIcon className="text-white cursor-pointer rounded-[100%]" /> 
+              </div>
+              : null
+          }
+          
+       
         {open && (
           <div className="absolute top-3 md:top-[50px] right-12 md:right-6 flex flex-col gap-1 md:gap-2">
-            {actions.map((item) => {
+            {actions.filter(el => !el.disabled).map((item) => {
               return (
                 <>
                   <Tooltip
@@ -72,7 +123,7 @@ const Header = (props) => {
                     key={item.id}
                     placement="left-start"
                   >
-                    <IconButton sx={{ color: "white" }}>{item.icon}</IconButton>
+                    <IconButton sx={{ color: "white" }} onClick={() => handleUpdateFriends(item.method)}>{item.icon}</IconButton>
                   </Tooltip>
                 </>
               );
@@ -125,7 +176,7 @@ const Header = (props) => {
             className="md:w-[150px] md:h-[150px] w-[20vw] h-[20vw] absolute md:-top-[140px] -top-[19vw] object-cover object-center rounded-[100%] left-1/2 -translate-x-1/2 translate-x"
           />
           <p className="text-center md:text-[14px] text-[2vw] font-semibold whitespace-nowrap">
-            {userDetails.fullname}
+            {userDetail.fullname}
           </p>
         </div>
         <div

@@ -17,7 +17,7 @@ import { API_MESSAGES, API_POST } from "../../fakeApi";
 import FriendCard from "../FriendItem/FriendCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { CallApiMyListPosts } from "../../store/postsSlice";
+import { CallApiDetailsListPosts } from "../../store/postsSlice";
 import axios from "axios";
 
 const Body = (props) => {
@@ -27,6 +27,7 @@ const Body = (props) => {
   const [friends, setFriends] = useState();
   const [userDetails, setUserDetails] = useState();
   const myPost = useSelector((state) => state.post.myPost);
+  const userDetail = useSelector((state) => state.user.userDetail);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
@@ -38,22 +39,28 @@ const Body = (props) => {
   };
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/" + params.id, {
-        headers: { authorization: `Bearer ${authToken}` },
+      .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/", {
+        headers: { 
+          authorization: `Bearer ${authToken}` 
+        },
+        params: {
+          id: params.id
+        }
       })
       .then((res) => {
+        console.log('???', params.id, userDetail)
         setUserDetails(res.data);
-        console.log("?????", res.data);
+        dispatch(
+          CallApiDetailsListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: params.id,
+          })
+        );
       })
       .catch((error) => {
         console.log(error);
       });
-    dispatch(
-      CallApiMyListPosts({
-        headers: { authorization: `Bearer ${authToken}` },
-        id: params.id,
-      })
-    );
+
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/friend-list/" + params.id, {
         headers: { authorization: `Bearer ${authToken}` },

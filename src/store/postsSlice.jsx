@@ -19,6 +19,27 @@ export const CallApiMyListPosts = createAsyncThunk(
           },
         }
       );
+      console.log(apiMyPostsResponse.data)
+      return apiMyPostsResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+//CallApiMyListPosts post trong details
+export const CallApiDetailsListPosts = createAsyncThunk(
+  "user/callApiMyListPosts",
+  async function ({ headers, id }) {
+    try {
+      const apiMyPostsResponse = await axios.get(
+        `http://localhost:1337/api/posts?id=${id}&details=true`,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      console.log(apiMyPostsResponse.data)
       return apiMyPostsResponse.data;
     } catch (err) {
       console.log(err);

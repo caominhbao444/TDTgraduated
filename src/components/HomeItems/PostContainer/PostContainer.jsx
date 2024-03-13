@@ -122,7 +122,7 @@ const PostContainer = (props) => {
     );
     return vietnameseTimeIntervalString;
   };
-
+  console.log(userDetail)
   function editPost() {
     axios
       .put(
@@ -214,6 +214,7 @@ const PostContainer = (props) => {
         return null;
       });
   }
+<<<<<<< Updated upstream
   const onLiked = (postID) => {
     const isLiked = props.post.liked.some((item) => item.id === userDetail.id);
 
@@ -234,6 +235,22 @@ const PostContainer = (props) => {
         import.meta.env.VITE_APP_BASE_URL + "/posts/" + postID,
         {
           liked: updatedLiked,
+=======
+  const onLiked = (postId) => {
+    setComponentLoading(true);
+    const likedList = props.post.liked.map(el => { return el.id })
+    const index = likedList.indexOf(userDetail.id);
+    if (index > -1) {
+      likedList.splice(index, 1);
+    }else{
+      likedList.push(userDetail.id)
+    }
+    axios
+      .put(
+        import.meta.env.VITE_APP_BASE_URL + "/posts/" + postId,
+        {
+          liked: likedList
+>>>>>>> Stashed changes
         },
         {
           headers: {
