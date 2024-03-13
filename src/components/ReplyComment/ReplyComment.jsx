@@ -4,9 +4,15 @@ import { Avatar, Box, Button, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import { CallApiMyListPosts } from "../../store/postsSlice";
+import axios from "axios";
 const ReplyComment = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isReplay_2, setIsReplay_2] = useState(false);
+  const authToken = localStorage.getItem("token");
+  const dispatch = useDispatch();
+  const userDetail = useSelector((state) => state.user.userDetail);
   useEffect(() => {
     const keyDownHandler = (event) => {
       console.log("User pressed: ", event.key);
@@ -41,12 +47,62 @@ const ReplyComment = (props) => {
       ago: "trước",
       an: "Một",
       hour: "giờ",
+      a: "Một",
+      few: "vài",
+      minute: "phút",
     };
     const vietnameseTimeIntervalString = time.replace(
       /\b\w+\b/g,
       (match) => translations[match] || match
     );
     return vietnameseTimeIntervalString;
+  };
+  const handleReplyComment = (commentId) => {
+    axios
+      .post(
+        import.meta.env.VITE_APP_BASE_URL + "/comments",
+        {
+          author: userDetail.id,
+          post: props.comment.post.id,
+          content: textComment,
+          comment: commentId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        dispatch(
+          CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleDelete = (commentId) => {
+    axios
+      .delete(import.meta.env.VITE_APP_BASE_URL + "/comments/" + commentId, {
+        headers: {
+          Authorization: `Bearer ` + localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        dispatch(
+          CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div className="flex gap-4 w-full">
@@ -101,7 +157,7 @@ const ReplyComment = (props) => {
               fontSize: "14px",
             }}
           >
-           {formatTime(moment(props.reply.createdAt).fromNow())}
+            {formatTime(moment(props.reply.createdAt).fromNow())}
           </p>
           <div className="flex gap-3">
             <span
@@ -130,6 +186,7 @@ const ReplyComment = (props) => {
                 fontSize: "14px",
                 cursor: "pointer",
               }}
+              onClick={() => handleDelete(props.reply.id)}
             >
               Xóa
             </span>

@@ -32,8 +32,9 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { setLogout } from "../../store/usersSlice";
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -49,6 +50,8 @@ const Navbar = () => {
   );
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -67,7 +70,8 @@ const Navbar = () => {
     console.log("Submit change password");
   };
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    dispatch(setLogout());
+    navigate("/");
   };
   const [state, setState] = React.useState({
     top: false,

@@ -4,22 +4,35 @@ import { Card, Switch } from "@mui/material";
 import FriendCard from "../../components/FriendItem/FriendCard";
 import { API_MESSAGES } from "../../fakeApi";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { CallApiMyListFriends } from "../../store/users2Slice";
+
 const Friends = () => {
   const [checked, setChecked] = useState(false);
-  const [friends, setFriends] = useState()
+  const [friends, setFriends] = useState();
+  const dispatch = useDispatch();
+  const authToken = localStorage.getItem("token");
+  const userDetail = useSelector((state) => state.user.userDetail);
+  const listFriends = useSelector((state) => state.user2.listFriends);
   const handleChange = () => {
     setChecked(!checked);
   };
   useEffect(() => {
-    axios.get(import.meta.env.VITE_APP_BASE_URL + '/friend-list/' + 1)
-    .then((res) => {
-      console.log(res)
-      setFriends(res.data)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-  }, [])
+    if (userDetail.id) {
+      dispatch(
+        CallApiMyListFriends({
+          headers: { authorization: `Bearer ${authToken}` },
+          id: userDetail.id,
+        })
+      );
+    }
+  }, [userDetail.id, dispatch, authToken]);
+  useEffect(() => {
+    if (listFriends) {
+      console.log("listFriends", listFriends);
+    }
+  }, [listFriends]);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7] ">
       <main className="md:col-span-7 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px] md:pl-8">
@@ -38,14 +51,11 @@ const Friends = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
-            {friends ?  friends.map((friend) => {
-              return (
-                <FriendCard
-                  key={friend.id}
-                  friend={friend}
-                />
-              );
-            }): null}
+            {listFriends
+              ? listFriends.map((friend) => {
+                  return <FriendCard key={friend.id} friend={friend} />;
+                })
+              : null}
           </div>
         </Card>
       </main>

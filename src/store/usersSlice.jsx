@@ -1,10 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const usersSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: {
     value: 0,
     userDetail: {},
+    listFriends: {},
   },
   reducers: {
     increment: (state) => {
@@ -14,15 +15,20 @@ export const usersSlice = createSlice({
       state.value -= 1;
     },
     setUserDetails: (state, data) => {
-      console.log(data.payload)
-      state.userDetail = data.payload
+      console.log(data.payload);
+      state.userDetail = data.payload;
     },
     setLogin: (state, data) => {
-      localStorage.setItem('token', data.payload.jwt)
-    }
-  }
+      localStorage.setItem("token", data.payload.jwt);
+    },
+    setLogout: (state, data) => {
+      state.userDetail = {};
+      localStorage.removeItem("token");
+    },
+  },
 });
 
-export const { increment, decrement, setUserDetails, setLogin } = usersSlice.actions;
+export const { increment, decrement, setUserDetails, setLogin, setLogout } =
+  usersSlice.actions;
 
 export default usersSlice.reducer;

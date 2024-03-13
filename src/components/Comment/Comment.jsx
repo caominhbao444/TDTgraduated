@@ -15,7 +15,8 @@ import Chip from "@mui/material/Chip";
 import ReactDOMServer from "react-dom/server";
 import moment from "moment";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { CallApiMyListPosts, CallApiPostId } from "../../store/postsSlice";
 
 const listReply = [
   { id: 1, id_comment: 1, name: "Duy", content: "Chao Bao", dateCreate: 1 },
@@ -32,7 +33,9 @@ const Comment = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isReplay, setIsReplay] = useState(false);
   const [textComment, setTextComment] = useState("");
-
+  const [textEditComment, setTextEditComment] = useState(props.comment.content);
+  const authToken = localStorage.getItem("token");
+  const dispatch = useDispatch();
   useEffect(() => {
     const keyDownHandler = (event) => {
       if (event.key === "Escape") {
@@ -64,6 +67,9 @@ const Comment = (props) => {
       ago: "trước",
       an: "Một",
       hour: "giờ",
+      a: "Một",
+      few: "vài",
+      minute: "phút",
     };
     const vietnameseTimeIntervalString = time.replace(
       /\b\w+\b/g,
@@ -71,26 +77,56 @@ const Comment = (props) => {
     );
     return vietnameseTimeIntervalString;
   };
-  console.log(props.comment)
-  const handleReplyComment = (commnetId) => {
-    axios.post(import.meta.env.VITE_APP_BASE_URL + '/comments', 
-    {
-      author: userDetail.id,
-      post: props.comment.post.id,
-      content: textComment,
-      comment: commnetId
-    },
-    {
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      console.log(res)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-
+  console.log(props.comment);
+  const handleReplyComment = (commentId) => {
+    axios
+      .post(
+        import.meta.env.VITE_APP_BASE_URL + "/comments",
+        {
+          author: userDetail.id,
+          post: props.comment.post.id,
+          content: textComment,
+          comment: commentId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        setTextComment("");
+        dispatch(
+          CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleUpdateComment = (commentId) => {};
+  const handleDelete = (commentId) => {
+    axios
+      .delete(import.meta.env.VITE_APP_BASE_URL + "/comments/" + commentId, {
+        headers: {
+          Authorization: `Bearer ` + localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        dispatch(
+          CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <CardContent className="flex">
       <div className="flex gap-4 w-full">
@@ -105,7 +141,8 @@ const Comment = (props) => {
           {isEditing ? (
             <Textarea
               placeholder="Viết bình luận…"
-              defaultValue={props.comment.content}
+              value={textEditComment}
+              onChange={(e) => setTextEditComment(e.target.value)}
               minRows={2}
               className="outline-none text-justify"
               variant="soft"
@@ -163,25 +200,35 @@ const Comment = (props) => {
               >
                 Phản hồi
               </span>
-              <span
-                onClick={() => setIsEditing(true)}
-                style={{
-                  color: "gray",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                }}
-              >
-                Chỉnh sửa
-              </span>
-              <span
-                style={{
-                  color: "gray",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                }}
-              >
-                Xóa
-              </span>
+              {userDetail.id !== props.comment.author.id ? (
+                <></>
+              ) : (
+                <span
+                  onClick={() => setIsEditing(true)}
+                  style={{
+                    color: "gray",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Chỉnh sửa
+                </span>
+              )}
+              {userDetail.id === props.comment.author.id ||
+              props.authorPost === userDetail.id ? (
+                <span
+                  style={{
+                    color: "gray",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleDelete(props.comment.id)}
+                >
+                  Xóa
+                </span>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
 
@@ -212,7 +259,7 @@ const Comment = (props) => {
                 </h4>
 
                 <Textarea
-                  placeholder="Viết bình luận…"
+                  placeholder="Viết bình luận 1…"
                   minRows={2}
                   className="outline-none text-justify"
                   variant="soft"
@@ -232,7 +279,10 @@ const Comment = (props) => {
                       <span className="text-[12px]">
                         Nhấn ESC để hủy thao tác.
                       </span>
-                      <Button sx={{ ml: "auto" }} onClick={() => handleReplyComment(props.comment.id)}>
+                      <Button
+                        sx={{ ml: "auto" }}
+                        onClick={() => handleReplyComment(props.comment.id)}
+                      >
                         <SendIcon />
                       </Button>
                     </Box>

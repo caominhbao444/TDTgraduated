@@ -38,7 +38,8 @@ import Textarea from "@mui/joy/Textarea";
 import SendIcon from "@mui/icons-material/Send";
 import EmojiPicker from "emoji-picker-react";
 import MoodIcon from "@mui/icons-material/Mood";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { CallApiMyListPosts } from "../../../store/postsSlice";
 
 const listComment = [
   {
@@ -57,6 +58,8 @@ const listComment = [
   },
 ];
 const PostContainer = (props) => {
+  const dispatch = useDispatch();
+  const authToken = localStorage.getItem("token");
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
   const [textComment, setTextComment] = useState("");
@@ -84,8 +87,8 @@ const PostContainer = (props) => {
     setOpenEditPost(true);
     setContent(post.content);
     setIsPublic(post.isPublic | true);
-    if (post.image) {
-      setImageUrl(post.image);
+    if (post.media) {
+      setImageUrl(post.media);
     }
   };
   const onEmojiClick = (e) => {
@@ -136,14 +139,54 @@ const PostContainer = (props) => {
         }
       )
       .then((res) => {
-        console.log(res);
+        Swal.fire({
+          title: "Thành công",
+          text: "Bài viết đã được cập thành công.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() =>
+          dispatch(
+            CallApiMyListPosts({
+              headers: { authorization: `Bearer ${authToken}` },
+              id: userDetail.id,
+            })
+          )
+        );
         setOpenEditPost(false);
+        setIsEdit(!isEdit);
       })
       .catch((error) => {
         console.log(error);
       });
   }
-
+  function deletePost() {
+    axios
+      .delete(import.meta.env.VITE_APP_BASE_URL + "/posts/" + props.post.id, {
+        headers: {
+          Authorization: `Bearer ` + localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        Swal.fire({
+          title: "Thành công",
+          text: "Xóa bài viết cập thành công.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() =>
+          dispatch(
+            CallApiMyListPosts({
+              headers: { authorization: `Bearer ${authToken}` },
+              id: userDetail.id,
+            })
+          )
+        );
+        setOpenEditPost(false);
+        setIsEdit(!isEdit);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   function handleFileChange(event) {
     setEditLoading(true);
     const selectedFile = event.target.files[0];
@@ -171,16 +214,26 @@ const PostContainer = (props) => {
         return null;
       });
   }
-  const onLiked = () => {
-    setComponentLoading(true);
+  const onLiked = (postID) => {
+    const isLiked = props.post.liked.some((item) => item.id === userDetail.id);
+
+    let updatedLiked;
+
+    if (isLiked) {
+      // If the post is already liked by the user, remove the user's ID from the liked array
+      updatedLiked = props.post.liked.filter(
+        (item) => item.id !== userDetail.id
+      );
+    } else {
+      // If the post is not liked by the user, add the user's ID to the liked array
+      updatedLiked = [...props.post.liked, userDetail.id];
+    }
+
     axios
       .put(
-        import.meta.env.VITE_APP_BASE_URL + "/posts/" + props.post.id,
+        import.meta.env.VITE_APP_BASE_URL + "/posts/" + postID,
         {
-          liked:
-            props.post.liked.filter((el) => el.id == userDetail.id).length > 0
-              ? null
-              : userDetail.id,
+          liked: updatedLiked,
         },
         {
           headers: {
@@ -189,7 +242,12 @@ const PostContainer = (props) => {
         }
       )
       .then((res) => {
-        console.log(res);
+        dispatch(
+          CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
         setComponentLoading(false);
       })
       .catch((error) => {
@@ -212,7 +270,13 @@ const PostContainer = (props) => {
         }
       )
       .then((res) => {
-        console.log(res);
+        setTextComment("");
+        dispatch(
+          CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
         setComponentLoading(false);
       })
       .catch((error) => {
@@ -233,7 +297,7 @@ const PostContainer = (props) => {
                 height={40}
               />
             ) : (
-              <Avatar alt="Ted talk" src={props.post.author.image} />
+              <Avatar alt="Ted talk" src={props.post.author.image.url} />
             )
           }
           action={
@@ -249,7 +313,12 @@ const PostContainer = (props) => {
                       Chỉnh sửa
                     </div>
                     <Divider />
-                    <div className="w-full py-2 text-[14px]">Xóa</div>
+                    <div
+                      onClick={() => deletePost(props.post.id)}
+                      className="w-full py-2 text-[14px]"
+                    >
+                      Xóa
+                    </div>
                   </div>
                 )}
               </IconButton>
@@ -320,7 +389,7 @@ const PostContainer = (props) => {
         <CardActions className="flex justify-between w-full p-0 border mt-4">
           <button
             className="w-1/2 flex justify-center items-center gap-3 md:py-1"
-            onClick={() => onLiked()}
+            onClick={() => onLiked(props.post.id)}
           >
             <ThumbUpIcon
               className={
@@ -362,6 +431,7 @@ const PostContainer = (props) => {
                     dateCreate={comment.dateCreate}
                     id={comment.id}
                     comment={comment}
+                    authorPost={props.post.author.id}
                   />
                 );
               })}

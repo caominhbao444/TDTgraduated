@@ -160,7 +160,11 @@ const Home = () => {
         console.log(error);
       });
   };
-
+  useEffect(() => {
+    if (myPost) {
+      console.log("", myPost);
+    }
+  }, [myPost]);
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7] ">
       <aside className="hidden md:flex md:flex-col justify-start items-center bg-white  md:col-span-2  sticky top-[58px] h-[calc(100vh-58px)] ">
@@ -210,18 +214,8 @@ const Home = () => {
       </aside>
       <main className="md:col-span-5 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px]">
         {myPost &&
-          [...myPost].reverse().map((post, index) => {
-            return (
-              <PostContainer
-                key={index}
-                post={post}
-                name={post.author.fullname}
-                user_avatar={post.author.image}
-                image={post.media}
-                content={post.content}
-                dateCreated={post.createdAt}
-              />
-            );
+          [...myPost].reverse().map((post) => {
+            return <PostContainer key={post.id} post={post} />;
           })}
       </main>
       <aside className="bg-white md:col-span-2 hidden md:flex flex-col  sticky top-[58px]  h-[calc(100vh-58px)]">
@@ -244,19 +238,7 @@ const Home = () => {
             />
           </Box>
         </DialogTitle>
-        <div
-          className="flex flex-col md:justify-around relative p-[20px] max-w-[600px] md:h-[400px] gap-[10px]"
-          // style={{
-          //   display: "flex",
-          //   flexDirection: "column",
-          //   justifyContent: "space-around",
-          //   position: "relative",
-          //   padding: "40px",
-          //   maxWidth: "600px",
-          //   height: "400px",
-          //   gap: "10px",
-          // }}
-        >
+        <div className="flex flex-col md:justify-around relative p-[20px] max-w-[600px] md:h-[400px] gap-[10px]">
           <Box
             maxWidth="600px"
             className="flex flex-col md:flex-row gap-[10px] relative"
