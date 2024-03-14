@@ -1,12 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChatItem from "./ChatItem";
 import SearchIcon from "@mui/icons-material/Search";
 import { API_MESSAGES } from "../../fakeApi";
+import { useSelector } from "react-redux";
+import axios from "axios";
 const ChatListConversation = (props) => {
   const [searchName, setSearchName] = useState("");
   const filteredConversations = API_MESSAGES.filter((conversation) =>
     conversation.name.toLowerCase().includes(searchName.toLowerCase())
   );
+  const userDetail = useSelector((state) => state.user.userDetail);
+  const [friends, setFriends] = useState()
+  useEffect(() => {
+    axios.get(
+      `http://localhost:1337/api/friend-list/${userDetail.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ` + localStorage.getItem('token')
+        },
+      }
+    ).then((res) => {
+        setFriends(res.data)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }, [])
+  if(!friends){
+    return null
+  }
   return (
     <>
       <div className="flex flex-col gap-1 px-4 py-2 border-t">
@@ -25,15 +46,13 @@ const ChatListConversation = (props) => {
         </div>
       </div>
       <div className="h-[calc(100vh-129px)] px-4 py-2 border-t flex flex-col justify-start items-center overflow-scroll no-scrollbar">
-        {filteredConversations &&
-          filteredConversations.map((conversation) => {
+        {friends &&
+          friends.map((friend) => {
             return (
               <ChatItem
                 handleClicked={props.handleClicked}
-                key={conversation.id}
-                name={conversation.name}
-                id={conversation.id}
-                avatar={conversation.img_avatar}
+                key={friend.id}
+                friend={friend}
               />
             );
           })}

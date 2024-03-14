@@ -214,28 +214,6 @@ const PostContainer = (props) => {
         return null;
       });
   }
-<<<<<<< Updated upstream
-  const onLiked = (postID) => {
-    const isLiked = props.post.liked.some((item) => item.id === userDetail.id);
-
-    let updatedLiked;
-
-    if (isLiked) {
-      // If the post is already liked by the user, remove the user's ID from the liked array
-      updatedLiked = props.post.liked.filter(
-        (item) => item.id !== userDetail.id
-      );
-    } else {
-      // If the post is not liked by the user, add the user's ID to the liked array
-      updatedLiked = [...props.post.liked, userDetail.id];
-    }
-
-    axios
-      .put(
-        import.meta.env.VITE_APP_BASE_URL + "/posts/" + postID,
-        {
-          liked: updatedLiked,
-=======
   const onLiked = (postId) => {
     setComponentLoading(true);
     const likedList = props.post.liked.map(el => { return el.id })
@@ -250,7 +228,6 @@ const PostContainer = (props) => {
         import.meta.env.VITE_APP_BASE_URL + "/posts/" + postId,
         {
           liked: likedList
->>>>>>> Stashed changes
         },
         {
           headers: {
@@ -314,7 +291,7 @@ const PostContainer = (props) => {
                 height={40}
               />
             ) : (
-              <Avatar alt="Ted talk" src={props.post.author.image.url} />
+              <Avatar alt="Ted talk" src={props.post.author.image ? props.post.author.image.url : ""} />
             )
           }
           action={

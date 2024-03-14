@@ -15,12 +15,7 @@ export const usersSlice = createSlice({
       state.value -= 1;
     },
     setUserDetails: (state, data) => {
-<<<<<<< Updated upstream
-      console.log(data.payload);
-      state.userDetail = data.payload;
-=======
       state.userDetail = data.payload
->>>>>>> Stashed changes
     },
     setLogin: (state, data) => {
       localStorage.setItem("token", data.payload.jwt);
