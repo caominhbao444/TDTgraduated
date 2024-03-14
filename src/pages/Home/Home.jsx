@@ -40,7 +40,7 @@ const Home = () => {
   );
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isPublic, setIsPublic] = useState(true);
+  const [isPublic, setIsPublic] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userDetail = useSelector((state) => state.user.userDetail);

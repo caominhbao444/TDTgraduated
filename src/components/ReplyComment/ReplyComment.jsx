@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { CallApiMyListPosts } from "../../store/postsSlice";
+import {
+  CallApiDetailsListPosts,
+  CallApiMyListPosts,
+} from "../../store/postsSlice";
 import axios from "axios";
 const ReplyComment = (props) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -95,6 +98,12 @@ const ReplyComment = (props) => {
       .then((res) => {
         dispatch(
           CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+        dispatch(
+          CallApiDetailsListPosts({
             headers: { authorization: `Bearer ${authToken}` },
             id: userDetail.id,
           })

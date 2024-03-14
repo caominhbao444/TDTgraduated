@@ -39,7 +39,10 @@ import SendIcon from "@mui/icons-material/Send";
 import EmojiPicker from "emoji-picker-react";
 import MoodIcon from "@mui/icons-material/Mood";
 import { useDispatch, useSelector } from "react-redux";
-import { CallApiMyListPosts } from "../../../store/postsSlice";
+import {
+  CallApiDetailsListPosts,
+  CallApiMyListPosts,
+} from "../../../store/postsSlice";
 
 const listComment = [
   {
@@ -122,7 +125,7 @@ const PostContainer = (props) => {
     );
     return vietnameseTimeIntervalString;
   };
-  console.log(userDetail)
+  console.log(userDetail);
   function editPost() {
     axios
       .put(
@@ -144,14 +147,20 @@ const PostContainer = (props) => {
           text: "Bài viết đã được cập thành công.",
           icon: "success",
           confirmButtonText: "OK",
-        }).then(() =>
+        }).then(() => {
           dispatch(
             CallApiMyListPosts({
               headers: { authorization: `Bearer ${authToken}` },
               id: userDetail.id,
             })
-          )
-        );
+          );
+          dispatch(
+            CallApiDetailsListPosts({
+              headers: { authorization: `Bearer ${authToken}` },
+              id: userDetail.id,
+            })
+          );
+        });
         setOpenEditPost(false);
         setIsEdit(!isEdit);
       })
@@ -172,14 +181,20 @@ const PostContainer = (props) => {
           text: "Xóa bài viết cập thành công.",
           icon: "success",
           confirmButtonText: "OK",
-        }).then(() =>
+        }).then(() => {
           dispatch(
             CallApiMyListPosts({
               headers: { authorization: `Bearer ${authToken}` },
               id: userDetail.id,
             })
-          )
-        );
+          );
+          dispatch(
+            CallApiDetailsListPosts({
+              headers: { authorization: `Bearer ${authToken}` },
+              id: userDetail.id,
+            })
+          );
+        });
         setOpenEditPost(false);
         setIsEdit(!isEdit);
       })
@@ -216,18 +231,20 @@ const PostContainer = (props) => {
   }
   const onLiked = (postId) => {
     setComponentLoading(true);
-    const likedList = props.post.liked.map(el => { return el.id })
+    const likedList = props.post.liked.map((el) => {
+      return el.id;
+    });
     const index = likedList.indexOf(userDetail.id);
     if (index > -1) {
       likedList.splice(index, 1);
-    }else{
-      likedList.push(userDetail.id)
+    } else {
+      likedList.push(userDetail.id);
     }
     axios
       .put(
         import.meta.env.VITE_APP_BASE_URL + "/posts/" + postId,
         {
-          liked: likedList
+          liked: likedList,
         },
         {
           headers: {
@@ -238,6 +255,12 @@ const PostContainer = (props) => {
       .then((res) => {
         dispatch(
           CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+        dispatch(
+          CallApiDetailsListPosts({
             headers: { authorization: `Bearer ${authToken}` },
             id: userDetail.id,
           })
@@ -271,6 +294,12 @@ const PostContainer = (props) => {
             id: userDetail.id,
           })
         );
+        dispatch(
+          CallApiDetailsListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
         setComponentLoading(false);
       })
       .catch((error) => {
@@ -291,31 +320,40 @@ const PostContainer = (props) => {
                 height={40}
               />
             ) : (
-              <Avatar alt="Ted talk" src={props.post.author.image ? props.post.author.image.url : ""} />
+              <Avatar
+                alt="Ted talk"
+                src={props.post.author.image ? props.post.author.image.url : ""}
+              />
             )
           }
           action={
             loading ? null : (
-              <IconButton aria-label="settings" className="relative">
-                <MoreVertOutlinedIcon onClick={() => setIsEdit(!isEdit)} />
-                {isEdit && (
-                  <div className="absolute top-[110%] right-0 text-center w-[100px] border bg-white border-textLightColor flex flex-col">
-                    <div
-                      className="w-full py-2 text-[14px]"
-                      onClick={() => handleOpenEditPost(props.post)}
-                    >
-                      Chỉnh sửa
+              <>
+                <IconButton
+                  aria-label="settings"
+                  className="relative"
+                  onClick={() => setIsEdit(!isEdit)}
+                >
+                  <MoreVertOutlinedIcon />
+                  {isEdit && (
+                    <div className="absolute top-[110%] right-0 text-center w-[100px] border bg-white border-textLightColor flex flex-col">
+                      <div
+                        className="w-full py-2 text-[14px]"
+                        onClick={() => handleOpenEditPost(props.post)}
+                      >
+                        Chỉnh sửa
+                      </div>
+                      <Divider />
+                      <div
+                        onClick={() => deletePost(props.post.id)}
+                        className="w-full py-2 text-[14px]"
+                      >
+                        Xóa
+                      </div>
                     </div>
-                    <Divider />
-                    <div
-                      onClick={() => deletePost(props.post.id)}
-                      className="w-full py-2 text-[14px]"
-                    >
-                      Xóa
-                    </div>
-                  </div>
-                )}
-              </IconButton>
+                  )}
+                </IconButton>
+              </>
             )
           }
           title={props.post.author.fullname}
@@ -414,21 +452,19 @@ const PostContainer = (props) => {
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           {props.post.comments &&
-            props.post.comments
-              .filter((el) => !el.comment)
-              .map((comment, index) => {
-                return (
-                  <Comment
-                    key={index}
-                    name={comment.name}
-                    content={comment.content}
-                    dateCreate={comment.dateCreate}
-                    id={comment.id}
-                    comment={comment}
-                    authorPost={props.post.author.id}
-                  />
-                );
-              })}
+            props.post.comments.map((comment) => {
+              return (
+                <Comment
+                  key={comment.id}
+                  name={comment.name}
+                  content={comment.content}
+                  dateCreate={comment.dateCreate}
+                  id={comment.id}
+                  comment={comment}
+                  authorPost={props.post.author.id}
+                />
+              );
+            })}
           <CardContent>
             <div className="flex gap-4 w-full">
               <Avatar

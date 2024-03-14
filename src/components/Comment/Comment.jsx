@@ -16,7 +16,11 @@ import ReactDOMServer from "react-dom/server";
 import moment from "moment";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { CallApiMyListPosts, CallApiPostId } from "../../store/postsSlice";
+import {
+  CallApiDetailsListPosts,
+  CallApiMyListPosts,
+  CallApiPostId,
+} from "../../store/postsSlice";
 
 const listReply = [
   { id: 1, id_comment: 1, name: "Duy", content: "Chao Bao", dateCreate: 1 },
@@ -102,6 +106,12 @@ const Comment = (props) => {
             id: userDetail.id,
           })
         );
+        dispatch(
+          CallApiDetailsListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -110,7 +120,7 @@ const Comment = (props) => {
   const handleUpdateComment = (commentId) => {};
   const handleDelete = (commentId) => {
     axios
-      .delete(import.meta.env.VITE_APP_BASE_URL + "/comments/" + commentId, {
+      .delete(import.meta.env.VITE_APP_BASE_URL + `/comments/${commentId}`, {
         headers: {
           Authorization: `Bearer ` + localStorage.getItem("token"),
         },
@@ -118,6 +128,12 @@ const Comment = (props) => {
       .then((res) => {
         dispatch(
           CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+        dispatch(
+          CallApiDetailsListPosts({
             headers: { authorization: `Bearer ${authToken}` },
             id: userDetail.id,
           })

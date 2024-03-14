@@ -35,6 +35,7 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setLogout } from "../../store/usersSlice";
+import { resetStateToInitial } from "../../store/postsSlice";
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -71,6 +72,7 @@ const Navbar = () => {
   };
   const handleLogout = () => {
     dispatch(setLogout());
+    dispatch(resetStateToInitial());
     navigate("/");
   };
   const [state, setState] = React.useState({
@@ -263,6 +265,7 @@ const Navbar = () => {
               }}
               variant="outlined"
               size="small"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -285,7 +288,7 @@ const Navbar = () => {
             aria-expanded={open ? "true" : undefined}
           >
             <Avatar
-              src="/broken-image.jpg"
+              src={userDetail.image}
               sx={{ width: 32, height: 32 }}
             ></Avatar>
           </IconButton>

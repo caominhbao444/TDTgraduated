@@ -4,6 +4,7 @@ import axios from "axios";
 const initialState = {
   myPost: [],
   postId: [],
+  myDetailsPost: [],
 };
 
 //CallApiMyListPosts
@@ -19,7 +20,7 @@ export const CallApiMyListPosts = createAsyncThunk(
           },
         }
       );
-      console.log(apiMyPostsResponse.data)
+      console.log(apiMyPostsResponse.data);
       return apiMyPostsResponse.data;
     } catch (err) {
       console.log(err);
@@ -28,10 +29,10 @@ export const CallApiMyListPosts = createAsyncThunk(
 );
 //CallApiMyListPosts post trong details
 export const CallApiDetailsListPosts = createAsyncThunk(
-  "user/callApiMyListPosts",
+  "user/callApiDetailListPosts",
   async function ({ headers, id }) {
     try {
-      const apiMyPostsResponse = await axios.get(
+      const apiDetailListPosts = await axios.get(
         `http://localhost:1337/api/posts?id=${id}&details=true`,
         {
           headers: {
@@ -39,8 +40,8 @@ export const CallApiDetailsListPosts = createAsyncThunk(
           },
         }
       );
-      console.log(apiMyPostsResponse.data)
-      return apiMyPostsResponse.data;
+      console.log(apiDetailListPosts.data);
+      return apiDetailListPosts.data;
     } catch (err) {
       console.log(err);
     }
@@ -68,6 +69,12 @@ export const CallApiPostId = createAsyncThunk(
 const postsSlice = createSlice({
   name: "post",
   initialState,
+  reducers: {
+    // Add a reducer case to handle resetting state to initial state
+    resetStateToInitial: (state) => {
+      return initialState;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(CallApiMyListPosts.pending, (state) => {
@@ -91,7 +98,19 @@ const postsSlice = createSlice({
       .addCase(CallApiPostId.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
+      })
+      .addCase(CallApiDetailsListPosts.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiDetailsListPosts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.myDetailsPost = action.payload;
+      })
+      .addCase(CallApiDetailsListPosts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
       });
   },
 });
+export const { resetStateToInitial } = postsSlice.actions;
 export default postsSlice.reducer;

@@ -26,7 +26,7 @@ const Body = (props) => {
   const authToken = localStorage.getItem("token");
   const [friends, setFriends] = useState();
   const [userDetails, setUserDetails] = useState();
-  const myPost = useSelector((state) => state.post.myPost);
+  const myDetailsPost = useSelector((state) => state.post.myDetailsPost);
   const userDetail = useSelector((state) => state.user.userDetail);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,15 +40,15 @@ const Body = (props) => {
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/", {
-        headers: { 
-          authorization: `Bearer ${authToken}` 
+        headers: {
+          authorization: `Bearer ${authToken}`,
         },
         params: {
-          id: params.id
-        }
+          id: params.id,
+        },
       })
       .then((res) => {
-        console.log('???', params.id, userDetail)
+        console.log("???", params.id, userDetail);
         setUserDetails(res.data);
         dispatch(
           CallApiDetailsListPosts({
@@ -73,6 +73,16 @@ const Body = (props) => {
         console.log(error);
       });
   }, []);
+  useEffect(() => {
+    if (userDetail.id) {
+      dispatch(
+        CallApiDetailsListPosts({
+          headers: { authorization: `Bearer ${authToken}` },
+          id: userDetail.id,
+        })
+      );
+    }
+  }, [userDetail.id, dispatch, authToken]);
   if (!userDetails) {
     return null;
   }
@@ -211,8 +221,8 @@ const Body = (props) => {
       )}
       {props.activeTab === 1 && (
         <div className="flex flex-col w-full md:p-10 md:gap-3 gap-3">
-          {myPost &&
-            [...myPost].reverse().map((post, index) => {
+          {myDetailsPost &&
+            [...myDetailsPost].reverse().map((post, index) => {
               return <PostContainer key={index} post={post} />;
             })}
         </div>
@@ -253,8 +263,8 @@ const Body = (props) => {
                 "repeat(auto-fill,minmax(280px,1fr))!important",
             }}
           >
-            {myPost &&
-              [...myPost].reverse().map((item, index) => {
+            {myDetailsPost &&
+              [...myDetailsPost].reverse().map((item, index) => {
                 return (
                   <Card key={index}>
                     <ImageListItem

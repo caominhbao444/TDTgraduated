@@ -2,9 +2,28 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
+  inforUser: [],
   listFriends: [],
 };
-
+//CallApiInforUser
+export const CallApiInforUser = createAsyncThunk(
+  "user/callApiInforUser",
+  async function ({ headers, id }) {
+    try {
+      const apiInforUserResponse = await axios.get(
+        `http://localhost:1337/api/user-details?id=${id}`,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiInforUserResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 //CallApiMyListFriends
 export const CallApiMyListFriends = createAsyncThunk(
   "user/callApiMyListFriends",
@@ -38,6 +57,17 @@ const usersSlice2 = createSlice({
         state.listFriends = action.payload;
       })
       .addCase(CallApiMyListFriends.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiInforUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiInforUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.inforUser = action.payload;
+      })
+      .addCase(CallApiInforUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

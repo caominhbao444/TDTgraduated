@@ -94,7 +94,7 @@ const Signup = () => {
       .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local/register`, newData)
       .then((res) => {
         console.log(res);
-        navigate("/home");
+        navigate("/");
       })
       .catch((error) => {
         console.log(error);
