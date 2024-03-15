@@ -92,8 +92,9 @@ const FirstView = (props) => {
   const [descEditEvent, setDescEditEvent] = useState("");
   const [amountEditEvent, setAmountEditEvent] = useState("");
   const [editDateEvent, setEditDateEvent] = useState([]);
-  const [editEventId, setEditEventId] = useState()
+  const [editEventId, setEditEventId] = useState();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const userDetail = useSelector((state) => state.user.userDetail);
   const handleClickOpen = (data) => () => {
     setOpen(true);
     setDataEdit(data);
@@ -111,21 +112,28 @@ const FirstView = (props) => {
     setEditDateEvent(newvalue);
   };
   const handleEdit = () => {
-    axios.put(import.meta.env.VITE_APP_BASE_URL + '/events/' + editEventId,{
-      title: nameEditEvent,
-      content: descEditEvent,
-      limit: amountEditEvent,
-      // from: moment(editDateEvent[0].$d),
-      // to: moment(editDateEvent[1].$d)
-    },{
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      console.log(res.data)
-    }).catch((error) => {
-      console.log(error)
-    })
+    axios
+      .put(
+        import.meta.env.VITE_APP_BASE_URL + "/events/" + editEventId,
+        {
+          title: nameEditEvent,
+          content: descEditEvent,
+          limit: amountEditEvent,
+          // from: moment(editDateEvent[0].$d),
+          // to: moment(editDateEvent[1].$d)
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   useEffect(() => {
     setNameEditEvent(dataEdit.title);
@@ -134,37 +142,50 @@ const FirstView = (props) => {
     setEditDateEvent();
   }, [dataEdit]);
   const handleDeleteEvent = (eventId) => {
-    axios.delete(import.meta.env.VITE_APP_BASE_URL + '/events/' + eventId,{
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      console.log(res.data)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
+    axios
+      .delete(import.meta.env.VITE_APP_BASE_URL + "/events/" + eventId, {
+        headers: {
+          Authorization: `Bearer ` + localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleCancel = (event) => {
-    axios.put(import.meta.env.VITE_APP_BASE_URL + '/events/' + event.id,{
-      participants: event.participants.filter(item => item !== props.userDetail.id)
-    },{
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      console.log(res.data)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
+    const updatedParticipants = event.participants.filter(
+      (item) => item.id !== props.userDetail.id
+    );
+    axios
+      .put(
+        import.meta.env.VITE_APP_BASE_URL + "/events/" + event.id,
+        {
+          participants: updatedParticipants,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <>
       {props.events.map((event) => {
         return (
           <div className="border" key={event.id}>
             <img
-              src={event.imageUrl}
+              src={event.media}
               alt=""
               className="w-full h-[200px] object-cover object-center"
             />
@@ -173,7 +194,8 @@ const FirstView = (props) => {
               <p>Người tổ chức: {event.author.fullname}</p>
               <div className="flex flex-col md:flex-row w-full md:items-center">
                 <p className="w-full md:w-2/3 flex justify-start items-center">
-                  Thời gian: {moment(event.from).format("DD/MM/YYYY HH:mm A")} - {moment(event.to ).format("DD/MM/YYYY HH:mm A")}
+                  Thời gian: {moment(event.from).format("DD/MM/YYYY HH:mm A")} -{" "}
+                  {moment(event.to).format("DD/MM/YYYY HH:mm A")}
                 </p>
                 <p className="w-full md:w-1/3 flex justify-end items-center">
                   Số lượng: {event.participants.length}/{event.limit}
@@ -195,28 +217,29 @@ const FirstView = (props) => {
                 </Accordion>
               </div>
               <div className="w-full flex justify-end items-center gap-3">
-                {
-                  event.participants.filter(el => el.id != props.userDetail.id).length > 0 ? 
-                    <button className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg"
-                      onClick={() => handleCancel(event.id)}
+                {event.author.id !== userDetail.id ? (
+                  <button
+                    className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg"
+                    onClick={() => handleCancel(event)}
+                  >
+                    Huỷ tham gia
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg"
+                      onClick={() => handleDeleteEvent(event.id)}
                     >
-                      Huỷ tham gia
+                      Xóa sự kiện
                     </button>
-                    : 
-                    <>
-                      <button className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg"
-                        onClick={() => handleDeleteEvent(event.id)}>
-                        Xóa sự kiện
-                      </button>
-                      <button
-                        className="px-3 py-2 bg-mainColor text-white hover:bg-white hover:text-mainColor border border-mainColor rounded-lg"
-                        onClick={handleClickOpen(event)}
-                      >
-                        Chỉnh sửa
-                      </button>
-                    </> 
-                } 
-                
+                    <button
+                      className="px-3 py-2 bg-mainColor text-white hover:bg-white hover:text-mainColor border border-mainColor rounded-lg"
+                      onClick={handleClickOpen(event)}
+                    >
+                      Chỉnh sửa
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -319,7 +342,7 @@ const SecondView = (props) => {
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
-
+  const userDetail = useSelector((state) => state.user.userDetail);
   let days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
@@ -459,22 +482,25 @@ const MyEvent = () => {
   const [events, setEvents] = useState();
   const userDetail = useSelector((state) => state.user.userDetail);
   useEffect(() => {
-    axios.get(import.meta.env.VITE_APP_BASE_URL + '/events',{
-      params: {
-        id: userDetail.id
-      },
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      setEvents(res.data)
-      console.log('////', res.data)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }, [])
-  if(!events) {
-    return null
+    axios
+      .get(import.meta.env.VITE_APP_BASE_URL + "/events", {
+        params: {
+          id: userDetail.id,
+        },
+        headers: {
+          Authorization: `Bearer ` + localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        setEvents(res.data);
+        console.log("////", res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  if (!events) {
+    return null;
   }
   return (
     <div className="h-full w-full bg-white flex flex-col gap-4 md:p-4">
@@ -496,7 +522,11 @@ const MyEvent = () => {
           </ToggleButtonGroup>
         </div>
       </div>
-      {view === "left" ? <FirstView events={events} userDetail={userDetail} /> : <SecondView />}
+      {view === "left" ? (
+        <FirstView events={events} userDetail={userDetail} />
+      ) : (
+        <SecondView />
+      )}
     </div>
   );
 };

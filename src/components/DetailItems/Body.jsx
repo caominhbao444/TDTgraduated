@@ -142,18 +142,6 @@ const Body = (props) => {
           <Divider />
           <div className="flex justify-between items-center w-full">
             <div className="w-1/2 md:text-[15px] text-textLightColor font-medium text-[2vw]">
-              Mật khẩu
-            </div>
-            <div className="w-1/2 flex justify-between items-center">
-              <span className="text-[2vw] md:text-[15px] font-normal">***</span>
-              <div>
-                <EditIcon className="h-full w-full" />
-              </div>
-            </div>
-          </div>
-          <Divider />
-          <div className="flex justify-between items-center w-full">
-            <div className="w-1/2 md:text-[15px] text-textLightColor font-medium text-[2vw]">
               Giới tính
             </div>
             <div className="w-1/2 flex justify-between items-center">

@@ -322,37 +322,39 @@ const PostContainer = (props) => {
             ) : (
               <Avatar
                 alt="Ted talk"
-                src={props.post.author.image ? props.post.author.image.url : ""}
+                src={props.post.author.image ? props.post.author.image : ""}
               />
             )
           }
           action={
             loading ? null : (
               <>
-                <IconButton
-                  aria-label="settings"
-                  className="relative"
-                  onClick={() => setIsEdit(!isEdit)}
-                >
-                  <MoreVertOutlinedIcon />
-                  {isEdit && (
-                    <div className="absolute top-[110%] right-0 text-center w-[100px] border bg-white border-textLightColor flex flex-col">
-                      <div
-                        className="w-full py-2 text-[14px]"
-                        onClick={() => handleOpenEditPost(props.post)}
-                      >
-                        Chỉnh sửa
+                {userDetail.id === props.post.author.id && (
+                  <IconButton
+                    aria-label="settings"
+                    className="relative"
+                    onClick={() => setIsEdit(!isEdit)}
+                  >
+                    <MoreVertOutlinedIcon />
+                    {isEdit && (
+                      <div className="absolute top-[110%] right-0 text-center w-[100px] border bg-white border-textLightColor flex flex-col">
+                        <div
+                          className="w-full py-2 text-[14px]"
+                          onClick={() => handleOpenEditPost(props.post)}
+                        >
+                          Chỉnh sửa
+                        </div>
+                        <Divider />
+                        <div
+                          onClick={() => deletePost(props.post.id)}
+                          className="w-full py-2 text-[14px]"
+                        >
+                          Xóa
+                        </div>
                       </div>
-                      <Divider />
-                      <div
-                        onClick={() => deletePost(props.post.id)}
-                        className="w-full py-2 text-[14px]"
-                      >
-                        Xóa
-                      </div>
-                    </div>
-                  )}
-                </IconButton>
+                    )}
+                  </IconButton>
+                )}
               </>
             )
           }
@@ -467,10 +469,7 @@ const PostContainer = (props) => {
             })}
           <CardContent>
             <div className="flex gap-4 w-full">
-              <Avatar
-                alt="Remy Sharp"
-                src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
-              />
+              <Avatar alt="Remy Sharp" src={props.post.author.image} />
               <div className="flex flex-col w-full gap-2">
                 <Textarea
                   placeholder="Viết bình luận…"

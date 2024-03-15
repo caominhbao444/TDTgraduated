@@ -6,6 +6,7 @@ import { Avatar, CircularProgress, MenuItem, Select } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 const CreateEvent = () => {
   const [method, setMethod] = useState("");
@@ -79,25 +80,36 @@ const CreateEvent = () => {
     // const updateArray = [...API_LISTEvents, data];
     // API_LISTEvents.push(data);
     // console.log("Data is", API_LISTEvents);
-    axios.post(import.meta.env.VITE_APP_BASE_URL + '/events', 
-    {
-      author: userDetail.id,
-      title: nameEvent,
-      from: dateStart,
-      to: dateEnd,
-      method: method,
-      content: detail,
-      media: imageUrl,
-      limit: amount,
-    },{
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem('token')
-      },
-    }).then((res) => {
-      console.log(res.data)
-    }).catch((error) => {
-      console.log(error)
-    })
+    axios
+      .post(
+        import.meta.env.VITE_APP_BASE_URL + "/events",
+        {
+          author: userDetail.id,
+          title: nameEvent,
+          from: dateStart,
+          to: dateEnd,
+          method: method,
+          content: detail,
+          media: imageUrl,
+          limit: amount,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        Swal.fire({
+          title: "Thành công",
+          text: "Đã tạo sự kiện thành công",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div className="h-full w-full bg-white">
@@ -147,13 +159,10 @@ const CreateEvent = () => {
       </div>
       <div className="w-full flex justify-start items-center px-4 py-2 border-b">
         <div className="flex gap-3 justify-center items-center">
-          <Avatar
-            alt="Ted talk"
-            src="https://images.unsplash.com/photo-1709380526836-100c551cfc28?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxM3x8fGVufDB8fHx8fA%3D%3D"
-          />
+          <Avatar alt="Ted talk" src={userDetail.image} />
           <div className="flex flex-col justify-center">
             <span className="text-[15px] text-black font-medium">
-              Cao Minh Bao
+              {userDetail.fullname}
             </span>
             <span className="text-[14px] text-textLightColor">
               Người tổ chức
