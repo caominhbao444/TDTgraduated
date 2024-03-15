@@ -20,6 +20,7 @@
     "@mui/x-date-pickers-pro": "^6.19.6",
     "@reduxjs/toolkit": "^2.2.1",
     "@zach.codes/react-calendar": "^0.3.3",
+    "antd": "^5.15.2",
     "axios": "^1.6.3",
     "date-fns": "^3.3.1",
     "dayjs": "^1.11.10",

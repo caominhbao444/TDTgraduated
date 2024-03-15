@@ -154,3 +154,23 @@ export const API_MyEvents = [
     dateEvent: ["2024-05-03T18:00:00.000Z", "2025-05-31T19:00:00.000Z"],
   },
 ];
+export const API_USERS = [
+  {
+    id: 1,
+    fullname: "CaO Minh Bao",
+    username: "minhbao",
+    email: "minhbao@gmail.com",
+    country: "Tinh Quang Ngai",
+    course: "22",
+    faculy: "Khoa CNTT",
+  },
+  {
+    id: 2,
+    fullname: "Dang Dang Duy",
+    username: "minhbao",
+    email: "minhbao@gmail.com",
+    country: "Tinh Quang Ngai",
+    course: "22",
+    faculy: "Khoa CNTT",
+  },
+];

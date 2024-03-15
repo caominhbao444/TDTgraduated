@@ -15,6 +15,8 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "./store/usersSlice";
 import Confirm from "./pages/Login/Confirm";
+import PrivateAdmin from "./components/PrivateArea/PrivateAdmin";
+import ManageUsers from "./pages/Manage/ManageUsers";
 
 function App() {
   const dispatch = useDispatch();
@@ -52,6 +54,9 @@ function App() {
           </Route>
           <Route element={<PrivateArea2 />}>
             <Route path="/message/:id?" element={<Chat />} />
+          </Route>
+          <Route element={<PrivateAdmin />}>
+            <Route path="/admin/users" element={<ManageUsers />} />
           </Route>
         </Routes>
       </BrowserRouter>
