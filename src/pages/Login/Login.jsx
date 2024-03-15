@@ -21,7 +21,7 @@ const Login = () => {
   const handleSignin = (e) => {
     e.preventDefault();
     axios
-      .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local`, {
+      .post(import.meta.env.VITE_APP_BASE_URL + `/auth/login`, {
         identifier: username,
         password: password,
       })

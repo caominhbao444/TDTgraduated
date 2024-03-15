@@ -91,7 +91,7 @@ const Signup = () => {
   const submitForm = (newData) => {
     console.log("Form data: ", newData);
     axios
-      .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local/register`, newData)
+      .post(import.meta.env.VITE_APP_BASE_URL + `/auth/register`, newData)
       .then((res) => {
         console.log(res);
         navigate("/");

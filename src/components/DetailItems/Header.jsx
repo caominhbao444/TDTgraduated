@@ -46,7 +46,7 @@ const Header = (props) => {
     props.handleActiveTab(active);
   };
   const currentUser = useSelector((state) => state.user.userDetail);
-  const params = useParams();
+
   const authToken = localStorage.getItem("token");
   const [userDetail, setUserDetail] = useState();
   const handleOpen = () => setOpen(true);
@@ -59,7 +59,7 @@ const Header = (props) => {
           authorization: `Bearer ${authToken}`,
         },
         params: {
-          id: params.id,
+          id: props.id,
         },
       })
       .then((res) => {
@@ -117,9 +117,9 @@ const Header = (props) => {
         console.log(error);
       });
   };
-  if (!userDetail) {
-    return null;
-  }
+  // if (!userDetail) {
+  //   return null;
+  // }
   return (
     <div className="flex flex-col w-full">
       <div className="w-full md:h-[40vh] h-[30vh] relative">
@@ -128,7 +128,7 @@ const Header = (props) => {
           className="w-full h-full object-cover"
         />
 
-        {currentUser.id != userDetail.id ? (
+        {currentUser.id != props.user.id ? (
           <div
             className="absolute top-4 right-4 flex justify-center items-center w-[25px] h-[25px]  rounded-[100%] border"
             onClick={() => setOpen(!open)}
@@ -203,11 +203,11 @@ const Header = (props) => {
         </div>
         <div className="w-1/5 md:p-5 p-2 relative flex justify-center items-center">
           <img
-            src={userDetail.image}
+            src={props.user.image}
             className="md:w-[150px] md:h-[150px] w-[20vw] h-[20vw] absolute md:-top-[140px] -top-[19vw] object-cover object-center rounded-[100%] left-1/2 -translate-x-1/2 translate-x"
           />
           <p className="text-center md:text-[14px] text-[2vw] font-semibold whitespace-nowrap">
-            {userDetail.fullname}
+            {props.user.fullname}
           </p>
         </div>
         <div

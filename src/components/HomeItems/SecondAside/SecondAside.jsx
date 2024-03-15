@@ -1,28 +1,28 @@
 import { Avatar } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
+import { CallApiMyListFriends } from "../../../store/users2Slice";
 
 const SecondAside = () => {
-  const [friends, setFriends] = useState()
   const userDetail = useSelector((state) => state.user.userDetail);
-
+  const listFriends = useSelector((state) => state.user2.listFriends);
+  const authToken = localStorage.getItem("token");
+  const dispatch = useDispatch();
   useEffect(() => {
-    if(userDetail.id){
-      axios.get(import.meta.env.VITE_APP_BASE_URL + '/friend-list/' + userDetail.id)
-      .then((res) => {
-        setFriends(res.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    if (userDetail.id) {
+      dispatch(
+        CallApiMyListFriends({
+          headers: { authorization: `Bearer ${authToken}` },
+          id: userDetail.id,
+        })
+      );
     }
-    
-  }, [userDetail.id])
-  const Friend = ({friend}) => {
-    console.log(friend)
+  }, [userDetail.id, dispatch, authToken]);
+  const Friend = ({ friend }) => {
+    console.log("test", friend);
     return (
       <Link
         to={`/message/${1}`}
@@ -31,13 +31,16 @@ const SecondAside = () => {
         <div className="flex justify-start items-center gap-2">
           <Avatar
             alt="Remy Sharp"
-            src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
+            src={friend.image}
             sx={{ width: 30, height: 30 }}
           />
           <span>{friend.fullname}</span>
         </div>
         <div className="flex justify-center items-center">
-          <CircleIcon color={friend.isOnline ? 'success' : 'disabled'} sx={{ fontSize: "12px" }} />
+          <CircleIcon
+            color={friend.isOnline ? "success" : "disabled"}
+            sx={{ fontSize: "12px" }}
+          />
         </div>
       </Link>
     );
@@ -48,11 +51,11 @@ const SecondAside = () => {
         Trực tuyến
       </header>
       <div className="h-[90%] w-full overflow-y-auto  overflow-x-hidden scrollbar-thin scrollbar-thumb-transparent no-scrollbar">
-        {
-          friends ? friends.map((friend) => (
-            <Friend key={friend.id} friend={friend}></Friend>
-          )) : null
-        }
+        {listFriends
+          ? listFriends.map((friend) => (
+              <Friend key={friend.id} friend={friend}></Friend>
+            ))
+          : null}
       </div>
     </div>
   );

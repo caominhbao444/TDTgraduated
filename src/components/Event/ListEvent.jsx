@@ -17,6 +17,7 @@ const ListEvent = () => {
     dispatch(
       CallApiListEvents({
         headers: { authorization: `Bearer ${authToken}` },
+        id: userDetail.id,
       })
     );
   }, [authToken, dispatch]);

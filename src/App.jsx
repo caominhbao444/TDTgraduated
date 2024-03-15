@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "./store/usersSlice";
+import Confirm from "./pages/Login/Confirm";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,12 +35,13 @@ function App() {
           console.log(error);
         });
     }
-  }, []);
+  }, [dispatch]);
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/confirm/:id" element={<Confirm />} />
           <Route path="/signup" element={<Signup />} />
           <Route element={<PrivateArea />}>
             <Route path="/home" element={<Home />} />

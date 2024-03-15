@@ -26,7 +26,27 @@ export const CallApiListEvents = createAsyncThunk(
     }
   }
 );
-const postsSlice = createSlice({
+//CallApiMyListEvents
+export const CallApiMyListEvents = createAsyncThunk(
+  "events/callApiMyListEvents",
+  async function ({ headers, id }) {
+    try {
+      const apiMyListEventsResponse = await axios.get(
+        `http://localhost:1337/api/events?id=${id}`,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      console.log(apiMyListEventsResponse.data);
+      return apiMyListEventsResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+const eventsSlice = createSlice({
   name: "events",
   initialState,
   extraReducers: (builder) => {
@@ -41,7 +61,18 @@ const postsSlice = createSlice({
       .addCase(CallApiListEvents.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
+      })
+      .addCase(CallApiMyListEvents.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiMyListEvents.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.myListEvents = action.payload;
+      })
+      .addCase(CallApiMyListEvents.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
       });
   },
 });
-export default postsSlice.reducer;
+export default eventsSlice.reducer;

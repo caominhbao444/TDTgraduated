@@ -49,31 +49,64 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { MultiInputDateTimeRangeField } from "@mui/x-date-pickers-pro/MultiInputDateTimeRangeField";
 import axios from "axios";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { CallApiMyListEvents } from "../../store/eventsSlice";
 const Meeting = ({ meeting }) => {
-  let startDateTime = parseISO(meeting.startDatetime);
-  let endDateTime = parseISO(meeting.endDatetime);
+  let startDateTime = parseISO(meeting.from);
+  const authToken = localStorage.getItem("token");
+  const userDetail = useSelector((state) => state.user.userDetail);
+  const dispatch = useDispatch();
+  let endDateTime = parseISO(meeting.to);
+  const handleCancel = (event) => {
+    const updatedParticipants = event.participants.filter(
+      (item) => item.id !== userDetail.id
+    );
+    axios
+      .put(
+        import.meta.env.VITE_APP_BASE_URL + "/events/" + event.id,
+        {
+          participants: updatedParticipants,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        dispatch(
+          CallApiMyListEvents({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       <img
-        src={meeting.imageUrl}
+        src={meeting.media}
         alt=""
         className="flex-none w-10 h-10 rounded-full"
       />
       <div className="flex-auto">
-        <p className="text-gray-900">{meeting.name}</p>
+        <p className="text-gray-900">{meeting.title}</p>
         <p className="mt-0.5">
-          <time dateTime={meeting.startDatetime}>
-            {format(startDateTime, "h:mm a")}
-          </time>{" "}
+          <time dateTime={meeting.from}>{format(startDateTime, "h:mm a")}</time>{" "}
           -{" "}
-          <time dateTime={meeting.endDatetime}>
+          <time dateTime={meeting.to}>
             {format(endDateTime, "h:mm a dd/MM")}
           </time>
         </p>
       </div>
       <div className="flex items-center">
-        <button className="px-3 py-1 bg-red-700 text-white cursor-pointer rounded-[12px]">
+        <button
+          className="px-3 py-1 bg-red-700 text-white cursor-pointer rounded-[12px]"
+          onClick={() => handleCancel(meeting)}
+        >
           Hủy
         </button>
       </div>
@@ -90,10 +123,12 @@ const FirstView = (props) => {
   const [dataEdit, setDataEdit] = useState({});
   const [nameEditEvent, setNameEditEvent] = useState("");
   const [descEditEvent, setDescEditEvent] = useState("");
+  const dispatch = useDispatch();
   const [amountEditEvent, setAmountEditEvent] = useState("");
   const [editDateEvent, setEditDateEvent] = useState([]);
   const [editEventId, setEditEventId] = useState();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const authToken = localStorage.getItem("token");
   const userDetail = useSelector((state) => state.user.userDetail);
   const handleClickOpen = (data) => () => {
     setOpen(true);
@@ -149,7 +184,12 @@ const FirstView = (props) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        dispatch(
+          CallApiMyListEvents({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -173,7 +213,12 @@ const FirstView = (props) => {
         }
       )
       .then((res) => {
-        console.log(res.data);
+        dispatch(
+          CallApiMyListEvents({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -342,6 +387,7 @@ const SecondView = (props) => {
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
+  const myListEvents = useSelector((state) => state.events.myListEvents);
   const userDetail = useSelector((state) => state.user.userDetail);
   let days = eachDayOfInterval({
     start: firstDayCurrentMonth,
@@ -358,8 +404,8 @@ const SecondView = (props) => {
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
 
-  let selectedDayMeetings = API_MyEvents.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
+  let selectedDayMeetings = myListEvents.filter((meeting) =>
+    isSameDay(parseISO(meeting.from), selectedDay)
   );
   return (
     <>
@@ -440,8 +486,8 @@ const SecondView = (props) => {
                     </button>
 
                     <div className="w-1 h-1 mx-auto mt-1">
-                      {API_MyEvents.some((meeting) =>
-                        isSameDay(parseISO(meeting.startDatetime), day)
+                      {myListEvents.some((meeting) =>
+                        isSameDay(parseISO(meeting.from), day)
                       ) && (
                         <div className="w-1 h-1 rounded-full bg-sky-500"></div>
                       )}
@@ -454,7 +500,7 @@ const SecondView = (props) => {
               <h2 className="font-semibold text-gray-900">
                 Sự kiện trong{" "}
                 <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
-                  {format(selectedDay, "dd/MM/yyy", { locale: vi })}
+                  {format(selectedDay, "dd/MM", { locale: vi })}
                 </time>
               </h2>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
@@ -476,32 +522,23 @@ const SecondView = (props) => {
 
 const MyEvent = () => {
   const [view, setView] = useState("left");
+  const dispatch = useDispatch();
   const handleView = (event, newAlignment) => {
     setView(newAlignment);
   };
-  const [events, setEvents] = useState();
+
   const userDetail = useSelector((state) => state.user.userDetail);
+  const myListEvents = useSelector((state) => state.events.myListEvents);
+  const authToken = localStorage.getItem("token");
   useEffect(() => {
-    axios
-      .get(import.meta.env.VITE_APP_BASE_URL + "/events", {
-        params: {
-          id: userDetail.id,
-        },
-        headers: {
-          Authorization: `Bearer ` + localStorage.getItem("token"),
-        },
+    dispatch(
+      CallApiMyListEvents({
+        headers: { authorization: `Bearer ${authToken}` },
+        id: userDetail.id,
       })
-      .then((res) => {
-        setEvents(res.data);
-        console.log("////", res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-  if (!events) {
-    return null;
-  }
+    );
+  }, [authToken, dispatch, userDetail]);
+  console.log("My List Events", myListEvents);
   return (
     <div className="h-full w-full bg-white flex flex-col gap-4 md:p-4">
       <div className="flex justify-between items-center md:p-0 p-4">
@@ -523,7 +560,7 @@ const MyEvent = () => {
         </div>
       </div>
       {view === "left" ? (
-        <FirstView events={events} userDetail={userDetail} />
+        <FirstView events={myListEvents} userDetail={userDetail} />
       ) : (
         <SecondView />
       )}

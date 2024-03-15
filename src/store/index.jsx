@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import usersSlice from "./usersSlice";
 import postsSlice from "./postsSlice";
-import { apiSlice } from "./apiSlice";
+
 import usersSlice2 from "./users2Slice";
 import eventsSlice from "./eventsSlice";
 export const store = configureStore({
