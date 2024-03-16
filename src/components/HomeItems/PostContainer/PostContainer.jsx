@@ -454,7 +454,7 @@ const PostContainer = (props) => {
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           {props.post.comments &&
-            props.post.comments.map((comment) => {
+            props.post.comments.filter(el => !el.comment).map((comment) => {
               return (
                 <>
                   <Comment

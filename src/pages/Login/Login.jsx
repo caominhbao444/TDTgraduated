@@ -27,7 +27,8 @@ const Login = () => {
         password: password,
       })
       .then((res) => {
-        if (res.data !== true) {
+        console.log(res.data)
+        if (res.data === false) {
           Swal.fire({
             title: "Thất bại",
             text: "Vui lòng kiểm tra lại thông tin!",
