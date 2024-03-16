@@ -10,6 +10,7 @@ import Friends from "./pages/Friends/Friends";
 import Detail from "./pages/Detail/Detail";
 import Post from "./pages/Post/Post";
 import Event from "./pages/Event/Event";
+import ChatAi from './pages/ChatAi/ChatAi';
 import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,6 +46,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/confirm/:id" element={<Confirm />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="chat-ai" element={<ChatAi />} />
           <Route element={<PrivateArea />}>
             <Route path="/home" element={<Home />} />
             <Route path="/detail/:id" element={<Detail />} />
