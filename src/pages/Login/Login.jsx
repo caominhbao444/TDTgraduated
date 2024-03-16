@@ -27,7 +27,7 @@ const Login = () => {
         password: password,
       })
       .then((res) => {
-        if (res.data === false) {
+        if (res.data !== true) {
           Swal.fire({
             title: "Thất bại",
             text: "Vui lòng kiểm tra lại thông tin!",
@@ -40,7 +40,7 @@ const Login = () => {
               identifier: username,
               password: password,
             })
-            .then(() => {
+            .then((res) => {
               dispatch(setLogin(res.data));
               navigate("/home");
             })

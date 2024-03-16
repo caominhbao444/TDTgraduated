@@ -27,7 +27,7 @@ const PrivateArea = () => {
         });
     }
   }, []);
-  return !isAuth ? (
+  return isAuth ? (
     <>
       <Navbar />
       <Outlet />

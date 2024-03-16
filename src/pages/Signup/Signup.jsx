@@ -67,6 +67,7 @@ const Signup = () => {
     course: "",
     faculty: "",
     image: "",
+    role: 1,
   });
   const [currentStep, setCurrentStep] = useState(0);
   const [listCity, setListCity] = useState("");
