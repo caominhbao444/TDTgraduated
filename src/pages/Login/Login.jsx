@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../store/usersSlice";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const [username, setUserName] = useState("");
@@ -26,8 +27,27 @@ const Login = () => {
         password: password,
       })
       .then((res) => {
-        dispatch(setLogin(res.data));
-        navigate("/home");
+        if (res.data === false) {
+          Swal.fire({
+            title: "Thất bại",
+            text: "Vui lòng kiểm tra lại thông tin!",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        } else {
+          axios
+            .post(import.meta.env.VITE_APP_BASE_URL + `/auth/local`, {
+              identifier: username,
+              password: password,
+            })
+            .then(() => {
+              dispatch(setLogin(res.data));
+              navigate("/home");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -110,9 +130,12 @@ const Login = () => {
                 >
                   Bạn chưa có tài khoản?
                 </Link>
-                <span className="text-[14px] cursor-pointer text-end text-textLightColor">
+                <Link
+                  to="/forgot"
+                  className="text-[14px] cursor-pointer text-end text-textLightColor"
+                >
                   Quên mật khẩu
-                </span>
+                </Link>
               </div>
             </div>
           </form>

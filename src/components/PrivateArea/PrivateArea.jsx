@@ -11,20 +11,23 @@ const PrivateArea = () => {
   const userDetail = useSelector((state) => state.user.userDetail);
 
   useEffect(() => {
-    if(!userDetail.id) {
-      axios.get(import.meta.env.VITE_APP_BASE_URL + '/user-details', {
-        headers: {
-          Authorization: `Bearer ` + localStorage.getItem('token')
-        }
-      }).then((res) => {
-        dispatch(setUserDetails(res.data))
-        console.log(res.data)
-      }).catch((error) => {
-        console.log(error)
-      })
+    if (!userDetail.id) {
+      axios
+        .get(import.meta.env.VITE_APP_BASE_URL + "/user-details", {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        })
+        .then((res) => {
+          dispatch(setUserDetails(res.data));
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }, []);
-  return isAuth ? (
+  return !isAuth ? (
     <>
       <Navbar />
       <Outlet />

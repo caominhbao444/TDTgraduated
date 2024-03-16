@@ -4,10 +4,13 @@ import axios from "axios";
 const initialState = {
   inforUser: [],
   listFriends: [],
+  updateUser: [],
+  forgotPassword: [],
+  logout: [],
 };
 //CallApiInforUser
 export const CallApiInforUser = createAsyncThunk(
-  "user/callApiInforUser",
+  "user2/callApiInforUser",
   async function ({ headers, id }) {
     try {
       const apiInforUserResponse = await axios.get(
@@ -26,7 +29,7 @@ export const CallApiInforUser = createAsyncThunk(
 );
 //CallApiMyListFriends
 export const CallApiMyListFriends = createAsyncThunk(
-  "user/callApiMyListFriends",
+  "user2/callApiMyListFriends",
   async function ({ headers, id }) {
     try {
       const apiListFriendsResponse = await axios.get(
@@ -38,6 +41,67 @@ export const CallApiMyListFriends = createAsyncThunk(
         }
       );
       return apiListFriendsResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+//CallApiUpdateUser
+export const CallApiUpdateUser = createAsyncThunk(
+  "user2/callApiUpdateUser",
+  async function ({ headers, userId }) {
+    try {
+      const apiUpdateUserResponse = await axios.put(
+        `http://localhost:1337/api/user-details?userId=${userId}`,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiUpdateUserResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+//CallApiForgotPassword
+export const CallApiForgotPassword = createAsyncThunk(
+  "user2/callApiForgotPassword",
+  async function ({ headers, email }) {
+    try {
+      const apiForgotPasswordResponse = await axios.post(
+        `http://localhost:1337/api/forgot-password`,
+        {
+          email: email,
+        },
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiForgotPasswordResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+//CallApiLogout
+export const CallApiLogout = createAsyncThunk(
+  "user2/callApiLogout",
+  async function ({ headers }) {
+    try {
+      const apiLogoutResponse = await axios.put(
+        `http://localhost:1337/api/auth/logout`,
+
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiLogoutResponse.data;
     } catch (err) {
       console.log(err);
     }
@@ -68,6 +132,28 @@ const usersSlice2 = createSlice({
         state.inforUser = action.payload;
       })
       .addCase(CallApiInforUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiUpdateUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiUpdateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.updateUser = action.payload;
+      })
+      .addCase(CallApiUpdateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiForgotPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiForgotPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.forgotPassword = action.payload;
+      })
+      .addCase(CallApiForgotPassword.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

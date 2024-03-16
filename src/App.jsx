@@ -10,7 +10,7 @@ import Friends from "./pages/Friends/Friends";
 import Detail from "./pages/Detail/Detail";
 import Post from "./pages/Post/Post";
 import Event from "./pages/Event/Event";
-import ChatAi from './pages/ChatAi/ChatAi';
+import ChatAi from "./pages/ChatAi/ChatAi";
 import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +18,8 @@ import { setUserDetails } from "./store/usersSlice";
 import Confirm from "./pages/Login/Confirm";
 import PrivateAdmin from "./components/PrivateArea/PrivateAdmin";
 import ManageUsers from "./pages/Manage/ManageUsers";
+import ForgotPassword from "./pages/Forgot/ForgotPassword";
+import RePassword from "./pages/Forgot/RePassword";
 
 function App() {
   const dispatch = useDispatch();
@@ -46,8 +48,10 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/confirm/:id" element={<Confirm />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="chat-ai" element={<ChatAi />} />
+          <Route path="/forgot" element={<ForgotPassword />} />
+          <Route path="/newpassword" element={<RePassword />} />
           <Route element={<PrivateArea />}>
+            <Route path="/chat-ai" element={<ChatAi />} />
             <Route path="/home" element={<Home />} />
             <Route path="/detail/:id" element={<Detail />} />
             <Route path="/friends" element={<Friends />} />

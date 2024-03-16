@@ -41,6 +41,7 @@ const Home = () => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
+  const [searchNamePost, setSearchNamePost] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userDetail = useSelector((state) => state.user.userDetail);
@@ -213,6 +214,12 @@ const Home = () => {
         </List>
       </aside>
       <main className="md:col-span-5 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px]">
+        <div className="w-full bg-red-400 ">
+          <input
+            className="w-full outline-none py-2 bg-white px-2"
+            placeholder="Vui lòng nhập nội dung bài viết cần tìm ..."
+          />
+        </div>
         {myPost &&
           [...myPost].reverse().map((post) => {
             return <PostContainer key={post.id} post={post} />;

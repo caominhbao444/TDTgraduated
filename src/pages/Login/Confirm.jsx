@@ -15,9 +15,15 @@ const Confirm = () => {
           text: "Tài khoản đã được xác thực thành công.",
           icon: "success",
           confirmButtonText: "OK",
-        });
-
-        navigate("/");
+        })
+          .then(() => {
+            axios.put(
+              import.meta.env.VITE_APP_BASE_URL + `/auth/confirm/${id}`
+            );
+          })
+          .then(() => {
+            navigate("/");
+          });
       } catch (error) {
         console.error("Error confirming account:", error);
       }
@@ -26,7 +32,7 @@ const Confirm = () => {
     confirmAndNavigate();
   }, [id, navigate]);
 
-  return null; // Or any other UI component you want to render while confirming
+  return null;
 };
 
 export default Confirm;

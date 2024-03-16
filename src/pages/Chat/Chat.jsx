@@ -9,7 +9,7 @@ const Chat = () => {
   const userDetail = useSelector((state) => state.user.userDetail);
 
   const handleClicked = (choose) => {
-    console.log('choose', choose)
+    console.log("choose", choose);
     setSelected(choose);
   };
   const handleBack = (choose) => {
@@ -17,17 +17,20 @@ const Chat = () => {
   };
   return (
     <div className="w-full h-screen flex">
-       <ChatList
+      <ChatList
         className={`w-full ${
           selected ? "hidden" : "block"
         } md:w-1/4 md:block h-full  flex flex-col`}
         handleClicked={handleClicked}
       />
-      {
-        selected ? 
-        <ChatRoom user={userDetail} id={userDetail.id} room={userDetail.username+'-'+selected.username}/>
-        : <p>Chọn bạn </p>
-      }
+      <ChatBox
+        className={`w-full ${
+          selected ? "block" : "hidden"
+        } md:w-3/4 md:block  h-full bg-slate-600`}
+        handleClicked={handleClicked}
+        handleBack={handleBack}
+      />
+      {/* <ChatRoom user={userDetail} id={userDetail.id} room={userDetail.username+'-'+selected.username}/> */}
     </div>
   );
 };
