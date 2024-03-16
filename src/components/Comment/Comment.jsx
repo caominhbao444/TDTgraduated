@@ -262,10 +262,7 @@ const Comment = (props) => {
             })}
           {isReplay && (
             <div className="flex gap-4 w-full">
-              <Avatar
-                alt="Remy Sharp"
-                src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
-              />
+              <Avatar alt="Remy Sharp" src={userDetail.image} />
               <div className="flex flex-col w-full gap-2">
                 <h4 style={{ margin: 0, textAlign: "left", fontWeight: "500" }}>
                   {userDetail.fullname}

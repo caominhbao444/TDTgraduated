@@ -10,7 +10,7 @@ const Detail = () => {
   const [activeTab, setActiveTab] = useState(0);
   const authToken = localStorage.getItem("token");
   const { id } = useParams();
-
+  const [isLoading, setIsLoading] = useState(true);
   const inforUser = useSelector((state) => state.user2.inforUser);
   const dispatch = useDispatch();
   const handleActiveTab = (tab) => {
@@ -22,13 +22,16 @@ const Detail = () => {
         headers: { authorization: `Bearer ${authToken}` },
         id: id,
       })
-    );
+    ).then(() => setIsLoading(false));
   }, [id, dispatch, authToken]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7]">
       <main className="md:col-span-7 flex flex-col md:gap-3 md:py-4 mt-[42px] md:mt-[58px] md:pl-8">
         <Header handleActiveTab={handleActiveTab} user={inforUser} />
-        <Body activeTab={activeTab} id={id} />
+        <Body activeTab={activeTab} user={inforUser} />
       </main>
       <aside className="bg-white md:col-span-2 hidden md:flex flex-col  sticky top-[58px]  h-[calc(100vh-58px)]">
         <SecondAside />

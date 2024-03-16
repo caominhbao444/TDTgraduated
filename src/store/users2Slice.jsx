@@ -49,10 +49,11 @@ export const CallApiMyListFriends = createAsyncThunk(
 //CallApiUpdateUser
 export const CallApiUpdateUser = createAsyncThunk(
   "user2/callApiUpdateUser",
-  async function ({ headers, userId }) {
+  async function ({ headers, userId, data }) {
     try {
       const apiUpdateUserResponse = await axios.put(
-        `http://localhost:1337/api/user-details?userId=${userId}`,
+        `http://localhost:1337/api/user-details/updateUser/${userId}`,
+        data,
         {
           headers: {
             Authorization: headers.authorization,

@@ -456,20 +456,22 @@ const PostContainer = (props) => {
           {props.post.comments &&
             props.post.comments.map((comment) => {
               return (
-                <Comment
-                  key={comment.id}
-                  name={comment.name}
-                  content={comment.content}
-                  dateCreate={comment.dateCreate}
-                  id={comment.id}
-                  comment={comment}
-                  authorPost={props.post.author.id}
-                />
+                <>
+                  <Comment
+                    key={comment.id}
+                    name={comment.name}
+                    content={comment.content}
+                    dateCreate={comment.dateCreate}
+                    id={comment.id}
+                    comment={comment}
+                    authorPost={props.post.author.id}
+                  />
+                </>
               );
             })}
           <CardContent>
             <div className="flex gap-4 w-full">
-              <Avatar alt="Remy Sharp" src={props.post.author.image} />
+              <Avatar alt="Remy Sharp" src={userDetail.image} />
               <div className="flex flex-col w-full gap-2">
                 <Textarea
                   placeholder="Viết bình luận…"

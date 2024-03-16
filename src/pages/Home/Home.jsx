@@ -46,7 +46,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const userDetail = useSelector((state) => state.user.userDetail);
   const myPost = useSelector((state) => state.post.myPost);
-
+  console.log("User Detail", userDetail);
   useEffect(() => {
     if (userDetail.id) {
       dispatch(

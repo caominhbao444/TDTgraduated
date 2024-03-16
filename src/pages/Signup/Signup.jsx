@@ -343,8 +343,8 @@ const StepTwo = (props) => {
             helperText={formik.touched.gender && formik.errors.gender}
             select
           >
-            <MenuItem value="Male">Nam</MenuItem>
-            <MenuItem value="Female">Nữ</MenuItem>
+            <MenuItem value="Nam">Nam</MenuItem>
+            <MenuItem value="Nữ">Nữ</MenuItem>
           </TextField>
         </div>
         <div className="w-[70%] flex flex-col gap-1">
