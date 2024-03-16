@@ -9,7 +9,11 @@ const ChatAi = () => {
     const [history, setHistory] = useState();
     useEffect(() => {
         axios.post( import.meta.env.VITE_APP_BASE_URL +'/chat-ai/chat', {
-            data: {} 
+            data: {}
+        }, {
+            headers: {
+                Authorization: `Bearer ` + localStorage.getItem("token"),
+            }
         }).then((res) => {
             console.log(res)
             setResponse(res.data.data.response)
@@ -26,6 +30,10 @@ const ChatAi = () => {
                 sessionId: sessionId,
                 input: input
             } 
+        }, {
+            headers: {
+                Authorization: `Bearer ` + localStorage.getItem("token"),
+            }
         }).then((res) => {
             console.log(res)
             setResponse(res.data.data.response)
