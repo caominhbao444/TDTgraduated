@@ -52,6 +52,7 @@ const Header = (props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const dispatch = useDispatch();
+  console.log('headers', props.user.id)
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/", {
@@ -59,7 +60,7 @@ const Header = (props) => {
           authorization: `Bearer ${authToken}`,
         },
         params: {
-          id: props.id,
+          id: props.user.id,
         },
       })
       .then((res) => {
@@ -84,6 +85,7 @@ const Header = (props) => {
       return el.id;
     });
     if (method == "add") {
+      console.log(userDetail)
       friends.push(userDetail.id);
     } else {
       const index = friends.indexOf(userDetail.id);

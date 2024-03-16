@@ -39,16 +39,13 @@ const Body = (props) => {
   };
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/", {
+      .get(import.meta.env.VITE_APP_BASE_URL + `/user-details/?id=${params.id}`, {
         headers: {
           authorization: `Bearer ${authToken}`,
         },
-        params: {
-          id: params.id,
-        },
       })
       .then((res) => {
-        console.log("???", params.id, userDetail);
+        console.log("???", res);
         setUserDetails(res.data);
         dispatch(
           CallApiDetailsListPosts({

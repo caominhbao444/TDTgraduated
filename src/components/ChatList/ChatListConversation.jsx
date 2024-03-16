@@ -6,10 +6,8 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 const ChatListConversation = (props) => {
   const [searchName, setSearchName] = useState("");
-  const filteredConversations = API_MESSAGES.filter((conversation) =>
-    conversation.name.toLowerCase().includes(searchName.toLowerCase())
-  );
   const userDetail = useSelector((state) => state.user.userDetail);
+  console.log(userDetail)
   const [friends, setFriends] = useState()
   useEffect(() => {
     axios.get(
@@ -20,11 +18,12 @@ const ChatListConversation = (props) => {
         },
       }
     ).then((res) => {
+        console.log('???Sdad', res.data)
         setFriends(res.data)
     }).catch((error) => {
       console.log(error)
     })
-  }, [])
+  }, [userDetail])
   if(!friends){
     return null
   }

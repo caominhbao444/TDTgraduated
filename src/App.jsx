@@ -59,7 +59,7 @@ function App() {
             <Route path="/events" element={<Event />} />
           </Route>
           <Route element={<PrivateArea2 />}>
-            <Route path="/message/:id?" element={<Chat />} />
+            <Route path="/message/:id" element={<Chat />} />
           </Route>
           <Route element={<PrivateAdmin />}>
             <Route path="/admin/users" element={<ManageUsers />} />
