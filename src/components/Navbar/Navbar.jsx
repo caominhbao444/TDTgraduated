@@ -70,10 +70,16 @@ const Navbar = () => {
   const handleSubmitChangePassword = () => {
     console.log("Submit change password");
   };
-  const handleLogout = () => {
-    dispatch(setLogout());
-    dispatch(resetStateToInitial());
-    navigate("/");
+  const handleLogout = async() => {
+    await axios.put(import.meta.env.VITE_APP_BASE_URL +'/auth/logout/' + userDetail.id, {
+      headers: {
+        Authorization: `Bearer ` + localStorage.getItem("token"),
+      },
+    }).then(() => {
+      dispatch(setLogout());
+      dispatch(resetStateToInitial());
+      navigate("/");
+    })
   };
   const [state, setState] = React.useState({
     top: false,

@@ -20,25 +20,25 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../../store/usersSlice";
 
-// let actions =
+let actions =[
+  {
+    id: 1,
+    icon: <GroupAddIcon />,
+    name: "Thêm bạn bè",
+    disabled: true,
+    method: "add",
+  },
+  { id: 2, icon: <EmailIcon />, name: "Nhắn tin", disabled: true },
+  {
+    id: 3,
+    icon: <DeleteIcon />,
+    name: "Hủy bạn bè",
+    disabled: true,
+    method: "delete",
+  },
+]
 const Header = (props) => {
-  const [actions, setActions] = useState([
-    {
-      id: 1,
-      icon: <GroupAddIcon />,
-      name: "Thêm bạn bè",
-      disabled: true,
-      method: "add",
-    },
-    { id: 2, icon: <EmailIcon />, name: "Nhắn tin", disabled: true },
-    {
-      id: 3,
-      icon: <DeleteIcon />,
-      name: "Hủy bạn bè",
-      disabled: true,
-      method: "delete",
-    },
-  ]);
+  // const [actions, setActions] = useState();
   const [isActive, setIsActive] = useState(0);
   const [open, setOpen] = useState(false);
   const handleActive = (active) => {
@@ -67,15 +67,8 @@ const Header = (props) => {
       })
       .then((res) => {
         setUserDetail(res.data);
-        if (res.data.users.filter((el) => el.id == currentUser.id).length > 0) {
-          actions[0].disabled = true;
-          actions[1].disabled = false;
-          actions[2].disabled = false;
-        } else {
-          actions[0].disabled = false;
-          actions[1].disabled = false;
-          actions[2].disabled = true;
-        }
+        console.log(res.data)
+        
       })
       .catch((error) => {
         console.log(error);
@@ -83,21 +76,12 @@ const Header = (props) => {
   }, []);
   const handleUpdateFriends = (method) => {
     console.log(method);
-    let friends = currentUser.friends.map((el) => {
-      return el.id;
-    });
-    if (method == "add") {
-      console.log(userDetail);
-      friends.push(userDetail.id);
-    } else {
-      const index = friends.indexOf(userDetail.id);
-      friends.splice(index, 1);
-    }
     axios
       .put(
-        import.meta.env.VITE_APP_BASE_URL + "/user-details",
+        import.meta.env.VITE_APP_BASE_URL + "/user-details/userFriendUpdate",
         {
-          friends: friends,
+          method: method,
+          friendId: userDetail.id
         },
         {
           headers: { authorization: `Bearer ${authToken}` },
@@ -124,6 +108,18 @@ const Header = (props) => {
   // if (!userDetail) {
   //   return null;
   // }
+  if(userDetail){
+      if (userDetail.friends.filter((el) => el.id == currentUser.id).length > 0) {
+      actions[0].disabled = true;
+      actions[1].disabled = false;
+      actions[2].disabled = false;
+    } else {
+      actions[0].disabled = false;
+      actions[1].disabled = true;
+      actions[2].disabled = true;
+    }
+  }
+
   return (
     <div className="flex flex-col w-full">
       <div className="w-full md:h-[40vh] h-[30vh] relative">
@@ -145,7 +141,7 @@ const Header = (props) => {
 
         {open && (
           <div className="absolute top-3 md:top-[50px] right-12 md:right-6 flex flex-col gap-1 md:gap-2">
-            {actions.map((item) => {
+            {actions.filter(el => !el.disabled).map((item) => {
               return (
                 <>
                   <Tooltip
