@@ -79,6 +79,7 @@ const PostContainer = (props) => {
   const [editLoading, setEditLoading] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
   const userDetail = useSelector((state) => state.user.userDetail);
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };

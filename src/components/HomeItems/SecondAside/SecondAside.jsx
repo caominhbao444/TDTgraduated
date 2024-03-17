@@ -21,9 +21,7 @@ const SecondAside = () => {
       );
     }
   }, [userDetail.id, dispatch, authToken]);
-  console.log("User Login", userDetail);
   const Friend = ({ friend }) => {
-    console.log("friend", friend);
     return (
       <Link
         to={`/message/${1}`}

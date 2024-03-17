@@ -106,7 +106,7 @@ const Body = (props) => {
     }
     console.log("Post", myDetailsPost);
   }, [props.user, dispatch, authToken]);
-
+  console.log(props.user)
   const handleCancel = () => {
     setUsername(props.user.username);
     setFullname(props.user.fullname);
@@ -437,8 +437,8 @@ const Body = (props) => {
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
-              {props.listFriends
-                ? props.listFriends.map((friend) => {
+              {props.user.friends
+                ? props.user.friends.map((friend) => {
                     return <FriendCard key={friend.id} friend={friend} />;
                   })
                 : null}
