@@ -33,11 +33,11 @@ const Chat = () => {
         handleClicked={handleClicked}
         handleBack={handleBack}
       /> */}
-      {/* <ChatRoom
+      <ChatRoom
         user={userDetail}
         id={params.id}
         room={userDetail.username + "-" + selected.username}
-      /> */}
+      />
     </div>
   );
 };
