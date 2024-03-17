@@ -55,11 +55,13 @@ const ChatBoxHeader = (props) => {
             <>
               <Avatar
                 alt="Remy Sharp"
-                src="https://mui.com/static/images/avatar/1.jpg"
+                src="http://res.cloudinary.com/djhhzmcps/image/upload/v1710595194/h5ciy7ec1caco9vh4xqn.png"
                 sx={{ width: 30, height: 30 }}
               />
               <div className="flex flex-col gap justify-center">
-                <h3 className="text-[14px] font-bold">Cao Minh Bảo</h3>
+                <h3 className="text-[14px] font-bold">
+                  Nguyễn Lê Quốc Cường Update
+                </h3>
                 <span className="text-[13px]">Online</span>
               </div>
             </>

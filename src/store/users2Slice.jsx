@@ -112,6 +112,11 @@ export const CallApiLogout = createAsyncThunk(
 const usersSlice2 = createSlice({
   name: "user2",
   initialState,
+  reducers: {
+    resetUserStateToInitial: (state) => {
+      return initialState;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(CallApiMyListFriends.pending, (state) => {
@@ -160,4 +165,5 @@ const usersSlice2 = createSlice({
       });
   },
 });
+export const { resetUserStateToInitial } = usersSlice2.actions;
 export default usersSlice2.reducer;

@@ -138,7 +138,7 @@ const FirstView = (props) => {
     setOpen(true);
     setDataEdit(data);
     setNameEditEvent(data.title);
-    console.log("content la", data.content);
+    console.log("content la", data);
     setDescEditEvent(data.content);
     setAmountEditEvent(data.limit);
     setEditDateEvent([data.from, data.to]);
@@ -323,7 +323,7 @@ const FirstView = (props) => {
           <DialogContent dividers={scroll === "paper"}>
             <div className=" flex flex-col gap-3">
               <img
-                src={dataEdit && dataEdit.imageUrl}
+                src={dataEdit && dataEdit.media}
                 className="md:w-[500px] h-[200px] w-full object-cover object-center"
               />
               <div className="flex flex-col w-full justify-center items-start">
@@ -373,7 +373,7 @@ const FirstView = (props) => {
                     onChange={handleEditDate}
                     slotProps={{
                       textField: ({ position }) => ({
-                        label: position === "start" ? "Bắt đầu" : "Kết thúc",
+                        label: position === "start" ? "" : "",
                       }),
                     }}
                   />

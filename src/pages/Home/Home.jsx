@@ -203,14 +203,6 @@ const Home = () => {
             </ListItemIcon>
             <ListItemText primary="Sự kiện" />
           </ListItem>
-          <Divider component="li" />
-          <ListItem className="hover:cursor-pointer">
-            <ListItemIcon className="flex justify-center">
-              <GroupsOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Cộng đồng" />
-          </ListItem>
-          <Divider component="li" />
         </List>
       </aside>
       <main className="md:col-span-5 flex flex-col md:gap-8 gap-4 md:py-4 mt-[42px] md:mt-[58px]">

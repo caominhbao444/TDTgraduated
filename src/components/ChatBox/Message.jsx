@@ -24,7 +24,7 @@ const Message = () => {
           <div className="flex items-start justify-end pr-2">
             <Avatar
               alt="Remy Sharp"
-              src="https://mui.com/static/images/avatar/1.jpg"
+              src="http://res.cloudinary.com/djhhzmcps/image/upload/v1710595194/h5ciy7ec1caco9vh4xqn.png"
               sx={{ width: 40, height: 40 }}
             />
           </div>

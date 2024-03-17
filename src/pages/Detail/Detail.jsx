@@ -16,6 +16,7 @@ const Detail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const inforUser = useSelector((state) => state.user2.inforUser);
   const listFriends = useSelector((state) => state.user2.listFriends);
+  const [isAct, setIsAct] = useState(false);
   const dispatch = useDispatch();
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
@@ -28,6 +29,16 @@ const Detail = () => {
       })
     ).then(() => setIsLoading(false));
   }, [id, dispatch, authToken]);
+  useEffect(() => {
+    if (isAct) {
+      dispatch(
+        CallApiInforUser({
+          headers: { authorization: `Bearer ${authToken}` },
+          id: id,
+        })
+      ).then(() => setIsLoading(false));
+    }
+  }, [isAct]);
   useEffect(() => {
     dispatch(
       CallApiMyListFriends({
@@ -42,7 +53,11 @@ const Detail = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7]">
       <main className="md:col-span-7 flex flex-col md:gap-3 md:py-4 mt-[42px] md:mt-[58px] md:pl-8">
-        <Header handleActiveTab={handleActiveTab} user={inforUser} />
+        <Header
+          handleActiveTab={handleActiveTab}
+          user={inforUser}
+          isAct={isAct}
+        />
         <Body
           activeTab={activeTab}
           user={inforUser}

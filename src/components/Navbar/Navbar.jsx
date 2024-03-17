@@ -36,6 +36,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setLogout } from "../../store/usersSlice";
 import { resetStateToInitial } from "../../store/postsSlice";
+import { resetUserStateToInitial } from "../../store/users2Slice";
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -70,16 +71,22 @@ const Navbar = () => {
   const handleSubmitChangePassword = () => {
     console.log("Submit change password");
   };
-  const handleLogout = async() => {
-    await axios.put(import.meta.env.VITE_APP_BASE_URL +'/auth/logout/' + userDetail.id, {
-      headers: {
-        Authorization: `Bearer ` + localStorage.getItem("token"),
-      },
-    }).then(() => {
-      dispatch(setLogout());
-      dispatch(resetStateToInitial());
-      navigate("/");
-    })
+  const handleLogout = async () => {
+    await axios
+      .put(
+        import.meta.env.VITE_APP_BASE_URL + "/auth/logout/" + userDetail.id,
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then(() => {
+        dispatch(setLogout());
+        dispatch(resetStateToInitial());
+        dispatch(resetUserStateToInitial());
+        navigate("/");
+      });
   };
   const [state, setState] = React.useState({
     top: false,
@@ -257,7 +264,7 @@ const Navbar = () => {
             to="/home"
             className="font-bold text-[16px] md:mr-4 md:text-[20px] text-mainColor"
           >
-            TDTUGrad
+            ALUMNI
           </Link>
           <div className="hidden md:block">
             <TextField

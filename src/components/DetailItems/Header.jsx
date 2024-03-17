@@ -19,8 +19,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../../store/usersSlice";
+import { CallApiInforUser } from "../../store/users2Slice";
 
-let actions =[
+let actions = [
   {
     id: 1,
     icon: <GroupAddIcon />,
@@ -28,15 +29,15 @@ let actions =[
     disabled: true,
     method: "add",
   },
-  { id: 2, icon: <EmailIcon />, name: "Nhắn tin", disabled: true },
+
   {
-    id: 3,
+    id: 2,
     icon: <DeleteIcon />,
     name: "Hủy bạn bè",
     disabled: true,
     method: "delete",
   },
-]
+];
 const Header = (props) => {
   // const [actions, setActions] = useState();
   const [isActive, setIsActive] = useState(0);
@@ -67,8 +68,7 @@ const Header = (props) => {
       })
       .then((res) => {
         setUserDetail(res.data);
-        console.log(res.data)
-        
+        console.log(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -81,42 +81,35 @@ const Header = (props) => {
         import.meta.env.VITE_APP_BASE_URL + "/user-details/userFriendUpdate",
         {
           method: method,
-          friendId: userDetail.id
+          friendId: userDetail.id,
         },
         {
           headers: { authorization: `Bearer ${authToken}` },
         }
       )
       .then((res) => {
-        axios
-          .get(import.meta.env.VITE_APP_BASE_URL + "/user-details", {
-            headers: {
-              Authorization: `Bearer ` + localStorage.getItem("token"),
-            },
+        // dispatch(setUserDetails(response.data));
+        dispatch(
+          CallApiInforUser({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: props.user.id,
           })
-          .then((response) => {
-            dispatch(setUserDetails(response.data));
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        );
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  // if (!userDetail) {
-  //   return null;
-  // }
-  if(userDetail){
-      if (userDetail.friends.filter((el) => el.id == currentUser.id).length > 0) {
+
+  if (userDetail) {
+    if (userDetail.friends.filter((el) => el.id == currentUser.id).length > 0) {
       actions[0].disabled = true;
+
       actions[1].disabled = false;
-      actions[2].disabled = false;
     } else {
       actions[0].disabled = false;
+
       actions[1].disabled = true;
-      actions[2].disabled = true;
     }
   }
 
@@ -141,24 +134,26 @@ const Header = (props) => {
 
         {open && (
           <div className="absolute top-3 md:top-[50px] right-12 md:right-6 flex flex-col gap-1 md:gap-2">
-            {actions.filter(el => !el.disabled).map((item) => {
-              return (
-                <>
-                  <Tooltip
-                    title={item.name}
-                    key={item.id}
-                    placement="left-start"
-                  >
-                    <IconButton
-                      sx={{ color: "white" }}
-                      onClick={() => handleUpdateFriends(item.method)}
+            {actions
+              .filter((el) => !el.disabled)
+              .map((item) => {
+                return (
+                  <>
+                    <Tooltip
+                      title={item.name}
+                      key={item.id}
+                      placement="left-start"
                     >
-                      {item.icon}
-                    </IconButton>
-                  </Tooltip>
-                </>
-              );
-            })}
+                      <IconButton
+                        sx={{ color: "white" }}
+                        onClick={() => handleUpdateFriends(item.method)}
+                      >
+                        {item.icon}
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                );
+              })}
           </div>
         )}
       </div>
