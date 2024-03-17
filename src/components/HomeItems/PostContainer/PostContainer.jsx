@@ -42,6 +42,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   CallApiDetailsListPosts,
   CallApiMyListPosts,
+  CallApiPostId,
 } from "../../../store/postsSlice";
 
 const listComment = [
@@ -73,6 +74,7 @@ const PostContainer = (props) => {
   const [imageUrl, setImageUrl] = useState(
     "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
   );
+  console.log("Props", props);
   const [content, setContent] = useState("");
   const [editLoading, setEditLoading] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
@@ -125,7 +127,7 @@ const PostContainer = (props) => {
     );
     return vietnameseTimeIntervalString;
   };
-  console.log(userDetail);
+
   function editPost() {
     axios
       .put(
@@ -263,6 +265,12 @@ const PostContainer = (props) => {
           CallApiDetailsListPosts({
             headers: { authorization: `Bearer ${authToken}` },
             id: userDetail.id,
+          })
+        );
+        dispatch(
+          CallApiPostId({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: props.post.id,
           })
         );
         setComponentLoading(false);
@@ -454,21 +462,23 @@ const PostContainer = (props) => {
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           {props.post.comments &&
-            props.post.comments.filter(el => !el.comment).map((comment) => {
-              return (
-                <>
-                  <Comment
-                    key={comment.id}
-                    name={comment.name}
-                    content={comment.content}
-                    dateCreate={comment.dateCreate}
-                    id={comment.id}
-                    comment={comment}
-                    authorPost={props.post.author.id}
-                  />
-                </>
-              );
-            })}
+            props.post.comments
+              .filter((el) => !el.comment)
+              .map((comment) => {
+                return (
+                  <>
+                    <Comment
+                      key={comment.id}
+                      name={comment.name}
+                      content={comment.content}
+                      dateCreate={comment.dateCreate}
+                      id={comment.id}
+                      comment={comment}
+                      authorPost={props.post.author.id}
+                    />
+                  </>
+                );
+              })}
           <CardContent>
             <div className="flex gap-4 w-full">
               <Avatar alt="Remy Sharp" src={userDetail.image} />

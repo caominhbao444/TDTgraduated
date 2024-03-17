@@ -106,8 +106,9 @@ const Body = (props) => {
     }
     console.log("Post", myDetailsPost);
   }, [props.user, dispatch, authToken]);
-  if (props.user) {
+  if (props.user && props.listFriends) {
     console.log("User from ", props.user);
+    console.log("List Friends from ", props.listFriends);
   }
   const handleCancel = () => {
     setUsername(props.user.username);
@@ -410,7 +411,7 @@ const Body = (props) => {
           )}
         </div>
       )}
-      {/* {props.activeTab === 1 && (
+      {props.activeTab === 1 && (
         <div className="flex flex-col w-full md:p-10 md:gap-3 gap-3">
           {myDetailsPost &&
             [...myDetailsPost].reverse().map((post, index) => {
@@ -435,8 +436,8 @@ const Body = (props) => {
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
-              {friends
-                ? friends.map((friend) => {
+              {props.listFriends
+                ? props.listFriends.map((friend) => {
                     return <FriendCard key={friend.id} friend={friend} />;
                   })
                 : null}
@@ -444,6 +445,7 @@ const Body = (props) => {
           </Card>
         </div>
       )}
+
       {props.activeTab === 3 && (
         <div className="w-full p-5">
           <ImageList
@@ -474,7 +476,7 @@ const Body = (props) => {
               })}
           </ImageList>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

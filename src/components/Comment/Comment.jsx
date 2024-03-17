@@ -112,6 +112,12 @@ const Comment = (props) => {
             id: userDetail.id,
           })
         );
+        dispatch(
+          CallApiPostId({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: props.comment.post.id,
+          })
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -138,11 +144,18 @@ const Comment = (props) => {
             id: userDetail.id,
           })
         );
+        dispatch(
+          CallApiPostId({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: props.comment.post.id,
+          })
+        );
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  console.log("Comment", props);
   return (
     <CardContent className="flex">
       <div className="flex gap-4 w-full">

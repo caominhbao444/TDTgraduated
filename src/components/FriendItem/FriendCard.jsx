@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const FriendCard = (props) => {
   const navigate = useNavigate();
   const [isEdit, setIsEdit] = useState(false);
+  console.log("friend", props.friend);
   return (
     <Card sx={{ display: "flex", height: "150px", cursor: "pointer" }}>
       <div className="w-1/3 h-full">
@@ -26,9 +27,9 @@ const FriendCard = (props) => {
           >
             {props.friend.fullname}
           </h3>
-          <span className="text-[13px] text-textLightColor">
+          {/* <span className="text-[13px] text-textLightColor">
             {props.friend.friends.length || 0} Bạn bè
-          </span>
+          </span> */}
         </div>
         <div className="flex justify-center items-center pr-3">
           <IconButton

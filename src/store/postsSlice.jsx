@@ -49,7 +49,7 @@ export const CallApiDetailsListPosts = createAsyncThunk(
 );
 //CallApiPostId
 export const CallApiPostId = createAsyncThunk(
-  "user/callApiPostId",
+  "post/callApiPostId",
   async function ({ headers, id }) {
     try {
       const apiPostIdResponse = await axios.get(
@@ -70,7 +70,6 @@ const postsSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
-    // Add a reducer case to handle resetting state to initial state
     resetStateToInitial: (state) => {
       return initialState;
     },

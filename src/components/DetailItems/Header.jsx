@@ -46,13 +46,15 @@ const Header = (props) => {
     props.handleActiveTab(active);
   };
   const currentUser = useSelector((state) => state.user.userDetail);
-
+  console.log("Current", currentUser);
+  console.log("Profile of", props.user);
+  console.log("Open state", open);
   const authToken = localStorage.getItem("token");
   const [userDetail, setUserDetail] = useState();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const dispatch = useDispatch();
-  console.log('headers', props.user.id)
+  console.log("headers", props.user.id);
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/", {
@@ -85,7 +87,7 @@ const Header = (props) => {
       return el.id;
     });
     if (method == "add") {
-      console.log(userDetail)
+      console.log(userDetail);
       friends.push(userDetail.id);
     } else {
       const index = friends.indexOf(userDetail.id);
@@ -137,30 +139,30 @@ const Header = (props) => {
           >
             <MoreVertOutlinedIcon className="text-white cursor-pointer rounded-[100%]" />
           </div>
-        ) : null}
+        ) : (
+          <></>
+        )}
 
         {open && (
           <div className="absolute top-3 md:top-[50px] right-12 md:right-6 flex flex-col gap-1 md:gap-2">
-            {actions
-              .filter((el) => !el.disabled)
-              .map((item) => {
-                return (
-                  <>
-                    <Tooltip
-                      title={item.name}
-                      key={item.id}
-                      placement="left-start"
+            {actions.map((item) => {
+              return (
+                <>
+                  <Tooltip
+                    title={item.name}
+                    key={item.id}
+                    placement="left-start"
+                  >
+                    <IconButton
+                      sx={{ color: "white" }}
+                      onClick={() => handleUpdateFriends(item.method)}
                     >
-                      <IconButton
-                        sx={{ color: "white" }}
-                        onClick={() => handleUpdateFriends(item.method)}
-                      >
-                        {item.icon}
-                      </IconButton>
-                    </Tooltip>
-                  </>
-                );
-              })}
+                      {item.icon}
+                    </IconButton>
+                  </Tooltip>
+                </>
+              );
+            })}
           </div>
         )}
       </div>

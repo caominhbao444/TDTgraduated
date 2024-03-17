@@ -51,6 +51,7 @@ import axios from "axios";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { CallApiMyListEvents } from "../../store/eventsSlice";
+import Swal from "sweetalert2";
 const Meeting = ({ meeting }) => {
   let startDateTime = parseISO(meeting.from);
   const authToken = localStorage.getItem("token");
@@ -85,6 +86,7 @@ const Meeting = ({ meeting }) => {
         console.log(error);
       });
   };
+  console.log("Meerting,", meeting);
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       <img
@@ -103,12 +105,14 @@ const Meeting = ({ meeting }) => {
         </p>
       </div>
       <div className="flex items-center">
-        <button
-          className="px-3 py-1 bg-red-700 text-white cursor-pointer rounded-[12px]"
-          onClick={() => handleCancel(meeting)}
-        >
-          Hủy
-        </button>
+        {meeting.author.id !== userDetail.id && (
+          <button
+            className="px-3 py-1 bg-red-700 text-white cursor-pointer rounded-[12px]"
+            onClick={() => handleCancel(meeting)}
+          >
+            Hủy
+          </button>
+        )}
       </div>
     </li>
   );
@@ -134,7 +138,8 @@ const FirstView = (props) => {
     setOpen(true);
     setDataEdit(data);
     setNameEditEvent(data.title);
-    setDescEditEvent(data.conent);
+    console.log("content la", data.content);
+    setDescEditEvent(data.content);
     setAmountEditEvent(data.limit);
     setEditDateEvent([data.from, data.to]);
     setEditEventId(data.id);
@@ -164,7 +169,20 @@ const FirstView = (props) => {
         }
       )
       .then((res) => {
-        console.log(res.data);
+        setOpen(false);
+        Swal.fire({
+          title: "Thành công",
+          text: "Cập nhật sự kiện thành công",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() =>
+          dispatch(
+            CallApiMyListEvents({
+              headers: { authorization: `Bearer ${authToken}` },
+              id: userDetail.id,
+            })
+          )
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -172,7 +190,7 @@ const FirstView = (props) => {
   };
   useEffect(() => {
     setNameEditEvent(dataEdit.title);
-    setDescEditEvent(dataEdit.conent);
+    setDescEditEvent(dataEdit.content);
     setAmountEditEvent(dataEdit.limit);
     setEditDateEvent();
   }, [dataEdit]);
@@ -321,11 +339,11 @@ const FirstView = (props) => {
                 />
               </div>
               <div className="flex flex-col w-full justify-center items-start">
-                <label htmlFor="desEvent" className="cursor-pointer">
+                <label htmlFor="descEditEvent" className="cursor-pointer">
                   Mô tả sự kiện
                 </label>
                 <textarea
-                  id="desEvent"
+                  id="descEditEvent"
                   className="w-full px-2 py-2 outline-none border resize-none h-[100px] overflow-y-scroll"
                   value={descEditEvent}
                   placeholder={descEditEvent}
