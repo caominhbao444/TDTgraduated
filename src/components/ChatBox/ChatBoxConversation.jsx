@@ -115,7 +115,7 @@ const ChatBoxConversation = (props) => {
     <div className="h-[calc(100vh-58px)] bg-[#D6D6D6] overflow-scroll no-scrollbar box-border w-full flex flex-col justify-between">
       {props.id ? (
         <>
-          <div className=" w-full h-full overflow-scroll no-scrollbar flex flex-col relative gap-4 py-2 px-3">
+          <div className=" w-full h-full overflow-scroll no-scrollbar flex flex-col-reverse relative gap-4 py-2 px-3">
             <div className="w-full h-full top-0 left-0 right-0 bg-3d absolute"></div>
             {/* <Loading /> */}
             {messages.length > 0 &&

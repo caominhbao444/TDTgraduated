@@ -4,7 +4,8 @@ import * as yup from "yup";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 const validationSchema = yup.object({
   password: yup
     .string("Vui lòng nhập mật khẩu.")
@@ -18,13 +19,38 @@ const validationSchema = yup.object({
     .oneOf([yup.ref("password"), null], "Mật khẩu phải khớp"),
 });
 const RePassword = () => {
+  const { id } = useParams();
   const [data, setData] = useState({
+    id: id,
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const onSubmit = (data) => {
-    console.log("onSubmit", data);
+    const formData = {
+      id: id,
+      email: data.email,
+    };
+    axios
+      .post(import.meta.env.VITE_APP_BASE_URL + `/reset-password`, formData)
+      .then(() => {
+        Swal.fire({
+          title: "Thành công",
+          text: "Cập nhật mật khẩu thành công.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/");
+        });
+      })
+      .catch(() => {
+        Swal.fire({
+          title: "Thất bại",
+          text: "Cập nhật mật khẩu thất bại.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      });
   };
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
@@ -108,7 +134,10 @@ const RePassword = () => {
           />
         </div>
         <div className="flex flex-col">
-          <button className="px-2 py-2 border bg-mainColor text-white border-mainColor hover:bg-white hover:text-mainColor">
+          <button
+            className="px-2 py-2 border bg-mainColor text-white border-mainColor hover:bg-white hover:text-mainColor"
+            type="submit"
+          >
             Gửi
           </button>
         </div>

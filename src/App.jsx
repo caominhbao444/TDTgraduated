@@ -49,7 +49,7 @@ function App() {
           <Route path="/confirm/:id" element={<Confirm />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/newpassword" element={<RePassword />} />
+          <Route path="/reset-password/:id" element={<RePassword />} />
           <Route element={<PrivateArea />}>
             <Route path="/chat-ai" element={<ChatAi />} />
             <Route path="/home" element={<Home />} />
