@@ -228,7 +228,7 @@ const CreateEvent = () => {
           onChange={(e) => setDetail(e.target.value)}
           id="detail"
           className="w-full outline-none border p-3 resize-none h-[100px]"
-          placeholder="Nhập số lượng người tham gia"
+          placeholder="Nhập mô tả sự kiện"
           type="number"
         />
       </div>

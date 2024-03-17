@@ -27,7 +27,7 @@ const Login = () => {
         password: password,
       })
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         if (res.data === false) {
           Swal.fire({
             title: "Thất bại",
@@ -46,7 +46,12 @@ const Login = () => {
               navigate("/home");
             })
             .catch((err) => {
-              console.log(err);
+              Swal.fire({
+                title: "Thất bại",
+                text: "Vui lòng kiểm tra lại thông tin!",
+                icon: "error",
+                confirmButtonText: "OK",
+              });
             });
         }
       })
