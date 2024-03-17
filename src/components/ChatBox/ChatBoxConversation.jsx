@@ -119,47 +119,50 @@ const ChatBoxConversation = (props) => {
             <div className="w-full h-full top-0 left-0 right-0 bg-3d absolute"></div>
             {/* <Loading /> */}
             {messages.length > 0 &&
-              messages.map((el, index) => {
-                return (
-                  <>
-                    {el.user === userDetail.username && (
-                      <div className="flex w-full justify-end" key={index}>
-                        <div className="z-10 md:w-[60%] w-full  flex flex-row-reverse">
-                          <div className="md:w-[90%] w-[80%] ">
-                            <div className="w-full bg-white text-justify p-2 rounded-t-lg rounded-bl-lg">
-                              {el.message}
-                            </div>
-                            {/* <div className="text-[13px] text-right pr-2">
+              messages
+                .slice()
+                .reverse()
+                .map((el, index) => {
+                  return (
+                    <>
+                      {el.user === userDetail.username && (
+                        <div className="flex w-full justify-end" key={index}>
+                          <div className="z-10 md:w-[60%] w-full  flex flex-row-reverse">
+                            <div className="md:w-[90%] w-[80%] ">
+                              <div className="w-full bg-white text-justify p-2 rounded-t-lg rounded-bl-lg">
+                                {el.message}
+                              </div>
+                              {/* <div className="text-[13px] text-right pr-2">
                               Đã gửi ngày 3/3/2024
                             </div> */}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                    {el.user !== userDetail.username && (
-                      <div className="flex w-full justify-start" key={index}>
-                        <div className="z-10 md:w-[70%] w-full flex ">
-                          <div className="flex items-start justify-end pr-2">
-                            <Avatar
-                              alt="Remy Sharp"
-                              src="http://res.cloudinary.com/djhhzmcps/image/upload/v1710595194/h5ciy7ec1caco9vh4xqn.png"
-                              sx={{ width: 40, height: 40 }}
-                            />
-                          </div>
-                          <div className="md:w-[95%] w-[80%] ">
-                            <div className="max-w-full bg-white text-justify p-2 rounded-tr-lg rounded-b-lg">
-                              {el.message}
+                      )}
+                      {el.user !== userDetail.username && (
+                        <div className="flex w-full justify-start" key={index}>
+                          <div className="z-10 md:w-[70%] w-full flex ">
+                            <div className="flex items-start justify-end pr-2">
+                              <Avatar
+                                alt="Remy Sharp"
+                                src="http://res.cloudinary.com/djhhzmcps/image/upload/v1710595194/h5ciy7ec1caco9vh4xqn.png"
+                                sx={{ width: 40, height: 40 }}
+                              />
                             </div>
-                            {/* <div className="text-left text-[13px] pl-2">
+                            <div className="md:w-[95%] w-[80%] ">
+                              <div className="max-w-full bg-white text-justify p-2 rounded-tr-lg rounded-b-lg">
+                                {el.message}
+                              </div>
+                              {/* <div className="text-left text-[13px] pl-2">
                               Đã gửi ngày 3/3/2024
                             </div> */}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </>
-                );
-              })}
+                      )}
+                    </>
+                  );
+                })}
 
             {/* mess */}
           </div>
