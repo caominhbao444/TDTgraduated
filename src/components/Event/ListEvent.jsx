@@ -56,9 +56,9 @@ const ListEvent = () => {
         <h3 className="text-[18px] font-semibold">Danh sách sự kiện</h3>
       </div>
       {listEvents &&
-        listEvents.map((event) => {
+        listEvents.map((event, index) => {
           return (
-            <div className="border" key={event.id}>
+            <div className="border" key={index}>
               <img
                 src={
                   event.media ||

@@ -283,13 +283,13 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex gap-2 md:gap-4 justify-center items-center">
-          <Badge color="secondary" variant="dot">
+          {/* <Badge color="secondary" variant="dot">
             <MailOutlinedIcon
               size="small"
               className="cursor-pointer"
               onClick={() => navigate(`/message`)}
             />
-          </Badge>
+          </Badge> */}
           <Badge color="secondary" variant="dot">
             <NotificationsNoneIcon size="small" />
           </Badge>

@@ -33,7 +33,7 @@ const ChatBoxHeader = (props) => {
   const handleDelete = () => {
     axios
       .delete(
-        import.meta.env.VITE_APP_BASE_URL + `/messages?roomName={props.room}`,
+        import.meta.env.VITE_APP_BASE_URL + `/messages?roomName=${props.room}`,
         {
           headers: { authorization: `Bearer ${authToken}` },
         }

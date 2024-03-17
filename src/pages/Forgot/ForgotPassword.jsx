@@ -1,4 +1,9 @@
+import { useState } from "react";
+
 const ForgotPassword = () => {
+  const [data, setData] = useState({
+    email: "",
+  });
   return (
     <div className="w-full h-screen flex justify-center items-center bg-mainColor">
       <div className="md:w-[300px] w-full flex flex-col bg-white p-4 gap-3 rounded-lg">
