@@ -66,7 +66,8 @@ const ChatRoom = ({ user, id, room }) => {
         },
       }).then(async(res) => {
           const room = res.data.username + '-' + userDetail.username
-          await axios
+          if(!room.split('-').filter(el => el == 'undefined').length == 0){
+            await axios
             .get("http://localhost:1337/api/messages?roomName=" + room, {
               headers: {
                 Authorization: `Bearer ` + localStorage.getItem("token"),
@@ -77,6 +78,7 @@ const ChatRoom = ({ user, id, room }) => {
               setMessages(res.data || []);
             })
             .catch((e) => console.log(e.message));
+          }
         })
       });
   }, [room]);
