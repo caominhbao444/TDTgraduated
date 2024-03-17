@@ -14,10 +14,13 @@ import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 const ChatBoxHeader = (props) => {
   const [open, setOpen] = useState(false);
   const [isParam, setIsParam] = useState(false);
+  const authToken = localStorage.getItem("token");
+  console.log("Room from header", props.room);
   const navigate = useNavigate();
   // const { id } = useParams();
   const handleClickOpen = () => {
@@ -28,10 +31,18 @@ const ChatBoxHeader = (props) => {
     setOpen(false);
   };
   const handleDelete = () => {
-    setOpen(false);
-    navigate("/message");
-    props.handleParam(false);
-    props.handleClicked(false);
+    axios
+      .delete(
+        import.meta.env.VITE_APP_BASE_URL + `/messages?roomName={props.room}`,
+        {
+          headers: { authorization: `Bearer ${authToken}` },
+        }
+      )
+      .then(() => {
+        setOpen(false);
+        props.handleParam(false);
+        props.handleClicked(false);
+      });
   };
   useEffect(() => {
     if (props.id) {
@@ -55,14 +66,16 @@ const ChatBoxHeader = (props) => {
             <>
               <Avatar
                 alt="Remy Sharp"
-                src="http://res.cloudinary.com/djhhzmcps/image/upload/v1710595194/h5ciy7ec1caco9vh4xqn.png"
+                src={props.selected.image}
                 sx={{ width: 30, height: 30 }}
               />
               <div className="flex flex-col gap justify-center">
-                <h3 className="text-[14px] font-bold">
-                  Nguyễn Lê Quốc Cường Update
-                </h3>
-                <span className="text-[13px]">Online</span>
+                <h3 className="text-[14px] font-bold">{props.nameFriend}</h3>
+                <span className="text-[13px]">
+                  {props.isOnline === true
+                    ? "Đang hoạt động"
+                    : "Không hoạt động"}
+                </span>
               </div>
             </>
           ) : (

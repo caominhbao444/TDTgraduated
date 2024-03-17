@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const FriendCard = (props) => {
   const navigate = useNavigate();
   const [isEdit, setIsEdit] = useState(false);
-  console.log("friend", props.friend);
+
   return (
     <Card sx={{ display: "flex", height: "150px", cursor: "pointer" }}>
       <div className="w-1/3 h-full">

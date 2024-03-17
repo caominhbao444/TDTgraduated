@@ -12,6 +12,7 @@ import {
 const Detail = () => {
   const [activeTab, setActiveTab] = useState(0);
   const authToken = localStorage.getItem("token");
+  const userDetail = useSelector((state) => state.user.userDetail);
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const inforUser = useSelector((state) => state.user2.inforUser);
@@ -50,6 +51,7 @@ const Detail = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+  console.log("User details Focused", userDetail);
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7]">
       <main className="md:col-span-7 flex flex-col md:gap-3 md:py-4 mt-[42px] md:mt-[58px] md:pl-8">

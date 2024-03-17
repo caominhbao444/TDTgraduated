@@ -106,10 +106,7 @@ const Body = (props) => {
     }
     console.log("Post", myDetailsPost);
   }, [props.user, dispatch, authToken]);
-  if (props.user && props.listFriends) {
-    console.log("User from ", props.user);
-    console.log("List Friends from ", props.listFriends);
-  }
+
   const handleCancel = () => {
     setUsername(props.user.username);
     setFullname(props.user.fullname);
@@ -185,7 +182,9 @@ const Body = (props) => {
                 />
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  {fullname}
+                  {props.user.fullname
+                    ? props.user.fullname
+                    : inforUser.fullname}
                 </span>
               )}
               {userDetail.id === props.user.id && (
@@ -209,7 +208,9 @@ const Body = (props) => {
                 />
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  {username}
+                  {props.user.username
+                    ? props.user.username
+                    : inforUser.username}
                 </span>
               )}
               {userDetail.id === props.user.id && (
@@ -233,7 +234,7 @@ const Body = (props) => {
                 />
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  {email}
+                  {props.user.email ? props.user.email : inforUser.email}
                 </span>
               )}
               {userDetail.id === props.user.id && (
@@ -264,7 +265,7 @@ const Body = (props) => {
                 </TextField>
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  {gender}
+                  {props.user.email ? props.user.gender : inforUser.gender}
                 </span>
               )}
               {userDetail.id === props.user.id && (
@@ -309,7 +310,7 @@ const Body = (props) => {
                 </TextField>
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  {country}
+                  {props.user.country ? props.user.country : inforUser.country}
                 </span>
               )}
               {userDetail.id === props.user.id && (
@@ -345,7 +346,7 @@ const Body = (props) => {
                 </TextField>
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  {faculty}
+                  {props.user.faculty ? props.user.faculty : inforUser.faculty}
                 </span>
               )}
               {userDetail.id === props.user.id && (
@@ -381,7 +382,7 @@ const Body = (props) => {
                 </TextField>
               ) : (
                 <span className="text-[2vw] md:text-[15px] font-normal">
-                  {course}
+                  {props.user.course ? props.user.course : inforUser.course}
                 </span>
               )}
               {userDetail.id === props.user.id && (

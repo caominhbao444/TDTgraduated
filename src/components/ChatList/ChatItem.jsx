@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const ChatItem = (props) => {
   const navigate = useNavigate();
+  console.log("Chat", props.friend);
   return (
     <div
       className="w-full bg-white hover:bg-slate-200 cursor-pointer py-2 px-1 flex gap-2 justify-start items-center"
@@ -18,7 +19,11 @@ const ChatItem = (props) => {
       />
       <div className="flex flex-col w-full">
         <h3 className="text-[14px] font-medium">{props.friend.fullname}</h3>
-        <p className="text-[12px] text-textLightColor">Hoom nay la thu 2</p>
+        <p className="text-[12px] text-textLightColor">
+          {props.friend.isOnline === true
+            ? "Đang hoạt động"
+            : "Không hoạt động"}
+        </p>
       </div>
     </div>
   );

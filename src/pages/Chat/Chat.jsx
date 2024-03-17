@@ -26,18 +26,24 @@ const Chat = () => {
         } md:w-1/4 md:block h-full  flex flex-col`}
         handleClicked={handleClicked}
       />
-      {/* <ChatBox
+      <ChatBox
         className={`w-full ${
           selected ? "block" : "hidden"
         } md:w-3/4 md:block  h-full bg-slate-600`}
         handleClicked={handleClicked}
         handleBack={handleBack}
-      /> */}
-      <ChatRoom
         user={userDetail}
+        selected={selected}
+        isOnline={selected.isOnline}
+        nameFriend={selected.fullname}
         id={params.id}
         room={userDetail.username + "-" + selected.username}
       />
+      {/* <ChatRoom
+        user={userDetail}
+        id={params.id}
+        room={userDetail.username + "-" + selected.username}
+      /> */}
     </div>
   );
 };

@@ -40,7 +40,7 @@ export const CallApiDetailsListPosts = createAsyncThunk(
           },
         }
       );
-      console.log(apiDetailListPosts.data);
+
       return apiDetailListPosts.data;
     } catch (err) {
       console.log(err);

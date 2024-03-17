@@ -47,15 +47,13 @@ const Header = (props) => {
     props.handleActiveTab(active);
   };
   const currentUser = useSelector((state) => state.user.userDetail);
-  console.log("Current", currentUser);
-  console.log("Profile of", props.user);
-  console.log("Open state", open);
+
   const authToken = localStorage.getItem("token");
   const [userDetail, setUserDetail] = useState();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const dispatch = useDispatch();
-  console.log("headers", props.user.id);
+
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/", {
