@@ -17,7 +17,6 @@ const ChatRoom = ({ user, id, room }) => {
     });
     io.on("welcome", async (data, error) => {
       //Getting the welcome message from the backend
-      console.log(room.split('-').filter(el => el == 'undefined').length == 0)
       if(room.split('-').filter(el => el == 'undefined').length == 0){
         await axios
         .get("http://localhost:1337/api/messages?roomName=" + room, {
@@ -57,43 +56,29 @@ const ChatRoom = ({ user, id, room }) => {
     });
     io.on("message", async (data, error) => {
       //Listening for a message connection
-      if(room){
-        await axios
-        .get("http://localhost:1337/api/messages?roomName=" + room, {
-          headers: {
-            Authorization: `Bearer ` + localStorage.getItem("token"),
-          },
-        }) //Fetching all messages from Strapi
-        .then(async (res) => {
-          console.log(res.data)
-          setMessages(res.data || []);
+      await axios
+      .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/", {
+        headers: {
+          authorization: `Bearer ` + localStorage.getItem("token"),
+        },
+        params: {
+          id: id,
+        },
+      }).then(async(res) => {
+          const room = res.data.username + '-' + userDetail.username
+          await axios
+            .get("http://localhost:1337/api/messages?roomName=" + room, {
+              headers: {
+                Authorization: `Bearer ` + localStorage.getItem("token"),
+              },
+            }) //Fetching all messages from Strapi
+            .then(async (res) => {
+              console.log(res.data)
+              setMessages(res.data || []);
+            })
+            .catch((e) => console.log(e.message));
         })
-        .catch((e) => console.log(e.message));
-      }else{
-        await axios
-          .get(import.meta.env.VITE_APP_BASE_URL + "/user-details/", {
-            headers: {
-              authorization: `Bearer ` + localStorage.getItem("token"),
-            },
-            params: {
-              id: id,
-            },
-          }).then(async(res) => {
-              const room = res.data.username + '-' + userDetail.username
-              await axios
-                .get("http://localhost:1337/api/messages?roomName=" + room, {
-                  headers: {
-                    Authorization: `Bearer ` + localStorage.getItem("token"),
-                  },
-                }) //Fetching all messages from Strapi
-                .then(async (res) => {
-                  console.log(res.data)
-                  setMessages(res.data || []);
-                })
-                .catch((e) => console.log(e.message));
-          })
-      }
-    });
+      });
   }, [room]);
   const sendMessage = (message) => {
     if (message) {
@@ -113,7 +98,6 @@ const ChatRoom = ({ user, id, room }) => {
   const handleClick = () => {
     sendMessage(message);
   };
-  console.log("messages", messages);
   if(!messages){
     return null
   }
