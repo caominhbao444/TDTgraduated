@@ -27,6 +27,7 @@ const validationSchema = yup.object({
   email: yup
     .string("Vui lòng nhập email.")
     .email("Email không hợp lệ.")
+    .matches(/@gmail\.com$/, "Email phải là địa chỉ Gmail")
     .required("Vui lòng nhập trường này."),
   password: yup
     .string("Vui lòng nhập mật khẩu.")
@@ -88,14 +89,19 @@ const Signup = () => {
       });
   }, []);
   useEffect(() => {}, [listCity]);
-  console.log("ListCity", listCity);
+  // console.log("ListCity", listCity);
   const submitForm = (newData) => {
-    console.log("Form data: ", newData);
     axios
       .post(import.meta.env.VITE_APP_BASE_URL + `/auth/register`, newData)
       .then((res) => {
-        console.log(res);
-        navigate("/");
+        Swal.fire({
+          title: "Thành công",
+          text: "Vui lòng kiểm tra email!",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/");
+        });
       })
       .catch((error) => {
         console.log(error);

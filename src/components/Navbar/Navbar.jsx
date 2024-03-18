@@ -22,7 +22,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import SearchIcon from "@mui/icons-material/Search";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Lock, Logout, Person } from "@mui/icons-material";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -36,14 +36,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setLogout } from "../../store/usersSlice";
 import { resetStateToInitial } from "../../store/postsSlice";
-import { resetUserStateToInitial } from "../../store/users2Slice";
+import {
+  CallApiListAllFriends,
+  resetUserStateToInitial,
+} from "../../store/users2Slice";
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const authToken = localStorage.getItem("token");
+  const navigate = useNavigate();
   const open = Boolean(anchorEl);
   const [openChange, setOpenChange] = React.useState(false);
   const userDetail = useSelector((state) => state.user.userDetail);
-  const navigate = useNavigate();
+  const listAllFriends = useSelector((state) => state.user2.listAllFriends);
+  const [isLoadingListFriends, setIsLoadingListFriends] = useState(true);
+
   const [openDialog, setOpenDialog] = useState(false);
+  const [searchName, setSearchName] = useState("");
+  const [openListName, setOpenListName] = useState(false);
   const [Urlimg, setUrlimg] = useState(
     "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
   );
@@ -52,8 +61,33 @@ const Navbar = () => {
   );
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [filteredData, setFilteredData] = useState([]);
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (authToken) {
+      dispatch(
+        CallApiListAllFriends({
+          headers: { authorization: `Bearer ${authToken}` },
+        })
+      ).then(() => {
+        setIsLoadingListFriends(false);
+        setFilteredData(listAllFriends);
+      });
+    }
+  }, [dispatch, authToken]);
+  const handleSearchName = (e) => {
+    const { value } = e.target;
+    setSearchName(value);
+    setOpenListName(value.trim().length > 0);
+    filterData(e.target.value);
+  };
+  const filterData = (input) => {
+    const filtered = listAllFriends.filter((item) =>
+      item.fullname.toLowerCase().includes(input.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -68,9 +102,7 @@ const Navbar = () => {
   const handleChangePassword = () => {
     setOpenChange(true);
   };
-  const handleSubmitChangePassword = () => {
-    console.log("Submit change password");
-  };
+  const handleSubmitChangePassword = () => {};
   const handleLogout = async () => {
     await axios
       .put(
@@ -148,19 +180,6 @@ const Navbar = () => {
           )
         )}
       </List>
-      {/* <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List> */}
     </Box>
   );
 
@@ -235,7 +254,6 @@ const Navbar = () => {
         content: content,
       })
       .then((res) => {
-        console.log(res);
         // navigate("/home");
       })
       .catch((error) => {
@@ -248,7 +266,7 @@ const Navbar = () => {
   };
   return (
     <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-10">
-      <div className="flex justify-between items-center mx-4 md:mx-5 md:py-2">
+      <div className="flex justify-between items-center mx-4 md:mx-5 md:py-2 relative">
         <div className="flex md:gap-3 items-center">
           <div className="block md:hidden mr-4">
             <MenuIcon onClick={toggleDrawer("left", true)}></MenuIcon>
@@ -266,7 +284,7 @@ const Navbar = () => {
           >
             ALUMNI
           </Link>
-          <div className="hidden md:block">
+          <div className="hidden md:block relative">
             <TextField
               id="search"
               InputProps={{
@@ -279,7 +297,40 @@ const Navbar = () => {
               variant="outlined"
               size="small"
               autoComplete="off"
+              value={searchName}
+              onChange={handleSearchName}
             />
+            {openListName && (
+              <div className="absolute top-[40px] left-0 right-0 w-full max-h-[171px] overflow-y-auto flex flex-col z-50 bg-orange-200">
+                {filteredData && filteredData.length > 0 ? (
+                  filteredData.map((item) => (
+                    <div
+                      key={item.id} // Assuming item has an 'id' property for a unique key
+                      className="w-full flex justify-between items-center p-3 cursor-pointer bg-white border hover:bg-slate-50"
+                      onClick={() => {
+                        navigate(`/detail/${item.id}`);
+                        setSearchName("");
+                        setOpenListName(false);
+                      }}
+                    >
+                      <div className="flex justify-start items-center gap-2">
+                        <Avatar
+                          src={item.image}
+                          sx={{ width: 32, height: 32 }}
+                        ></Avatar>
+                        <span className="text-[13px] font-medium">
+                          {item.fullname}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="w-full flex justify-center items-center p-3 cursor-pointer bg-white border">
+                    Không có dữ liệu
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex gap-2 md:gap-4 justify-center items-center">

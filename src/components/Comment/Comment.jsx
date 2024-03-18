@@ -20,6 +20,7 @@ import {
   CallApiDetailsListPosts,
   CallApiMyListPosts,
   CallApiPostId,
+  CallApiUpdateComment,
 } from "../../store/postsSlice";
 
 const listReply = [
@@ -81,7 +82,7 @@ const Comment = (props) => {
     );
     return vietnameseTimeIntervalString;
   };
-  console.log(props.comment);
+
   const handleReplyComment = (commentId) => {
     axios
       .post(
@@ -123,7 +124,44 @@ const Comment = (props) => {
         console.log(error);
       });
   };
-  const handleUpdateComment = (commentId) => {};
+  const handleUpdateComment = (commentId) => {
+    axios
+      .put(
+        import.meta.env.VITE_APP_BASE_URL + `/comments/${commentId}`,
+        {
+          content: textEditComment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        setIsEditing(false);
+        dispatch(
+          CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+        dispatch(
+          CallApiDetailsListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+        dispatch(
+          CallApiPostId({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: props.comment.post.id,
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleDelete = (commentId) => {
     axios
       .delete(import.meta.env.VITE_APP_BASE_URL + `/comments/${commentId}`, {
@@ -155,7 +193,7 @@ const Comment = (props) => {
         console.log(error);
       });
   };
-  console.log("Comment", props);
+
   return (
     <CardContent className="flex">
       <div className="flex gap-4 w-full">
@@ -193,7 +231,10 @@ const Comment = (props) => {
                     </span>{" "}
                     để hủy thao tác.
                   </span>
-                  <Button sx={{ ml: "auto" }}>
+                  <Button
+                    sx={{ ml: "auto" }}
+                    onClick={() => handleUpdateComment(props.comment.id)}
+                  >
                     <SendIcon />
                   </Button>
                 </Box>
@@ -282,7 +323,7 @@ const Comment = (props) => {
                 </h4>
 
                 <Textarea
-                  placeholder="Viết bình luận 1…"
+                  placeholder="Viết bình luận …"
                   minRows={2}
                   className="outline-none text-justify"
                   variant="soft"

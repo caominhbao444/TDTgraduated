@@ -8,7 +8,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 
-const CreateEvent = () => {
+const CreateEvent = ({ onSuccess }) => {
   const [method, setMethod] = useState("");
   const [loading, setLoading] = useState(false);
   const [Urlimg, setUrlimg] = useState(
@@ -106,6 +106,7 @@ const CreateEvent = () => {
           icon: "success",
           confirmButtonText: "OK",
         });
+        onSuccess();
       })
       .catch((error) => {
         console.log(error);

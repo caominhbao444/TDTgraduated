@@ -5,6 +5,7 @@ const initialState = {
   myPost: [],
   postId: [],
   myDetailsPost: [],
+  updateComment: [],
 };
 
 //CallApiMyListPosts
@@ -66,6 +67,26 @@ export const CallApiPostId = createAsyncThunk(
     }
   }
 );
+//CallApiUpdateComment
+export const CallApiUpdateComment = createAsyncThunk(
+  "post/callApiUpdateComment",
+  async function ({ headers, id, data }) {
+    try {
+      const apiUpdateCommentResponse = await axios.put(
+        `http://localhost:1337/comments/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiUpdateCommentResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 const postsSlice = createSlice({
   name: "post",
   initialState,
@@ -106,6 +127,17 @@ const postsSlice = createSlice({
         state.myDetailsPost = action.payload;
       })
       .addCase(CallApiDetailsListPosts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiUpdateComment.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiUpdateComment.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.updateComment = action.payload;
+      })
+      .addCase(CallApiUpdateComment.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

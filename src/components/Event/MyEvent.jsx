@@ -244,70 +244,73 @@ const FirstView = (props) => {
   };
   return (
     <>
-      {props.events.map((event) => {
-        return (
-          <div className="border" key={event.id}>
-            <img
-              src={event.media}
-              alt=""
-              className="w-full h-[200px] object-cover object-center"
-            />
-            <div className="flex flex-col w-full p-4 gap-4">
-              <h3 className="text-[16px] font-bold">{event.title}</h3>
-              <p>Người tổ chức: {event.author.fullname}</p>
-              <div className="flex flex-col md:flex-row w-full md:items-center">
-                <p className="w-full md:w-2/3 flex justify-start items-center">
-                  Thời gian: {moment(event.from).format("DD/MM/YYYY HH:mm A")} -{" "}
-                  {moment(event.to).format("DD/MM/YYYY HH:mm A")}
-                </p>
-                <p className="w-full md:w-1/3 flex justify-end items-center">
-                  Số lượng: {event.participants.length}/{event.limit}
-                </p>
-              </div>
-              <div className="w-full">
-                <Accordion>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1-content"
-                    id="panel1-header"
-                  >
-                    Chi tiết
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <p>Hình thức tổ chức : {event.method}</p>
-                    <p>Nội dung: {event.content}</p>
-                  </AccordionDetails>
-                </Accordion>
-              </div>
-              <div className="w-full flex justify-end items-center gap-3">
-                {event.author.id !== userDetail.id ? (
-                  <button
-                    className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg"
-                    onClick={() => handleCancel(event)}
-                  >
-                    Huỷ tham gia
-                  </button>
-                ) : (
-                  <>
+      {props.events
+        .slice()
+        .reverse()
+        .map((event) => {
+          return (
+            <div className="border" key={event.id}>
+              <img
+                src={event.media}
+                alt=""
+                className="w-full h-[200px] object-cover object-center"
+              />
+              <div className="flex flex-col w-full p-4 gap-4">
+                <h3 className="text-[16px] font-bold">{event.title}</h3>
+                <p>Người tổ chức: {event.author.fullname}</p>
+                <div className="flex flex-col md:flex-row w-full md:items-center">
+                  <p className="w-full md:w-2/3 flex justify-start items-center">
+                    Thời gian: {moment(event.from).format("DD/MM/YYYY HH:mm A")}{" "}
+                    - {moment(event.to).format("DD/MM/YYYY HH:mm A")}
+                  </p>
+                  <p className="w-full md:w-1/3 flex justify-end items-center">
+                    Số lượng: {event.participants.length}/{event.limit}
+                  </p>
+                </div>
+                <div className="w-full">
+                  <Accordion>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1-content"
+                      id="panel1-header"
+                    >
+                      Chi tiết
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <p>Hình thức tổ chức : {event.method}</p>
+                      <p>Nội dung: {event.content}</p>
+                    </AccordionDetails>
+                  </Accordion>
+                </div>
+                <div className="w-full flex justify-end items-center gap-3">
+                  {event.author.id !== userDetail.id ? (
                     <button
                       className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg"
-                      onClick={() => handleDeleteEvent(event.id)}
+                      onClick={() => handleCancel(event)}
                     >
-                      Xóa sự kiện
+                      Huỷ tham gia
                     </button>
-                    <button
-                      className="px-3 py-2 bg-mainColor text-white hover:bg-white hover:text-mainColor border border-mainColor rounded-lg"
-                      onClick={handleClickOpen(event)}
-                    >
-                      Chỉnh sửa
-                    </button>
-                  </>
-                )}
+                  ) : (
+                    <>
+                      <button
+                        className="px-3 py-2 bg-red-700 text-white hover:bg-white hover:text-red-700 border border-red-700 rounded-lg"
+                        onClick={() => handleDeleteEvent(event.id)}
+                      >
+                        Xóa sự kiện
+                      </button>
+                      <button
+                        className="px-3 py-2 bg-mainColor text-white hover:bg-white hover:text-mainColor border border-mainColor rounded-lg"
+                        onClick={handleClickOpen(event)}
+                      >
+                        Chỉnh sửa
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
       <React.Fragment>
         <Dialog
           fullScreen={fullScreen}

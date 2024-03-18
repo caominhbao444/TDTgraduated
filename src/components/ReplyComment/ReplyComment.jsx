@@ -8,18 +8,18 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   CallApiDetailsListPosts,
   CallApiMyListPosts,
+  CallApiPostId,
 } from "../../store/postsSlice";
 import axios from "axios";
 const ReplyComment = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isReplay_2, setIsReplay_2] = useState(false);
+  const [textEditComment, setTextEditComment] = useState(props.reply.content);
   const authToken = localStorage.getItem("token");
   const dispatch = useDispatch();
   const userDetail = useSelector((state) => state.user.userDetail);
   useEffect(() => {
     const keyDownHandler = (event) => {
-      console.log("User pressed: ", event.key);
-
       if (event.key === "Escape") {
         event.preventDefault();
         setIsEditing(false);
@@ -34,7 +34,7 @@ const ReplyComment = (props) => {
   const sendReplay = () => {
     setIsReplay_2((prevIsReplay_2) => !prevIsReplay_2);
     const newReplayStatus = !isReplay_2;
-    console.log("Sending replay status:", newReplayStatus);
+
     props.isReplay(newReplayStatus);
   };
   const formatTime = (time) => {
@@ -113,7 +113,44 @@ const ReplyComment = (props) => {
         console.log(error);
       });
   };
-  console.log("reply", props.reply);
+  const handleUpdateComment = (commentId) => {
+    axios
+      .put(
+        import.meta.env.VITE_APP_BASE_URL + `/comments/${commentId}`,
+        {
+          content: textEditComment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        setIsEditing(false);
+        dispatch(
+          CallApiMyListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+        dispatch(
+          CallApiDetailsListPosts({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: userDetail.id,
+          })
+        );
+        dispatch(
+          CallApiPostId({
+            headers: { authorization: `Bearer ${authToken}` },
+            id: props.comment.post.id,
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <div className="flex gap-4 w-full">
       <Avatar alt="Remy Sharp" src={props.reply.author.image} />
@@ -123,9 +160,10 @@ const ReplyComment = (props) => {
         </h4>
         {isEditing ? (
           <Textarea
-            placeholder="Viết bình luận reply…"
-            defaultValue={props.reply.content}
+            placeholder="Viết bình luận ..."
+            defaultValue={textEditComment}
             minRows={2}
+            onChange={(e) => setTextEditComment(e.target.value)}
             className="outline-none text-justify"
             variant="soft"
             endDecorator={
@@ -139,8 +177,20 @@ const ReplyComment = (props) => {
                   flex: "auto",
                 }}
               >
-                <span className="text-[12px]">Nhấn ESC để hủy thao tác.</span>
-                <Button sx={{ ml: "auto" }}>
+                <span className="text-[12px]">
+                  Nhấn ESC hoặc{" "}
+                  <span
+                    className="text-mainColor cursor-pointer"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    đây
+                  </span>{" "}
+                  để hủy thao tác.
+                </span>
+                <Button
+                  sx={{ ml: "auto" }}
+                  onClick={() => handleUpdateComment(props.reply.id)}
+                >
                   <SendIcon />
                 </Button>
               </Box>

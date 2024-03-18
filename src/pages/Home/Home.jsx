@@ -46,19 +46,21 @@ const Home = () => {
   const dispatch = useDispatch();
   const userDetail = useSelector((state) => state.user.userDetail);
   const myPost = useSelector((state) => state.post.myPost);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [filteredData, setFilteredData] = useState(myPost);
 
   // Function to handle input change
   const handleInputChange = (e) => {
-      setInputValue(e.target.value);
-      filterData(e.target.value);
+    setInputValue(e.target.value);
+    filterData(e.target.value);
   };
 
   // Function to filter data by name
   const filterData = (input) => {
-      const filtered = myPost.filter(item => item.content.toLowerCase().includes(input.toLowerCase()));
-      setFilteredData(filtered);
+    const filtered = myPost.filter((item) =>
+      item.content.toLowerCase().includes(input.toLowerCase())
+    );
+    setFilteredData(filtered);
   };
   useEffect(() => {
     if (userDetail.id) {
@@ -132,7 +134,7 @@ const Home = () => {
       });
     }
   };
-  
+
   const handleCreatePost = (event) => {
     event.preventDefault();
     axios
@@ -176,15 +178,13 @@ const Home = () => {
   };
   useEffect(() => {
     if (myPost) {
-      console.log("", myPost);
-      setFilteredData(myPost)
+      setFilteredData(myPost);
     }
   }, [myPost]);
-  console.log(myPost)
-  console.log(filteredData)
-  if(!myPost){
-    setFilteredData(myPost)
-    return null
+
+  if (!myPost) {
+    setFilteredData(myPost);
+    return null;
   }
   return (
     <div className="grid grid-cols-1 md:grid-cols-9 md:gap-8 min-h-screen bg-[#f7f7f7] ">
@@ -234,10 +234,14 @@ const Home = () => {
             onChange={handleInputChange}
           />
         </div>
-        {filteredData ? 
-          filteredData.map((post) => {
-            return <PostContainer key={post.id} post={post} />;
-          }): null}
+        {filteredData
+          ? filteredData
+              .slice()
+              .reverse()
+              .map((post) => {
+                return <PostContainer key={post.id} post={post} />;
+              })
+          : null}
       </main>
       <aside className="bg-white md:col-span-2 hidden md:flex flex-col  sticky top-[58px]  h-[calc(100vh-58px)]">
         <SecondAside />

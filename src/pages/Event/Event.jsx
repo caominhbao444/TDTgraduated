@@ -13,6 +13,9 @@ const Event = () => {
   const handleMethod = (e) => {
     setMethod(e.target.value);
   };
+  const handleCreateEventSuccess = () => {
+    setActiveTab(1); // Activate the second tab
+  };
   return (
     <div className="grid grid-cols-1 md:grid-cols-9  min-h-screen bg-[#f7f7f7] ">
       <main className="md:col-span-7 flex flex-col md:gap-8 gap-4 mt-[42px] md:mt-[58px] ">
@@ -51,7 +54,9 @@ const Event = () => {
             </div>
           </div>
           <div className="md:w-4/5 w-full h-full md:p-4">
-            {activeTab === 0 && <CreateEvent />}
+            {activeTab === 0 && (
+              <CreateEvent onSuccess={handleCreateEventSuccess} />
+            )}
             {activeTab === 1 && <ListEvent />}
             {activeTab === 2 && <MyEvent />}
           </div>

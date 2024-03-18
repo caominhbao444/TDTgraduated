@@ -74,7 +74,7 @@ const PostContainer = (props) => {
   const [imageUrl, setImageUrl] = useState(
     "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/134557216-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6"
   );
-  console.log("Props", props);
+
   const [content, setContent] = useState("");
   const [editLoading, setEditLoading] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
@@ -181,7 +181,7 @@ const PostContainer = (props) => {
       .then((res) => {
         Swal.fire({
           title: "Thành công",
-          text: "Xóa bài viết cập thành công.",
+          text: "Xóa bài viết thành công.",
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
@@ -318,7 +318,7 @@ const PostContainer = (props) => {
 
   return (
     <>
-      <Card className="w-full ">
+      <Card className="w-full " key={props.post.id}>
         <CardHeader
           avatar={
             loading ? (
@@ -465,11 +465,11 @@ const PostContainer = (props) => {
           {props.post.comments &&
             props.post.comments
               .filter((el) => !el.comment)
-              .map((comment) => {
+              .map((comment, index) => {
                 return (
                   <>
                     <Comment
-                      key={comment.id}
+                      key={`${comment.id}_${index}`}
                       name={comment.name}
                       content={comment.content}
                       dateCreate={comment.dateCreate}

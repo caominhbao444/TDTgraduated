@@ -7,6 +7,7 @@ const initialState = {
   updateUser: [],
   forgotPassword: [],
   logout: [],
+  listAllFriends: [],
 };
 //CallApiInforUser
 export const CallApiInforUser = createAsyncThunk(
@@ -108,7 +109,25 @@ export const CallApiLogout = createAsyncThunk(
     }
   }
 );
-
+//CallApiListAllFriends
+export const CallApiListAllFriends = createAsyncThunk(
+  "user2/callApiListAllFriends",
+  async function ({ headers }) {
+    try {
+      const apiListAllFriendsResponse = await axios.get(
+        `http://localhost:1337/api/user-details/getAllUsers`,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiListAllFriendsResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 const usersSlice2 = createSlice({
   name: "user2",
   initialState,
@@ -160,6 +179,17 @@ const usersSlice2 = createSlice({
         state.forgotPassword = action.payload;
       })
       .addCase(CallApiForgotPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiListAllFriends.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiListAllFriends.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.listAllFriends = action.payload;
+      })
+      .addCase(CallApiListAllFriends.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });
