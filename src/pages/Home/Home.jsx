@@ -182,6 +182,9 @@ const Home = () => {
     }
   }, [myPost]);
 
+  useEffect(() => {
+    console.log("User", userDetail);
+  }, []);
   if (!myPost) {
     setFilteredData(myPost);
     return null;
@@ -196,13 +199,13 @@ const Home = () => {
             </ListItemIcon>
             <ListItemText primary="Đăng bài" />
           </ListItem>
-          <Divider component="li" />
+          {/* <Divider component="li" />
           <ListItem className="hover:cursor-pointer">
             <ListItemIcon className="flex justify-center">
               <HomeOutlinedIcon />
             </ListItemIcon>
             <ListItemText primary="Trang chủ" />
-          </ListItem>
+          </ListItem> */}
           <Divider component="li" />
           <ListItem
             className="hover:cursor-pointer"

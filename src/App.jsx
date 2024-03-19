@@ -20,27 +20,29 @@ import PrivateAdmin from "./components/PrivateArea/PrivateAdmin";
 import ManageUsers from "./pages/Manage/ManageUsers";
 import ForgotPassword from "./pages/Forgot/ForgotPassword";
 import RePassword from "./pages/Forgot/RePassword";
+import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
-  const dispatch = useDispatch();
-  const userDetail = useSelector((state) => state.user.userDetail);
+  // const dispatch = useDispatch();
+  // const userDetail = useSelector((state) => state.user.userDetail);
 
-  useEffect(() => {
-    if (!userDetail.id) {
-      axios
-        .get(import.meta.env.VITE_APP_BASE_URL + "/user-details", {
-          headers: {
-            Authorization: `Bearer ` + localStorage.getItem("token"),
-          },
-        })
-        .then((res) => {
-          dispatch(setUserDetails(res.data));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, [dispatch]);
+  // useEffect(() => {
+  //   if (!userDetail.id) {
+  //     axios
+  //       .get(import.meta.env.VITE_APP_BASE_URL + "/user-details", {
+  //         headers: {
+  //           Authorization: `Bearer ` + localStorage.getItem("token"),
+  //         },
+  //       })
+  //       .then((res) => {
+  //         dispatch(setUserDetails(res.data));
+  //         console.log("User Login", res.data);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //       });
+  //   }
+  // }, [dispatch]);
   return (
     <>
       <BrowserRouter>
@@ -64,6 +66,7 @@ function App() {
           <Route element={<PrivateAdmin />}>
             <Route path="/admin/users" element={<ManageUsers />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>

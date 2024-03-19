@@ -15,7 +15,7 @@ export const usersSlice = createSlice({
       state.value -= 1;
     },
     setUserDetails: (state, data) => {
-      state.userDetail = data.payload
+      state.userDetail = data.payload;
     },
     setLogin: (state, data) => {
       localStorage.setItem("token", data.payload.jwt);

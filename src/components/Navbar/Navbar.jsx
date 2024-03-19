@@ -17,13 +17,20 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MenuIcon from "@mui/icons-material/Menu";
 import ListItemText from "@mui/material/ListItemText";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import SearchIcon from "@mui/icons-material/Search";
 import React, { useEffect, useState } from "react";
-import { Lock, Logout, Person } from "@mui/icons-material";
+import {
+  Lock,
+  Logout,
+  Person,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -37,9 +44,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { setLogout } from "../../store/usersSlice";
 import { resetStateToInitial } from "../../store/postsSlice";
 import {
+  CallApiCheckRole,
   CallApiListAllFriends,
   resetUserStateToInitial,
 } from "../../store/users2Slice";
+import { Form, Formik, useFormik } from "formik";
+import * as yup from "yup";
+const validationSchema = yup.object({
+  password: yup
+    .string("Vui lòng nhập mật khẩu.")
+    .min(8, "Mật khẩu phải chứa ít nhất 8 kí tự.")
+    .matches(/^(?=.*[a-z])/, "Mật khẩu phải chứa 1 kí tự viết thường.")
+    .matches(/^(?=.*[A-Z])/, "Mật khẩu phải chứa 1 kí tự viết hoa.")
+    .matches(/^(?=.*[0-9])/, "Mật khẩu phải chứa 1 chữ số")
+    .required("Vui lòng nhập trường này."),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Mật khẩu phải khớp"),
+});
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const authToken = localStorage.getItem("token");
@@ -48,8 +70,13 @@ const Navbar = () => {
   const [openChange, setOpenChange] = React.useState(false);
   const userDetail = useSelector((state) => state.user.userDetail);
   const listAllFriends = useSelector((state) => state.user2.listAllFriends);
+  const checkRole = useSelector((state) => state.user2.checkRole);
   const [isLoadingListFriends, setIsLoadingListFriends] = useState(true);
 
+  const [data, setData] = useState({
+    id: userDetail.id,
+    password: "",
+  });
   const [openDialog, setOpenDialog] = useState(false);
   const [searchName, setSearchName] = useState("");
   const [openListName, setOpenListName] = useState(false);
@@ -62,7 +89,44 @@ const Navbar = () => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
+  const onSubmit = (data) => {
+    const formData = {
+      id: userDetail.id,
+      password: data.password,
+    };
+    axios
+      .post(import.meta.env.VITE_APP_BASE_URL + `/reset-password`, formData)
+      .then(() => {
+        setOpenChange(false);
+        Swal.fire({
+          title: "Thành công",
+          text: "Cập nhật mật khẩu thành công.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((res) => {
+          console.log("Message", res);
+        });
+      })
+      .catch(() => {
+        Swal.fire({
+          title: "Thất bại",
+          text: "Cập nhật mật khẩu thất bại.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      });
+  };
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const formik = useFormik({
+    initialValues: data,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+  });
   useEffect(() => {
     if (authToken) {
       dispatch(
@@ -75,6 +139,15 @@ const Navbar = () => {
       });
     }
   }, [dispatch, authToken]);
+  useEffect(() => {
+    if (authToken) {
+      dispatch(
+        CallApiCheckRole({
+          headers: { authorization: `Bearer ${authToken}` },
+        })
+      );
+    }
+  }, [authToken]);
   const handleSearchName = (e) => {
     const { value } = e.target;
     setSearchName(value);
@@ -102,7 +175,7 @@ const Navbar = () => {
   const handleChangePassword = () => {
     setOpenChange(true);
   };
-  const handleSubmitChangePassword = () => {};
+
   const handleLogout = async () => {
     await axios
       .put(
@@ -264,6 +337,9 @@ const Navbar = () => {
     // setAnchorEl(null);
     navigate(`/detail/${userDetail.id}`);
   };
+  useEffect(() => {
+    console.log("check admin", userDetail.role);
+  }, []);
   return (
     <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-10">
       <div className="flex justify-between items-center mx-4 md:mx-5 md:py-2 relative">
@@ -397,6 +473,14 @@ const Navbar = () => {
               </ListItemIcon>
               Trang cá nhân
             </MenuItem>
+            {checkRole && checkRole.id === 3 && (
+              <MenuItem onClick={() => navigate("/admin/users")}>
+                <ListItemIcon>
+                  <ManageAccountsIcon fontSize="small" />
+                </ListItemIcon>
+                Quản lý người dùng
+              </MenuItem>
+            )}
             <MenuItem onClick={handleChangePassword}>
               <ListItemIcon>
                 <Lock fontSize="small" />
@@ -537,21 +621,77 @@ const Navbar = () => {
             />
           </Box>
         </DialogTitle>
-        <div className="flex flex-col md:justify-around relative p-[20px] gap-[10px]">
+        <form
+          onSubmit={formik.handleSubmit}
+          className="flex flex-col md:justify-around relative p-[20px] gap-[10px]"
+        >
           <div className="w-full flex flex-col gap-1">
-            <label htmlFor="password" className="cursor-pointer">
-              Mật khẩu hiện tại
-            </label>
-            <input id="password" className="outline-none border px-2 py-2" />
+            <TextField
+              label="Mật khẩu mới"
+              id="password"
+              variant="filled"
+              size="small"
+              className="w-full"
+              autoComplete="off"
+              name="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+              type={showPassword ? "text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
           </div>
           <div className="w-full flex flex-col gap-1">
-            <label htmlFor="newpassword" className="cursor-pointer">
-              Mật khẩu mới
-            </label>
-            <input id="newpassword" className="outline-none border px-2 py-2" />
+            <TextField
+              label="Nhập lại mật khẩu mới"
+              id="confirmPassword"
+              variant="filled"
+              size="small"
+              className="w-full"
+              autoComplete="off"
+              name="confirmPassword"
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.confirmPassword &&
+                Boolean(formik.errors.confirmPassword)
+              }
+              helperText={
+                formik.touched.confirmPassword && formik.errors.confirmPassword
+              }
+              type={showPassword ? "text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
           </div>
           <Button
-            onClick={handleSubmitChangePassword}
+            type="submit"
             variant="contained"
             style={{
               backgroundColor: "#1877f2",
@@ -560,9 +700,9 @@ const Navbar = () => {
             }}
             fullWidth
           >
-            Đăng bài
+            Cập nhật mật khẩu
           </Button>
-        </div>
+        </form>
       </Dialog>
     </nav>
   );

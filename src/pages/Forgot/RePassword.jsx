@@ -29,7 +29,7 @@ const RePassword = () => {
   const onSubmit = (data) => {
     const formData = {
       id: id,
-      email: data.email,
+      password: data.password,
     };
     axios
       .post(import.meta.env.VITE_APP_BASE_URL + `/reset-password`, formData)

@@ -27,7 +27,6 @@ const Login = () => {
         password: password,
       })
       .then((res) => {
-        console.log(res.data);
         if (res.data === false) {
           Swal.fire({
             title: "Thất bại",
@@ -43,6 +42,7 @@ const Login = () => {
             })
             .then((res) => {
               dispatch(setLogin(res.data));
+              console.log("login", res.data);
               navigate("/home");
             })
             .catch((err) => {

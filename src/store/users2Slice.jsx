@@ -8,6 +8,8 @@ const initialState = {
   forgotPassword: [],
   logout: [],
   listAllFriends: [],
+  checkRole: [],
+  deleteUser: [],
 };
 //CallApiInforUser
 export const CallApiInforUser = createAsyncThunk(
@@ -128,6 +130,44 @@ export const CallApiListAllFriends = createAsyncThunk(
     }
   }
 );
+//CallApiCheckRole
+export const CallApiCheckRole = createAsyncThunk(
+  "user2/callApiCheckRole",
+  async function ({ headers }) {
+    try {
+      const apiRoleResponse = await axios.get(
+        `http://localhost:1337/api/user-details`,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiRoleResponse.data.role;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+//CallApiDeleteUser
+export const CallApiDeleteUser = createAsyncThunk(
+  "user2/callApiDeleteUser",
+  async function ({ headers, id }) {
+    try {
+      const apiDeleteUserResponse = await axios.delete(
+        `http://localhost:1337/api/user-details/deleteUser/${id}`,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiDeleteUserResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 const usersSlice2 = createSlice({
   name: "user2",
   initialState,
@@ -190,6 +230,28 @@ const usersSlice2 = createSlice({
         state.listAllFriends = action.payload;
       })
       .addCase(CallApiListAllFriends.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiCheckRole.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiCheckRole.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.checkRole = action.payload;
+      })
+      .addCase(CallApiCheckRole.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiDeleteUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiDeleteUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.deleteUser = action.payload;
+      })
+      .addCase(CallApiDeleteUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });
