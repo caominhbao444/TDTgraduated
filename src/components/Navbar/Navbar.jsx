@@ -356,7 +356,7 @@ const Navbar = () => {
           </div>
           <Link
             to="/home"
-            className="font-bold text-[16px] md:mr-4 md:text-[20px] text-mainColor"
+            className="font-bold text-[16px] md:mr-4 md:text-[20px] text-mainColor no-underline "
           >
             ALUMNI
           </Link>
