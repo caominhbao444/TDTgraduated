@@ -33,7 +33,7 @@ const PrivateAdmin = () => {
           console.log(error);
         });
     } else {
-      navigate("/notfound");
+      navigate("/");
     }
   }, [dispatch, authToken]);
   return loading ? (

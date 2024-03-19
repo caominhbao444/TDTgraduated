@@ -40,6 +40,7 @@ const ChatBoxHeader = (props) => {
       )
       .then(() => {
         setOpen(false);
+        navigate("/message");
         props.handleParam(false);
         props.handleClicked(false);
       });

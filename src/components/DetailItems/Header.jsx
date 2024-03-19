@@ -134,12 +134,12 @@ const Header = (props) => {
           <div className="absolute top-3 md:top-[50px] right-12 md:right-6 flex flex-col gap-1 md:gap-2">
             {actions
               .filter((el) => !el.disabled)
-              .map((item) => {
+              .map((item, index) => {
                 return (
                   <>
                     <Tooltip
                       title={item.name}
-                      key={item.id}
+                      key={index}
                       placement="left-start"
                     >
                       <IconButton

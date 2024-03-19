@@ -7,25 +7,38 @@ import axios from "axios";
 const ChatListConversation = (props) => {
   const [searchName, setSearchName] = useState("");
   const userDetail = useSelector((state) => state.user.userDetail);
-  console.log(userDetail)
-  const [friends, setFriends] = useState()
+  console.log(userDetail);
+  const [friends, setFriends] = useState();
+  const [listField, setListField] = useState([]);
   useEffect(() => {
-    axios.get(
-      `http://localhost:1337/api/friend-list/${userDetail.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ` + localStorage.getItem('token')
-        },
-      }
-    ).then((res) => {
-        console.log('???Sdad', res.data)
-        setFriends(res.data)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }, [userDetail])
-  if(!friends){
-    return null
+    axios
+      .get(
+        `http://localhost:1337/api/user-details/friend-list/${userDetail.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ` + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log("???Sdad", res.data);
+        setFriends(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [userDetail]);
+  useEffect(() => {
+    if (friends) {
+      setListField(
+        friends.filter((friend) =>
+          friend.fullname.toLowerCase().includes(searchName.toLowerCase())
+        )
+      );
+    }
+  }, [friends, searchName]);
+  if (!friends) {
+    return null;
   }
   return (
     <>
@@ -46,7 +59,8 @@ const ChatListConversation = (props) => {
       </div>
       <div className="h-[calc(100vh-129px)] px-4 py-2 border-t flex flex-col justify-start items-center overflow-scroll no-scrollbar">
         {friends &&
-          friends.map((friend) => {
+          listField &&
+          listField.map((friend) => {
             return (
               <ChatItem
                 handleClicked={props.handleClicked}

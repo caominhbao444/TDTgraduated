@@ -316,6 +316,7 @@ const PostContainer = (props) => {
       });
   };
 
+  console.log("UserDetail", userDetail);
   return (
     <>
       <Card className="w-full " key={props.post.id}>
@@ -336,36 +337,35 @@ const PostContainer = (props) => {
             )
           }
           action={
-            loading ? null : (
-              <>
-                {userDetail.id === props.post.author.id && (
-                  <IconButton
-                    aria-label="settings"
-                    className="relative"
-                    onClick={() => setIsEdit(!isEdit)}
-                  >
-                    <MoreVertOutlinedIcon />
-                    {isEdit && (
-                      <div className="absolute top-[110%] right-0 text-center w-[100px] border bg-white border-textLightColor flex flex-col">
-                        <div
-                          className="w-full py-2 text-[14px]"
-                          onClick={() => handleOpenEditPost(props.post)}
-                        >
-                          Chỉnh sửa
-                        </div>
-                        <Divider />
-                        <div
-                          onClick={() => deletePost(props.post.id)}
-                          className="w-full py-2 text-[14px]"
-                        >
-                          Xóa
-                        </div>
+            <>
+              {(userDetail.id === props.post.author.id ||
+                userDetail.role.id === 3) && (
+                <IconButton
+                  aria-label="settings"
+                  className="relative"
+                  onClick={() => setIsEdit(!isEdit)}
+                >
+                  <MoreVertOutlinedIcon />
+                  {isEdit && (
+                    <div className="absolute top-[110%] right-0 text-center w-[100px] border bg-white border-textLightColor flex flex-col">
+                      <div
+                        className="w-full py-2 text-[14px]"
+                        onClick={() => handleOpenEditPost(props.post)}
+                      >
+                        Chỉnh sửa
                       </div>
-                    )}
-                  </IconButton>
-                )}
-              </>
-            )
+                      <Divider />
+                      <div
+                        onClick={() => deletePost(props.post.id)}
+                        className="w-full py-2 text-[14px]"
+                      >
+                        Xóa
+                      </div>
+                    </div>
+                  )}
+                </IconButton>
+              )}
+            </>
           }
           title={props.post.author.fullname}
           subheader={`${formatTime(

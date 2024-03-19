@@ -10,6 +10,7 @@ const initialState = {
   listAllFriends: [],
   checkRole: [],
   deleteUser: [],
+  myListFriends: [],
 };
 //CallApiInforUser
 export const CallApiInforUser = createAsyncThunk(
@@ -36,7 +37,7 @@ export const CallApiMyListFriends = createAsyncThunk(
   async function ({ headers, id }) {
     try {
       const apiListFriendsResponse = await axios.get(
-        `http://localhost:1337/api/friend-list/${id}`,
+        `http://localhost:1337/api/user-details/friend-list/${id}`,
         {
           headers: {
             Authorization: headers.authorization,
@@ -168,6 +169,25 @@ export const CallApiDeleteUser = createAsyncThunk(
     }
   }
 );
+//CallApiMyFriends
+export const CallApiMyFriends = createAsyncThunk(
+  "user2/callApiMyFriends",
+  async function ({ headers }) {
+    try {
+      const apiMyFriendsResponse = await axios.get(
+        `http://localhost:1337/api/user-details`,
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiMyFriendsResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 const usersSlice2 = createSlice({
   name: "user2",
   initialState,
@@ -252,6 +272,17 @@ const usersSlice2 = createSlice({
         state.deleteUser = action.payload;
       })
       .addCase(CallApiDeleteUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiMyFriends.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiMyFriends.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.myListFriends = action.payload;
+      })
+      .addCase(CallApiMyFriends.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

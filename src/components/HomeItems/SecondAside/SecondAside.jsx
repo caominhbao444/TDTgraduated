@@ -4,23 +4,26 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CallApiMyListFriends } from "../../../store/users2Slice";
+import {
+  CallApiMyFriends,
+  CallApiMyListFriends,
+} from "../../../store/users2Slice";
 
 const SecondAside = () => {
-  const userDetail = useSelector((state) => state.user.userDetail);
-  const listFriends = useSelector((state) => state.user2.listFriends);
+  const currentUser = useSelector((state) => state.user.userDetail);
+  const [isLoading, setIsLoading] = useState(true);
+  const myListFriends = useSelector((state) => state.user2.myListFriends);
   const authToken = localStorage.getItem("token");
   const dispatch = useDispatch();
   useEffect(() => {
-    if (userDetail.id) {
+    if (currentUser.id) {
       dispatch(
-        CallApiMyListFriends({
+        CallApiMyFriends({
           headers: { authorization: `Bearer ${authToken}` },
-          id: userDetail.id,
         })
-      );
+      ).then(() => setIsLoading(false));
     }
-  }, [userDetail.id, dispatch, authToken]);
+  }, [currentUser, dispatch, authToken]);
   const Friend = ({ friend }) => {
     return (
       <Link
@@ -50,8 +53,8 @@ const SecondAside = () => {
         Trực tuyến
       </header>
       <div className="h-[90%] w-full overflow-y-auto  overflow-x-hidden scrollbar-thin scrollbar-thumb-transparent no-scrollbar">
-        {listFriends
-          ? listFriends.map((friend) => (
+        {myListFriends && !isLoading
+          ? myListFriends.friends.map((friend) => (
               <Friend key={friend.id} friend={friend}></Friend>
             ))
           : null}
