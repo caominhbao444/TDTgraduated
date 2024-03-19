@@ -21,6 +21,7 @@ import ManageUsers from "./pages/Manage/ManageUsers";
 import ForgotPassword from "./pages/Forgot/ForgotPassword";
 import RePassword from "./pages/Forgot/RePassword";
 import NotFound from "./pages/NotFound/NotFound";
+import Blog from "./pages/Blog/Blog";
 
 function App() {
   // const dispatch = useDispatch();
@@ -59,6 +60,7 @@ function App() {
             <Route path="/friends" element={<Friends />} />
             <Route path="/post/:id" element={<Post />} />
             <Route path="/events" element={<Event />} />
+            <Route path="/blogs" element={<Blog />} />
           </Route>
           <Route element={<PrivateArea2 />}>
             <Route path="/message/:id?" element={<Chat />} />
