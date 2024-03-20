@@ -22,6 +22,7 @@ import ForgotPassword from "./pages/Forgot/ForgotPassword";
 import RePassword from "./pages/Forgot/RePassword";
 import NotFound from "./pages/NotFound/NotFound";
 import Blog from "./pages/Blog/Blog";
+import ManagePosts from "./pages/Manage/ManagePosts";
 
 function App() {
   // const dispatch = useDispatch();
@@ -67,6 +68,7 @@ function App() {
           </Route>
           <Route element={<PrivateAdmin />}>
             <Route path="/admin/users" element={<ManageUsers />} />
+            <Route path="/admin/posts" element={<ManagePosts />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

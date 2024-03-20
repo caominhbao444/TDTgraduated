@@ -18,7 +18,7 @@ const ChatAi = () => {
   useEffect(() => {
     axios
       .post(import.meta.env.VITE_APP_BASE_URL + "/chat-ai/chat", {
-        data: {},
+        data: { input: input },
       })
       .then((res) => {
         console.log(res);
@@ -87,7 +87,7 @@ const ChatAi = () => {
         <div className="h-[10%] w-full bg-red-600 flex relative"></div>
       </main>
 
-      {/* <input
+      <input
         className="border border-sky-500"
         placeholder="Nhập..."
         onChange={(e) => setInput(e.target.value)}
@@ -100,7 +100,7 @@ const ChatAi = () => {
             </>
           ))
         : null}
-      {response ? <p>{response}</p> : null} */}
+      {response ? <p>{response}</p> : null}
     </div>
   );
 };

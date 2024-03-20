@@ -17,6 +17,7 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MenuIcon from "@mui/icons-material/Menu";
 import ListItemText from "@mui/material/ListItemText";
@@ -474,12 +475,20 @@ const Navbar = () => {
               Trang cá nhân
             </MenuItem>
             {checkRole && checkRole.id === 3 && (
-              <MenuItem onClick={() => navigate("/admin/users")}>
-                <ListItemIcon>
-                  <ManageAccountsIcon fontSize="small" />
-                </ListItemIcon>
-                Quản lý người dùng
-              </MenuItem>
+              <>
+                <MenuItem onClick={() => navigate("/admin/users")}>
+                  <ListItemIcon>
+                    <ManageAccountsIcon fontSize="small" />
+                  </ListItemIcon>
+                  Quản lý người dùng
+                </MenuItem>
+                <MenuItem onClick={() => navigate("/admin/posts")}>
+                  <ListItemIcon>
+                    <DynamicFeedIcon fontSize="small" />
+                  </ListItemIcon>
+                  Quản lý bài viết
+                </MenuItem>
+              </>
             )}
             <MenuItem onClick={handleChangePassword}>
               <ListItemIcon>

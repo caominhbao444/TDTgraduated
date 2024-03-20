@@ -88,6 +88,26 @@ export const CallApiUpdateComment = createAsyncThunk(
     }
   }
 );
+//CallApiAllListPostByAdmin
+export const CallApiAllListPostByAdmin = createAsyncThunk(
+  "post/callApiAllListPostByAdmin",
+  async function ({ headers }) {
+    try {
+      const apiGetListByAdminResponse = await axios.get(
+        `http://localhost:1337/api/posts/allPosts`,
+
+        {
+          headers: {
+            Authorization: headers.authorization,
+          },
+        }
+      );
+      return apiGetListByAdminResponse.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 const postsSlice = createSlice({
   name: "post",
   initialState,
@@ -139,6 +159,17 @@ const postsSlice = createSlice({
         state.updateComment = action.payload;
       })
       .addCase(CallApiUpdateComment.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(CallApiAllListPostByAdmin.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(CallApiAllListPostByAdmin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.listAllPosts = action.payload;
+      })
+      .addCase(CallApiAllListPostByAdmin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });
