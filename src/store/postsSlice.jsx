@@ -6,6 +6,7 @@ const initialState = {
   postId: [],
   myDetailsPost: [],
   updateComment: [],
+  listAllPosts: [],
 };
 
 //CallApiMyListPosts

@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import NewspaperIcon from "@mui/icons-material/Newspaper";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
@@ -225,6 +226,16 @@ const Home = () => {
               <CalendarMonthOutlinedIcon />
             </ListItemIcon>
             <ListItemText primary="Sự kiện" />
+          </ListItem>
+          <Divider component="li" />
+          <ListItem
+            className="hover:cursor-pointer"
+            onClick={() => navigate("/blogs")}
+          >
+            <ListItemIcon className="flex justify-center">
+              <NewspaperIcon />
+            </ListItemIcon>
+            <ListItemText primary="Blog" />
           </ListItem>
         </List>
       </aside>

@@ -4,12 +4,14 @@ import postsSlice from "./postsSlice";
 
 import usersSlice2 from "./users2Slice";
 import eventsSlice from "./eventsSlice";
+import blogSlice from "./blogSlice";
 export const store = configureStore({
   reducer: {
     user: usersSlice,
     user2: usersSlice2,
     post: postsSlice,
     events: eventsSlice,
+    blogs: blogSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
