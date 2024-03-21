@@ -20,6 +20,7 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import { API_POST } from "../../fakeApi";
 import PostContainer from "../../components/HomeItems/PostContainer/PostContainer";
 import FirstAside from "../../components/HomeItems/FirstAside/FirstAside";
@@ -27,6 +28,7 @@ import SecondAside from "../../components/HomeItems/SecondAside/SecondAside";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Switch from "@mui/material/Switch";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { CallApiMyListPosts } from "../../store/postsSlice";
 
 const style = {
@@ -236,6 +238,16 @@ const Home = () => {
               <NewspaperIcon />
             </ListItemIcon>
             <ListItemText primary="Blog" />
+          </ListItem>
+          <Divider component="li" />
+          <ListItem
+            className="hover:cursor-pointer"
+            onClick={() => navigate("/chat-ai")}
+          >
+            <ListItemIcon className="flex justify-center">
+              <SmartToyOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Chat AI" />
           </ListItem>
         </List>
       </aside>
