@@ -72,7 +72,7 @@ const Login = () => {
         <div className="w-full md:w-1/2 h-full flex flex-col items-center md:py-5 justify-center gap-5">
           <div className="w-2/3 md:w-full px-3">
             <h1 className="text-center text-[20px]">
-              Chào mừng đến với <span className="font-bold">TDTUGrad</span>
+              Chào mừng đến với <span className="font-bold">TDTUAlumni</span>
             </h1>
             <h3 className="text-center text-[14px]">
               Kết nối những cựu sinh viên trường Đại học Tôn Đức Thắng

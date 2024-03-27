@@ -4,16 +4,31 @@ import SendIcon from "@mui/icons-material/Send";
 import { Avatar, CircularProgress } from "@mui/material";
 import Loading from "../Loading/Loading";
 import socket from "socket.io-client";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import { CallApiInforUser } from "../../store/users2Slice";
 const ChatBoxConversation = (props) => {
   const [messages, setMessages] = useState([]);
+  const authToken = localStorage.getItem("token");
   const [message, setMessage] = useState("");
   const [users, setUsers] = useState([]);
-
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const io = socket("http://localhost:1337"); //Connecting to Socket.io backend
   const userDetail = useSelector((state) => state.user.userDetail);
+  const inforUser = useSelector((state) => state.user2.inforUser);
 
+  useEffect(() => {
+    if (id) {
+      dispatch(
+        CallApiInforUser({
+          headers: { authorization: `Bearer ${authToken}` },
+          id: id,
+        })
+      );
+    }
+  }, [id, authToken, dispatch]);
   useEffect(() => {
     const { user, id, room } = props;
     io.emit("join", { user, room }, (error) => {
@@ -111,6 +126,7 @@ const ChatBoxConversation = (props) => {
   if (!messages) {
     return null;
   }
+  console.log("Message received", message);
   return (
     <div className="h-[calc(100vh-58px)] bg-[#D6D6D6] overflow-scroll no-scrollbar box-border w-full flex flex-col justify-between">
       {props.id ? (
@@ -144,8 +160,7 @@ const ChatBoxConversation = (props) => {
                           <div className="z-10 md:w-[70%] w-full flex ">
                             <div className="flex items-start justify-end pr-2">
                               <Avatar
-                                alt="Remy Sharp"
-                                src="http://res.cloudinary.com/djhhzmcps/image/upload/v1710595194/h5ciy7ec1caco9vh4xqn.png"
+                                src={inforUser.image}
                                 sx={{ width: 40, height: 40 }}
                               />
                             </div>

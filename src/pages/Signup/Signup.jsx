@@ -168,7 +168,7 @@ const StepInitial = (props) => {
     <>
       <div className="w-full h-full flex flex-col justify-center items-center gap-2">
         <h1 className="text-center text-[20px] font-bold">
-          Chào mừng đến với TDTGrad
+          Chào mừng đến với TDTUAlumni
         </h1>
         <h3 className="text-center text-textLightColor text-[16px]">
           Nơi kết nối những cựu học sinh trường Đại học Tôn Đức Thắng
