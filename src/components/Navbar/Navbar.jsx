@@ -418,9 +418,9 @@ const Navbar = () => {
               onClick={() => navigate(`/message`)}
             />
           </Badge> */}
-          <Badge color="secondary" variant="dot">
+          {/* <Badge color="secondary" variant="dot">
             <NotificationsNoneIcon size="small" />
-          </Badge>
+          </Badge> */}
           <IconButton
             onClick={handleClick}
             size="small"
